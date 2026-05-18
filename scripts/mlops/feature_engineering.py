@@ -17,12 +17,17 @@ def run_feature_engineering() -> dict:
     spark = get_spark_session(app_name="MLOps-Features")
     try:
         rekap = spark.table("lakehouse.gold.fact_rekap_iku_institusi")
-        features = rekap.select(
-            "tahun",
-            "iku_code",
-            F.col("nilai_capaian").alias("target_capaian"),
-            F.col("target_renstra").alias("target"),
-        ).dropna()
+        waktu = spark.table("lakehouse.gold.dim_waktu")
+        features = (
+            rekap.join(waktu, "waktu_id", "inner")
+            .select(
+                waktu["tahun"],
+                F.col("iku_kode").alias("iku_code"),
+                F.col("nilai_capaian").alias("nilai_capaian"),
+                F.col("nilai_target").alias("nilai_target"),
+            )
+            .dropna()
+        )
         n = features.count()
         features.write.mode("overwrite").parquet(FEATURE_PATH)
         logger.info("Features written → %s (%s rows)", FEATURE_PATH, n)

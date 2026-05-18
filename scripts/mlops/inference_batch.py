@@ -78,15 +78,19 @@ def run_inference() -> dict:
 
 def _forecast_series(spark) -> list[dict]:
     try:
-        df = spark.table("lakehouse.gold.fact_rekap_iku_institusi")
+        from pyspark.sql import functions as F
+
+        rekap = spark.table("lakehouse.gold.fact_rekap_iku_institusi")
+        waktu = spark.table("lakehouse.gold.dim_waktu")
+        df = rekap.join(waktu, "waktu_id", "inner")
         rows = (
-            df.groupBy("tahun")
-            .avg("nilai_capaian")
+            df.groupBy(waktu["tahun"])
+            .agg(F.avg("nilai_capaian").alias("avg_capaian"))
             .orderBy("tahun")
             .limit(10)
             .collect()
         )
-        series = [{"tahun": int(r.tahun), "actual": float(r["avg(nilai_capaian)"])} for r in rows]
+        series = [{"tahun": int(r.tahun), "actual": float(r.avg_capaian)} for r in rows]
         if series:
             last = series[-1]["actual"]
             for y in range(series[-1]["tahun"] + 1, series[-1]["tahun"] + 4):
