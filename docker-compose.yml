@@ -748,6 +748,7 @@ services:
       - "${LHMETA_JUPYTER_PORT:-18888}:8888"
 
   # ── InsightERA Portal (Next.js — portal-main) ──
+  # CLI: docker compose up -d portal  (service name; container: lhmeta-portal)
   # Satu pintu masuk: Data Catalog (Atlas) + Dashboard Analitik (Superset) + Insight/AQE/MLOps (Grafana)
   # Dev: yarn dev. Prod: LHINSIGHT_PORTAL_PRODUCTION=1 → build + next start.
   portal:
@@ -771,7 +772,6 @@ services:
       - "${LHINSIGHT_PORTAL_PORT:-${LHMETA_CATALOG_PORT:-13000}}:3000"
     networks:
       - lakehouse-net
-    depends_on:
-      - grafana
-      - superset
+    # Portal hanya embed URL; tidak wajib menunggu Superset/Grafana build/start.
+    # Tanpa --no-deps: `docker compose up -d portal` tetap bisa menarik dependency lain.
     restart: unless-stopped
