@@ -94,7 +94,7 @@ const CatalogPage: NextPage = () => {
 	return (
 		<PageWrapper>
 			<Head>
-				<title>Browse Datasets — Data Catalog</title>
+				<title>Browse Datasets — Insightera</title>
 			</Head>
 			<SubHeader>
 				<SubHeaderLeft>

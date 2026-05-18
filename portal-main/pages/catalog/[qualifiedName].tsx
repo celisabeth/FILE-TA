@@ -264,7 +264,7 @@ const DatasetDetailPage: NextPage = () => {
 	return (
 		<PageWrapper>
 			<Head>
-				<title>{attrs.name} — Data Catalog</title>
+				<title>{attrs.name} — Insightera</title>
 			</Head>
 			<SubHeader>
 				<SubHeaderLeft>

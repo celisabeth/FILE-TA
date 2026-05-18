@@ -65,7 +65,7 @@ const LineageIndexPage: NextPage = () => {
 	return (
 		<PageWrapper>
 			<Head>
-				<title>Data Lineage — Data Catalog</title>
+				<title>Data Lineage — Insightera</title>
 			</Head>
 			<SubHeader>
 				<SubHeaderLeft>

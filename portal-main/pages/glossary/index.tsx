@@ -153,7 +153,7 @@ const GlossaryPage: NextPage = () => {
 	return (
 		<PageWrapper>
 			<Head>
-				<title>Business Glossary — Data Catalog</title>
+				<title>Business Glossary — Insightera</title>
 			</Head>
 			<SubHeader>
 				<SubHeaderLeft>

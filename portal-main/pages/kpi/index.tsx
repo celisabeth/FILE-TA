@@ -66,7 +66,7 @@ const KpiDashboard: NextPage = () => {
 	return (
 		<PageWrapper>
 			<Head>
-				<title>KPI Dashboard — Data Catalog</title>
+				<title>KPI Dashboard — Insightera</title>
 			</Head>
 			<SubHeader>
 				<SubHeaderLeft>

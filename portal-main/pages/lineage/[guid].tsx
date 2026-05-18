@@ -110,7 +110,7 @@ const LineageDetailPage: NextPage = () => {
 	return (
 		<PageWrapper>
 			<Head>
-				<title>Lineage: {baseName} — Data Catalog</title>
+				<title>Lineage: {baseName} — Insightera</title>
 			</Head>
 			<SubHeader>
 				<SubHeaderLeft>

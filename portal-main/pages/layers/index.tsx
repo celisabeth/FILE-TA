@@ -61,7 +61,7 @@ const LayersPage: NextPage = () => {
 	return (
 		<PageWrapper>
 			<Head>
-				<title>Medallion Layers — Data Catalog</title>
+				<title>Medallion Layers — Insightera</title>
 			</Head>
 			<SubHeader>
 				<SubHeaderLeft>

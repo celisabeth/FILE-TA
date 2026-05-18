@@ -58,7 +58,7 @@ const QualityPage: NextPage = () => {
 	return (
 		<PageWrapper>
 			<Head>
-				<title>Data Quality — Data Catalog</title>
+				<title>Data Quality — Insightera</title>
 			</Head>
 			<SubHeader>
 				<SubHeaderLeft>

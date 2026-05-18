@@ -85,7 +85,7 @@ const MetadataQualityPage: NextPage = () => {
 	return (
 		<PageWrapper>
 			<Head>
-				<title>Metadata Quality Evaluation — Data Catalog</title>
+				<title>Metadata Quality Evaluation — Insightera</title>
 			</Head>
 			<SubHeader>
 				<SubHeaderLeft>

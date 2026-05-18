@@ -73,7 +73,7 @@ const ClassificationsPage: NextPage = () => {
 	return (
 		<PageWrapper>
 			<Head>
-				<title>Classifications — Data Catalog</title>
+				<title>Classifications — Insightera</title>
 			</Head>
 			<SubHeader>
 				<SubHeaderLeft>

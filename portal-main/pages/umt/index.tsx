@@ -103,7 +103,7 @@ const UmtPage: NextPage = () => {
 	return (
 		<PageWrapper>
 			<Head>
-				<title>Unified Metadata Table — Data Catalog</title>
+				<title>Unified Metadata Table — Insightera</title>
 			</Head>
 			<SubHeader>
 				<SubHeaderLeft>
