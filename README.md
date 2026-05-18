@@ -10,8 +10,6 @@ Repositori ini berisi implementasi pipeline big data terintegrasi untuk lingkung
 2. **Mengimplementasikan** pipeline big data berbasis Data Lakehouse dan MLOps untuk mendukung integrasi, pengolahan, dan analitik data perguruan tinggi.
 3. **Melakukan evaluasi komparatif** terhadap implementasi pipeline berdasarkan aspek performa, kualitas data, skalabilitas, dan efektivitas integrasi data.
 
-**Tiga metode dalam satu stack:** Metadata (Atlas + katalog) · AQE (OFF/ON) · MLOps — kode dilebur dari [`Data-Lakehouse-Metadata`](../Data-Lakehouse-Metadata/) dan [`Data-Lakehouse-AQE`](../Data-Lakehouse-AQE/).
-
 ---
 
 ## Tech Stack (ringkas)
