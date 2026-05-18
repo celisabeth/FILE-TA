@@ -360,17 +360,42 @@ Format embed: `http://<IP-VM>:18089/superset/dashboard/<ID>/?standalone=1`
 | Hanya 1 dashboard perlu | Penelitian operasional | Cukup Langkah C; OFF/ON opsional BAB IV |
 | **`Column 'record_count' cannot be resolved`** | Bukan kolom tabel — metadata partisi Iceberg (`file_count`, `record_count`, `total_size`) ikut terpilih di chart | Hapus metrik `record_count`; pakai kolom data saja atau `COUNT(*)` — lihat §11.1 |
 
-### 11.1 Error `record_count` / `file_count` (Superset + Trino)
+### 11.1 Error `record_count` / `file_count` (Superset + Trino + Iceberg)
 
 Pesan seperti:
 
 ```text
 Column 'record_count' cannot be resolved
+line 3:7 (atau line 5:7)
 ```
 
-sering muncul pada dataset **`dim_waktu`** (atau tabel Iceberg lain) ketika di chart/metric/filter terpilih **`record_count`**, **`file_count`**, atau **`total_size`**.
+**Penyebab utama (bukan salah SQL Anda):** bug Superset saat membaca tabel **Iceberg** lewat Trino. Di panel kiri SQL Lab, teks `Latest partition: .../record_count=72/file_count=2/...` adalah **metadata file Iceberg**. Superset salah menganggapnya kolom dan **menyuntikkan** `record_count`, `file_count`, `total_size`, `data` ke query — padahal query Anda di editor sudah benar.
 
-Itu **bukan** kolom star schema. Teks `Latest partition: .../record_count=72/...` di UI Superset hanya **statistik file Iceberg**, bukan field yang bisa di-`SELECT`.
+**Perbaikan permanen (repo Insight):** patch di `superset/superset_config.py` — rebuild image:
+
+```bash
+cd ~/Bigdata-insightera
+docker compose build superset superset-init
+docker compose up -d superset
+```
+
+**Workaround cepat (tanpa rebuild):**
+
+1. Jangan mengandalkan **klik tabel** di schema browser kiri sebelum Run (itu memicu query rusak).  
+2. Tempel SQL manual di editor → **Run** langsung.  
+3. Atau uji di Trino CLI:
+
+```bash
+docker exec lhmeta-trino trino --execute "
+SELECT w.tahun, r.iku_kode, r.nilai_capaian
+FROM lakehouse.gold.fact_rekap_iku_institusi r
+JOIN lakehouse.gold.dim_waktu w ON r.waktu_id = w.waktu_id
+LIMIT 10"
+```
+
+Jika CLI sukses tetapi Superset gagal → pastikan patch di atas sudah di-build.
+
+**Jika error di Chart (bukan SQL Lab):** itu **bukan** kolom star schema. Hapus metrik `record_count` dari chart; pakai kolom data atau `COUNT(*)`.
 
 **Kolom valid `dim_waktu`:**
 
