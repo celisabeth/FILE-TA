@@ -1,0 +1,11 @@
+.env
+metrics/*.json
+!metrics/README.md
+!metrics/.gitkeep
+portal-main/node_modules/
+portal-main/.next/
+__pycache__/
+*.pyc
+.jars/
+lib/
+notebooks/.ipynb_checkpoints/

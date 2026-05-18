@@ -1,0 +1,128 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [
+    {
+      "title": "Dashboard Insight",
+      "type": "link",
+      "url": "/d/lakehouse-dashboard-insight",
+      "targetBlank": true
+    }
+  ],
+  "panels": [
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "description": "Durasi task DAG mlops_pipeline",
+      "fieldConfig": { "defaults": { "unit": "s" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "id": 20,
+      "title": "MLOps Pipeline — Task Duration",
+      "type": "bargauge",
+      "options": { "orientation": "horizontal", "displayMode": "lcd" },
+      "targets": [
+        {
+          "expr": "lakehouse_mlops_task_duration_seconds",
+          "legendFormat": "{{task}}"
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "description": "Metrik training dari MLflow (accuracy, MAE, dll.)",
+      "fieldConfig": { "defaults": { "unit": "short", "decimals": 3 }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "id": 21,
+      "title": "Model Training Metrics",
+      "type": "table",
+      "targets": [
+        {
+          "expr": "lakehouse_mlops_model_metric",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "{{model}} {{metric}}"
+        }
+      ],
+      "transformations": [
+        { "id": "labelsToFields", "options": { "mode": "columns" } }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "gridPos": { "h": 3, "w": 24, "x": 0, "y": 8 },
+      "id": 22,
+      "title": "Output use cases (ringkasan)",
+      "type": "row",
+      "collapsed": false
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 5, "w": 6, "x": 0, "y": 11 },
+      "id": 23,
+      "title": "Forecast points",
+      "type": "stat",
+      "targets": [
+        { "expr": "count(lakehouse_insight_forecast)", "legendFormat": "points" }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 5, "w": 6, "x": 6, "y": 11 },
+      "id": 24,
+      "title": "Risk Score (prodi)",
+      "type": "stat",
+      "targets": [
+        { "expr": "count(lakehouse_insight_risk_score)", "legendFormat": "prodi" }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 11 },
+      "id": 25,
+      "title": "Opportunity (prodi)",
+      "type": "stat",
+      "targets": [
+        { "expr": "count(lakehouse_insight_opportunity_score)", "legendFormat": "prodi" }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] },
+      "gridPos": { "h": 5, "w": 6, "x": 18, "y": 11 },
+      "id": 26,
+      "title": "Anomalies flagged",
+      "type": "stat",
+      "targets": [
+        { "expr": "lakehouse_insight_anomaly_count", "legendFormat": "count" }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "s" }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 16 },
+      "id": 27,
+      "title": "MLOps Task Duration (time series scrape)",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "lakehouse_mlops_task_duration_seconds",
+          "legendFormat": "{{task}}"
+        }
+      ]
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 39,
+  "tags": ["lakehouse", "mlops", "pipeline", "monitoring"],
+  "templating": { "list": [] },
+  "time": { "from": "now-6h", "to": "now" },
+  "timezone": "browser",
+  "title": "MLOps Pipeline Monitoring",
+  "uid": "lakehouse-mlops-pipeline",
+  "version": 1
+}
