@@ -855,7 +855,7 @@ Artefak: `metrics/experiment_summary_latest.json`, `metrics/aqe_comparison_*.jso
 | `scripts/spark/silver_to_gold.py` | PySpark ETL star schema (5 dim + 10 fact) |
 | `scripts/atlas/register_gold_metadata.py` | Atlas metadata Gold (KPI, AI, Consumption) |
 | `scripts/dags/silver_gold_pipeline.py` | Airflow DAG Pipeline 3 |
-| **InsightERA Portal (`portal-main`)** | |
+| **Insightera Portal (`portal-main`)** | |
 | `portal-main/helpers/atlasApi.ts` | Atlas REST API client (TypeScript) |
 | `portal-main/pages/api/atlas/*.ts` | Next.js API routes — 8 proxy endpoints (search, entity, update, lineage, classifications, metrics, glossary, glossary terms) |
 | `portal-main/pages/index.tsx` | Dashboard overview |

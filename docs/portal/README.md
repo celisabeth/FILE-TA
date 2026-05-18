@@ -142,18 +142,18 @@ Buka http://localhost:3000 (atau port dev Next.js).
 
 ---
 
-## 8. Migrasi dari `data-catalog-main`
+## 8. Migrasi dari setup lama
 
 | Sebelum | Sesudah |
 |---------|---------|
-| Folder `data-catalog-main/` | `portal-main/` |
+| Folder `data-catalog-main/` | **`portal-main/`** (hapus folder/symlink lama) |
 | Service `data-catalog` | `portal` |
 | Container `lhmeta-data-catalog` | `lhmeta-portal` |
 | Volume `catalog-node-modules` | `portal-node-modules` |
 
 Jika container lama masih ada: `docker compose rm -f data-catalog` lalu `docker compose up -d portal`.
 
-**IDE / TypeScript:** folder `data-catalog-main` adalah symlink ke `portal-main` (kompatibilitas path lama). Buka workspace `Data-Lakehouse-Insight` atau folder `portal-main` langsung. Reload window jika error tsconfig masih muncul.
+**IDE:** buka `portal-main/tsconfig.json` (bukan path `data-catalog-main`). Reload window Cursor setelah menghapus folder lama.
 
 ---
 
