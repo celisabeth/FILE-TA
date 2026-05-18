@@ -71,7 +71,12 @@ def compare(
     off_trino_wl: Path | None = None,
     on_trino_wl: Path | None = None,
 ) -> dict:
-    mdir = metrics_path or metrics_dir()
+    try:
+        from benchmark.experiment_run import resolve_metrics_dir
+
+        mdir = metrics_path or resolve_metrics_dir("aqe")
+    except Exception:
+        mdir = metrics_path or metrics_dir()
 
     off_silver = off_silver or _latest("bronze_to_silver_aqe_OFF_*.json", mdir)
     on_silver = on_silver or _latest("bronze_to_silver_aqe_ON_*.json", mdir)

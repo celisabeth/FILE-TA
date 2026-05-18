@@ -18,17 +18,33 @@ default_args = {
 }
 
 
-def task_preprocess(**_):
+def task_init_experiment_run(**context):
+    from benchmark.experiment_run import init_airflow_task
+
+    path = init_airflow_task(**context)
+    logging.info("MLOps metrics audit run → %s", path)
+
+
+def _activate_mlops(context) -> None:
+    from benchmark.experiment_run import activate_from_airflow_context
+
+    activate_from_airflow_context(context, "mlops")
+
+
+def task_preprocess(**context):
+    _activate_mlops(context)
     from mlops.data_preprocessing import run_preprocessing
     return run_preprocessing()
 
 
-def task_features(**_):
+def task_features(**context):
+    _activate_mlops(context)
     from mlops.feature_engineering import run_feature_engineering
     return run_feature_engineering()
 
 
-def task_train(**_):
+def task_train(**context):
+    _activate_mlops(context)
     from mlops.train_models import run_training
     result = run_training()
     from atlas.register_model_metadata import register_models
@@ -36,7 +52,8 @@ def task_train(**_):
     return result
 
 
-def task_inference(**_):
+def task_inference(**context):
+    _activate_mlops(context)
     from mlops.inference_batch import run_inference
     result = run_inference()
     from atlas.register_output_metadata import register_outputs
@@ -45,8 +62,10 @@ def task_inference(**_):
 
 
 def task_export_metrics(**context):
-    """Tulis metrics/mlops_metrics_latest.json untuk Grafana via metrics-exporter."""
+    """Tulis metrik MLOps ke folder run audit + latest/mlops/."""
+    _activate_mlops(context)
     from benchmark.mlops_metrics import export_mlops_metrics
+    from benchmark.experiment_run import finalize_run, mirror_to_latest_slot
 
     ti = context["ti"]
     preprocess = ti.xcom_pull(task_ids="data_preprocessing")
@@ -68,7 +87,12 @@ def task_export_metrics(**context):
         train=train,
         inference=inference,
         task_durations=task_durations or None,
+        write_latest=False,
     )
+    from pathlib import Path
+
+    mirror_to_latest_slot("mlops", Path(out).name, "mlops_metrics.json")
+    finalize_run(summary_file=Path(out).name)
     return str(out)
 
 
@@ -81,10 +105,12 @@ with DAG(
     catchup=False,
     max_active_runs=1,
     tags=["lakehouse", "mlops", "insight"],
+    params={"experiment_track": "mlops"},
 ) as dag:
+    t0 = PythonOperator(task_id="init_experiment_run", python_callable=task_init_experiment_run)
     t1 = PythonOperator(task_id="data_preprocessing", python_callable=task_preprocess)
     t2 = PythonOperator(task_id="feature_engineering", python_callable=task_features, execution_timeout=timedelta(hours=2))
     t3 = PythonOperator(task_id="train_models", python_callable=task_train, execution_timeout=timedelta(hours=1))
     t4 = PythonOperator(task_id="inference_batch", python_callable=task_inference, execution_timeout=timedelta(hours=1))
     t5 = PythonOperator(task_id="export_mlops_metrics", python_callable=task_export_metrics)
-    t1 >> t2 >> t3 >> t4 >> t5
+    t0 >> t1 >> t2 >> t3 >> t4 >> t5

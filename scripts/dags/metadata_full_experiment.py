@@ -30,7 +30,27 @@ ATLAS_URL = "http://atlas:21000"
 ATLAS_AUTH = ("admin", "admin")
 
 
-def task_upload_staging(**_context):
+def task_init_experiment_run(**context):
+    from benchmark.experiment_run import init_airflow_task
+
+    path = init_airflow_task(**context)
+    logging.info("Metrics audit run → %s", path)
+
+
+def _activate_metadata_run(context) -> None:
+    from benchmark.experiment_run import activate_from_airflow_context
+
+    activate_from_airflow_context(context, "metadata")
+
+
+def _mirror_latest(run_filename: str, latest_basename: str) -> None:
+    from benchmark.experiment_run import mirror_to_latest_slot
+
+    mirror_to_latest_slot("metadata", run_filename, latest_basename)
+
+
+def task_upload_staging(**context):
+    _activate_metadata_run(context)
     import boto3
     from botocore.client import Config
 
@@ -53,7 +73,8 @@ def task_upload_staging(**_context):
     logging.info("Uploaded %d CSV files to MinIO", n)
 
 
-def task_dataset_summary(**_context):
+def task_dataset_summary(**context):
+    _activate_metadata_run(context)
     from benchmark.dataset_summary import summarize_staging
     from benchmark._common import metrics_dir, utc_now, write_json
 
@@ -68,6 +89,7 @@ def task_dataset_summary(**_context):
 
 
 def task_staging_bronze(**context):
+    _activate_metadata_run(context)
     from spark.staging_to_bronze import run_staging_to_bronze
 
     profiling = run_staging_to_bronze()
@@ -76,6 +98,7 @@ def task_staging_bronze(**context):
 
 
 def task_register_bronze(**context):
+    _activate_metadata_run(context)
     from atlas.register_bronze_metadata import register_all_metadata
     from benchmark.atlas_registration_snapshot import write_registration_snapshot
 
@@ -93,6 +116,7 @@ def task_register_bronze(**context):
 
 
 def task_bronze_silver(**context):
+    _activate_metadata_run(context)
     from spark.bronze_to_silver import run_bronze_to_silver
 
     profiling = run_bronze_to_silver()
@@ -101,6 +125,7 @@ def task_bronze_silver(**context):
 
 
 def task_register_silver(**context):
+    _activate_metadata_run(context)
     from atlas.register_silver_metadata import register_all_silver_metadata
     from benchmark.atlas_registration_snapshot import write_registration_snapshot
 
@@ -118,6 +143,7 @@ def task_register_silver(**context):
 
 
 def task_silver_gold(**context):
+    _activate_metadata_run(context)
     from spark.silver_to_gold import run_silver_to_gold
 
     profiling = run_silver_to_gold()
@@ -126,6 +152,7 @@ def task_silver_gold(**context):
 
 
 def task_register_gold(**context):
+    _activate_metadata_run(context)
     from atlas.register_gold_metadata import register_all_gold_metadata
     from benchmark.atlas_registration_snapshot import write_registration_snapshot
 
@@ -142,25 +169,27 @@ def task_register_gold(**context):
     logging.info("Gold Atlas snapshot → %s", path)
 
 
-def task_collect_umt(**_context):
+def task_collect_umt(**context):
+    _activate_metadata_run(context)
     from benchmark.collect_umt import collect_umt
     from benchmark._common import metrics_dir, utc_now, write_json
 
     payload = collect_umt()
     ts = utc_now().strftime("%Y%m%d_%H%M%S")
-    write_json(metrics_dir() / f"umt_{ts}.json", payload)
-    write_json(metrics_dir() / "umt_latest.json", payload)
+    out = write_json(metrics_dir() / f"umt_{ts}.json", payload, artifact_role="umt")
+    _mirror_latest(out.name, "umt.json")
     logging.info("UMT rows: %d", len(payload.get("rows", [])))
 
 
-def task_metadata_quality(**_context):
+def task_metadata_quality(**context):
+    _activate_metadata_run(context)
     from benchmark.atlas_quality import evaluate_metadata_quality
     from benchmark._common import metrics_dir, utc_now, write_json
 
     report = evaluate_metadata_quality()
     ts = utc_now().strftime("%Y%m%d_%H%M%S")
-    write_json(metrics_dir() / f"metadata_quality_{ts}.json", report)
-    write_json(metrics_dir() / "metadata_quality_latest.json", report)
+    out = write_json(metrics_dir() / f"metadata_quality_{ts}.json", report, artifact_role="metadata_quality")
+    _mirror_latest(out.name, "metadata_quality.json")
     for layer in report.get("layers", []):
         logging.info(
             "Quality %s: completeness=%s%% consistency=%s%%",
@@ -170,25 +199,29 @@ def task_metadata_quality(**_context):
         )
 
 
-def task_atlas_inventory(**_context):
+def task_atlas_inventory(**context):
+    _activate_metadata_run(context)
     from benchmark.atlas_inventory import collect_inventory
     from benchmark._common import metrics_dir, utc_now, write_json
 
     payload = collect_inventory()
     ts = utc_now().strftime("%Y%m%d_%H%M%S")
-    write_json(metrics_dir() / f"atlas_inventory_{ts}.json", payload)
-    write_json(metrics_dir() / "atlas_inventory_latest.json", payload)
+    out = write_json(metrics_dir() / f"atlas_inventory_{ts}.json", payload, artifact_role="atlas_inventory")
+    _mirror_latest(out.name, "atlas_inventory.json")
 
 
-def task_aggregate(**_context):
+def task_aggregate(**context):
+    _activate_metadata_run(context)
     from benchmark.aggregate_results import aggregate
     from benchmark._common import metrics_dir, utc_now, write_json
+    from benchmark.experiment_run import finalize_run
 
-    summary = aggregate()
+    summary = aggregate(track="metadata")
     ts = utc_now().strftime("%Y%m%d_%H%M%S")
     mdir = metrics_dir()
-    write_json(mdir / f"experiment_summary_{ts}.json", summary)
-    write_json(mdir / "experiment_summary_latest.json", summary)
+    out = write_json(mdir / f"experiment_summary_{ts}.json", summary, artifact_role="experiment_summary")
+    _mirror_latest(out.name, "experiment_summary.json")
+    finalize_run(summary_file=out.name)
     logging.info("Experiment summary written to %s", mdir)
 
 
@@ -201,8 +234,10 @@ with DAG(
     catchup=False,
     max_active_runs=1,
     tags=["lakehouse", "metadata", "atlas", "experiment", "catalog"],
+    params={"experiment_track": "metadata"},
 ) as dag:
 
+    t_init = PythonOperator(task_id="init_experiment_run", python_callable=task_init_experiment_run)
     t_upload = PythonOperator(task_id="upload_staging_to_minio", python_callable=task_upload_staging)
     t0 = PythonOperator(task_id="dataset_summary", python_callable=task_dataset_summary)
     t1 = PythonOperator(
@@ -228,4 +263,4 @@ with DAG(
     t6 = PythonOperator(task_id="atlas_inventory", python_callable=task_atlas_inventory)
     t7 = PythonOperator(task_id="aggregate_results", python_callable=task_aggregate)
 
-    t_upload >> t0 >> t1 >> t1b >> t2 >> t2b >> t3 >> t3b >> t4 >> t5 >> t6 >> t7
+    t_init >> t_upload >> t0 >> t1 >> t1b >> t2 >> t2b >> t3 >> t3b >> t4 >> t5 >> t6 >> t7

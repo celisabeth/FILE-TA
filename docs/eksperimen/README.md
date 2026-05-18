@@ -65,19 +65,34 @@ Pantau semua DAG di http://localhost:18681 (user: `airflow` / `airflow`).
 Variabel **independen utama:** `SPARK_AQE_SCENARIO` = `OFF` vs `ON`.  
 Variabel **dependen:** kualitas metadata, runtime pipeline/query, metrik model MLOps.
 
-### 0.3 Output metrik (`metrics/`)
+### 0.3 Output metrik (`metrics/`) — audit per metode
 
-| File | Metode | Subbab laporan |
-|------|--------|----------------|
-| `experiment_summary_latest.json` | Gabungan | Ringkasan run |
-| `metadata_quality_latest.json` | Metadata | §4.1.6 kualitas |
-| `atlas_inventory_latest.json` | Metadata | coverage + lineage |
-| `umt_latest.json` | Metadata | §4.1.4 UMT |
-| `aqe_comparison_*.json` | AQE | §4.1.2–4.1.4 performa |
-| `bronze_to_silver_aqe_OFF_*.json` / `ON_*.json` | AQE | speedup Silver |
-| `workloads_spark_aqe_*.json` | AQE | workload W1–W3 |
-| `workloads_trino_ctx_*.json` | AQE | workload W4–W6 (Trino) |
-| `staging_to_bronze_*.json`, `silver_to_gold_*.json` | Metadata | §4.1.1 runtime |
+**Setiap DAG** (`metadata_full_experiment`, `aqe_full_experiment`, `mlops_pipeline`) membuat folder run baru di `metrics/runs/{run_id}/`. Menjalankan ulang **tidak menimpa** run metode lain; hanya memperbarui `metrics/latest/{track}/`.
+
+```bash
+# Daftar semua run (audit)
+python3 scripts/benchmark/list_experiment_runs.py
+python3 scripts/benchmark/list_experiment_runs.py --track metadata
+```
+
+| Lokasi | Metode | Isi |
+|--------|--------|-----|
+| `runs/metadata_*/` | Metadata | Pipeline + quality + UMT + inventory + summary |
+| `runs/aqe_*/` | AQE | OFF/ON silver, workloads, `aqe_comparison_*.json` |
+| `runs/mlops_*/` | MLOps | `mlops_metrics_*.json` |
+| `latest/metadata/` | Pointer terakhir metadata | `experiment_summary.json`, `metadata_quality.json`, … |
+| `latest/aqe/` | Pointer terakhir AQE | `aqe_comparison.json`, `experiment_summary.json` |
+| `latest/mlops/` | Pointer terakhir MLOps | `mlops_metrics.json` |
+| `index.json` | Indeks global | Semua `run_id`, `latest` per track |
+
+Opsional — label run saat trigger:
+
+```bash
+docker exec lhmeta-airflow-scheduler airflow dags trigger metadata_full_experiment \
+  --conf '{"label":"bab4-rep1"}'
+```
+
+File `*_latest.json` di **root** `metrics/` (legacy) bisa masih ada dari run lama; untuk laporan gunakan `latest/{track}/` dan `runs/{run_id}/`.
 
 ---
 

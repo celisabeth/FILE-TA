@@ -31,8 +31,21 @@ def _latest(directory: Path, pattern: str) -> dict | None:
     return load_json(files[-1])
 
 
-def aggregate(metrics_path: Path | None = None, experiment_id: str | None = None) -> dict:
-    mdir = metrics_path or metrics_dir()
+def aggregate(
+    metrics_path: Path | None = None,
+    experiment_id: str | None = None,
+    *,
+    track: str | None = None,
+) -> dict:
+    if metrics_path is None:
+        try:
+            from benchmark.experiment_run import current_run_dir, resolve_metrics_dir
+
+            mdir = current_run_dir(track) or resolve_metrics_dir(track)
+        except Exception:
+            mdir = metrics_dir()
+    else:
+        mdir = metrics_path
 
     quality = _latest(mdir, "metadata_quality_*.json") or _latest(mdir, "metadata_quality_latest.json")
     inventory = _latest(mdir, "atlas_inventory_*.json") or _latest(mdir, "atlas_inventory_latest.json")
@@ -50,8 +63,11 @@ def aggregate(metrics_path: Path | None = None, experiment_id: str | None = None
         if p and p.get("duration_sec")
     )
 
+    run_id = os.environ.get("EXPERIMENT_RUN_ID")
     return {
-        "experiment_id": experiment_id or f"META-EXP-{utc_now().strftime('%Y%m%d-%H%M%S')}",
+        "experiment_id": experiment_id or run_id or f"META-EXP-{utc_now().strftime('%Y%m%d-%H%M%S')}",
+        "experiment_track": track or os.environ.get("EXPERIMENT_TRACK"),
+        "experiment_run_id": run_id,
         "generated_at": utc_now().isoformat(),
         "metrics_directory": str(mdir.resolve()),
         "dataset_summaries": _collect_by_glob(mdir, "dataset_summary_*.json"),
@@ -76,13 +92,22 @@ def main():
     parser.add_argument("--write-latest", action="store_true")
     args = parser.parse_args()
 
+    track = os.environ.get("EXPERIMENT_TRACK", "metadata")
     mdir = Path(args.metrics_dir) if args.metrics_dir else metrics_dir()
-    summary = aggregate(mdir, experiment_id=args.experiment_id)
+    summary = aggregate(mdir, experiment_id=args.experiment_id, track=track)
     ts = utc_now().strftime("%Y%m%d_%H%M%S")
     out = mdir / f"experiment_summary_{ts}.json"
-    write_json(out, summary)
+    write_json(out, summary, artifact_role="experiment_summary")
     if args.write_latest:
-        write_json(mdir / "experiment_summary_latest.json", summary)
+        from benchmark.experiment_run import mirror_to_latest_slot
+
+        mirror_to_latest_slot(track, out.name, "experiment_summary.json")
+    try:
+        from benchmark.experiment_run import finalize_run
+
+        finalize_run(summary_file=out.name)
+    except Exception:
+        pass
     logger.info("Experiment summary → %s", out)
 
 

@@ -68,8 +68,17 @@ def persist_pipeline_run_metrics(
         payload["spark_configs"] = spark_configs
     if extra:
         payload.update(extra)
+    payload["metrics_file"] = path.name
 
     path.write_text(json.dumps(payload, indent=2, default=str), encoding="utf-8")
+
+    try:
+        from benchmark.experiment_run import register_artifact
+
+        register_artifact(path.name, role=f"pipeline:{pipeline}")
+    except Exception:
+        pass
+
     return path
 
 

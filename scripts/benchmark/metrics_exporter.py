@@ -25,8 +25,19 @@ def _metric_line(name: str, value: float, labels: dict | None = None) -> str:
     return f"{name} {value}\n"
 
 
+def _read_json_if_exists(path: Path) -> dict | None:
+    if not path.is_file():
+        return None
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return None
+
+
 def _export_aqe_metrics(lines: list[str], metrics_dir: Path) -> None:
-    latest = metrics_dir / "experiment_summary_latest.json"
+    latest = metrics_dir / "latest" / "aqe" / "experiment_summary.json"
+    if not latest.is_file():
+        latest = metrics_dir / "experiment_summary_latest.json"
     if latest.is_file():
         try:
             summary = json.loads(latest.read_text(encoding="utf-8"))
@@ -107,7 +118,9 @@ def _export_aqe_metrics(lines: list[str], metrics_dir: Path) -> None:
 
 
 def _export_mlops_metrics(lines: list[str], metrics_dir: Path) -> None:
-    mlops_path = metrics_dir / "mlops_metrics_latest.json"
+    mlops_path = metrics_dir / "latest" / "mlops" / "mlops_metrics.json"
+    if not mlops_path.is_file():
+        mlops_path = metrics_dir / "mlops_metrics_latest.json"
     if not mlops_path.is_file():
         return
     try:

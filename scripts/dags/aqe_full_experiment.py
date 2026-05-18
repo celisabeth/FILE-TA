@@ -28,7 +28,23 @@ STAGING_DIR = "/opt/airflow/data/staging"
 MINIO_ENDPOINT = "http://minio:9000"
 
 
-def task_upload_staging(**_context):
+def task_init_experiment_run(**context):
+    from benchmark.experiment_run import init_airflow_task
+
+    os.environ["EXPERIMENT_TRACK"] = "aqe"
+    path = init_airflow_task(**context)
+    logging.info("AQE metrics audit run → %s", path)
+
+
+def _activate_aqe(context) -> None:
+    from benchmark.experiment_run import activate_from_airflow_context
+
+    os.environ["EXPERIMENT_TRACK"] = "aqe"
+    activate_from_airflow_context(context, "aqe")
+
+
+def task_upload_staging(**context):
+    _activate_aqe(context)
     import boto3
     from botocore.client import Config
 
@@ -51,7 +67,8 @@ def task_upload_staging(**_context):
     logging.info("Uploaded %d CSV files to MinIO", n)
 
 
-def task_dataset_summary(**_context):
+def task_dataset_summary(**context):
+    _activate_aqe(context)
     from benchmark.dataset_summary import summarize_staging
     from benchmark._common import metrics_dir, utc_now, write_json
 
@@ -65,77 +82,92 @@ def task_dataset_summary(**_context):
     logging.info("Dataset summary → %s", out)
 
 
-def task_staging_bronze(**_context):
+def task_staging_bronze(**context):
+    _activate_aqe(context)
     from spark.staging_to_bronze import run_staging_to_bronze
 
     run_staging_to_bronze()
 
 
-def task_silver_off(**_context):
+def task_silver_off(**context):
+    _activate_aqe(context)
     os.environ["SPARK_AQE_SCENARIO"] = "OFF"
     from spark.bronze_to_silver_aqe import run_bronze_to_silver
 
     run_bronze_to_silver(aqe_scenario="OFF")
 
 
-def task_spark_workloads_off(**_context):
+def task_spark_workloads_off(**context):
+    _activate_aqe(context)
     from benchmark.run_spark_workloads import run_workloads
 
     run_workloads("OFF")
 
 
-def task_gold_off(**_context):
+def task_gold_off(**context):
+    _activate_aqe(context)
     os.environ["SPARK_AQE_SCENARIO"] = "OFF"
     from spark.silver_to_gold_aqe import run_silver_to_gold
 
     run_silver_to_gold(aqe_context="OFF")
 
 
-def task_trino_off(**_context):
+def task_trino_off(**context):
+    _activate_aqe(context)
     from benchmark.run_trino_workloads import run_workloads
 
     run_workloads("OFF")
 
 
-def task_silver_on(**_context):
+def task_silver_on(**context):
+    _activate_aqe(context)
     os.environ["SPARK_AQE_SCENARIO"] = "ON"
     from spark.bronze_to_silver_aqe import run_bronze_to_silver
 
     run_bronze_to_silver(aqe_scenario="ON")
 
 
-def task_spark_workloads_on(**_context):
+def task_spark_workloads_on(**context):
+    _activate_aqe(context)
     from benchmark.run_spark_workloads import run_workloads
 
     run_workloads("ON")
 
 
-def task_gold_on(**_context):
+def task_gold_on(**context):
+    _activate_aqe(context)
     os.environ["SPARK_AQE_SCENARIO"] = "ON"
     from spark.silver_to_gold_aqe import run_silver_to_gold
 
     run_silver_to_gold(aqe_context="ON")
 
 
-def task_trino_on(**_context):
+def task_trino_on(**context):
+    _activate_aqe(context)
     from benchmark.run_trino_workloads import run_workloads
 
     run_workloads("ON")
 
 
-def task_aggregate(**_context):
+def task_aggregate(**context):
+    _activate_aqe(context)
     from benchmark.aggregate_results import aggregate
     from benchmark.compare_aqe_runs import compare, print_markdown_table
     from benchmark._common import metrics_dir, utc_now, write_json
+    from benchmark.experiment_run import finalize_run, mirror_to_latest_slot
 
     report = compare()
     print_markdown_table(report)
-    summary = aggregate()
+    summary = aggregate(track="aqe")
+    summary["aqe_comparison"] = report
     mdir = metrics_dir()
     ts = utc_now().strftime("%Y%m%d_%H%M%S")
-    write_json(mdir / f"experiment_summary_{ts}.json", summary)
-    write_json(mdir / "experiment_summary_latest.json", summary)
-    logging.info("Experiment summary written to %s", mdir)
+    cmp_out = write_json(mdir / f"aqe_comparison_{ts}.json", report, artifact_role="aqe_comparison")
+    mirror_to_latest_slot("aqe", cmp_out.name, "aqe_comparison.json")
+    sum_out = write_json(mdir / f"experiment_summary_{ts}.json", summary, artifact_role="experiment_summary")
+    mirror_to_latest_slot("aqe", sum_out.name, "experiment_summary.json")
+    finalize_run(summary_file=sum_out.name, extra={"aqe_comparison_file": cmp_out.name})
+    logging.info("AQE experiment summary written to %s", mdir)
 
 
 with DAG(
@@ -147,8 +179,10 @@ with DAG(
     catchup=False,
     max_active_runs=1,
     tags=["lakehouse", "aqe", "experiment", "benchmark"],
+    params={"experiment_track": "aqe"},
 ) as dag:
 
+    t_init = PythonOperator(task_id="init_experiment_run", python_callable=task_init_experiment_run)
     t_upload = PythonOperator(task_id="upload_staging_to_minio", python_callable=task_upload_staging)
     t0 = PythonOperator(task_id="dataset_summary", python_callable=task_dataset_summary)
     t1 = PythonOperator(
@@ -198,4 +232,4 @@ with DAG(
     )
     t10 = PythonOperator(task_id="aggregate_results", python_callable=task_aggregate)
 
-    t_upload >> t0 >> t1 >> t2 >> t3 >> t4 >> t5 >> t6 >> t7 >> t8 >> t9 >> t10
+    t_init >> t_upload >> t0 >> t1 >> t2 >> t3 >> t4 >> t5 >> t6 >> t7 >> t8 >> t9 >> t10

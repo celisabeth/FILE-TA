@@ -10,18 +10,23 @@ from typing import Any
 
 
 def metrics_dir() -> Path:
-    """Direktori metrik: di Docker Airflow = /opt/airflow/metrics (volume ./metrics)."""
-    env = (
-        os.environ.get("INSIGHT_METRICS_DIR")
-        or os.environ.get("META_METRICS_DIR")
-        or os.environ.get("AQE_METRICS_DIR")
-    )
-    if env:
-        d = Path(env)
-    elif Path("/opt/airflow/metrics").is_dir():
-        d = Path("/opt/airflow/metrics")
-    else:
-        d = Path("metrics")
+    """Direktori metrik aktif: run audit (`metrics/runs/{id}/`) atau root legacy."""
+    try:
+        from benchmark.experiment_run import resolve_metrics_dir
+
+        d = resolve_metrics_dir()
+    except Exception:
+        env = (
+            os.environ.get("INSIGHT_METRICS_DIR")
+            or os.environ.get("META_METRICS_DIR")
+            or os.environ.get("AQE_METRICS_DIR")
+        )
+        if env:
+            d = Path(env)
+        elif Path("/opt/airflow/metrics").is_dir():
+            d = Path("/opt/airflow/metrics")
+        else:
+            d = Path("metrics")
     d.mkdir(parents=True, exist_ok=True)
     try:
         os.chmod(d, 0o1777)
@@ -34,7 +39,7 @@ def utc_now() -> datetime:
     return datetime.now(timezone.utc)
 
 
-def write_json(path: Path, payload: dict[str, Any]) -> Path:
+def write_json(path: Path, payload: dict[str, Any], *, artifact_role: str | None = None) -> Path:
     out = path if path.is_absolute() else metrics_dir() / path.name
     out.parent.mkdir(parents=True, exist_ok=True)
     try:
@@ -43,6 +48,12 @@ def write_json(path: Path, payload: dict[str, Any]) -> Path:
         raise PermissionError(
             f"Tidak bisa menulis {out}. Di host jalankan: mkdir -p metrics && chmod 1777 metrics"
         ) from exc
+    try:
+        from benchmark.experiment_run import register_artifact
+
+        register_artifact(out.name, role=artifact_role)
+    except Exception:
+        pass
     return out
 
 
