@@ -88,8 +88,9 @@ const DashboardEmbedSettingsModal: React.FC<Props> = ({ isOpen, setIsOpen }) => 
 			<ModalBody>
 				<p className='text-muted small'>
 					Atur base URL Grafana, Superset, dan Prometheus tanpa mengubah variabel lingkungan di
-					VM. URL embed dihitung otomatis dari base URL; bagian lanjutan memungkinkan override
-					per dashboard.
+					VM. Jika masih memakai <code>localhost</code>, portal akan mengganti host ke alamat
+					yang sama dengan browser Anda (mis. <code>103.174.114.177</code>) agar tombol{' '}
+					<strong>Tab baru</strong> dapat dibuka.
 				</p>
 				<Alert color='info' isLight>
 					Sumber aktif: <strong>{source}</strong>
@@ -114,7 +115,7 @@ const DashboardEmbedSettingsModal: React.FC<Props> = ({ isOpen, setIsOpen }) => 
 						onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
 							setGrafanaBase(e.target.value)
 						}
-						placeholder='http://103.174.114.177:13001'
+						placeholder={`http://${typeof window !== 'undefined' ? window.location.hostname : '103.174.114.177'}:13001`}
 					/>
 					<small className='text-muted'>
 						Contoh embed Insight: {links.grafanaInsight.embedUrl}

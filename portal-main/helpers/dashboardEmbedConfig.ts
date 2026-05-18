@@ -23,20 +23,116 @@ export function stripTrailingSlash(url: string): string {
 	return url.replace(/\/+$/, '');
 }
 
+const SERVICE_PORTS = {
+	grafana: 13001,
+	superset: 18089,
+	prometheus: 19090,
+} as const;
+
+function envOrDefault(name: string, fallback: string): string {
+	if (typeof process !== 'undefined' && process.env[name]) {
+		return String(process.env[name]);
+	}
+	return fallback;
+}
+
+/** Host publik untuk mengganti localhost (env atau hostname browser). */
+export function resolvePublicHost(): string | null {
+	const fromEnv =
+		(typeof process !== 'undefined' &&
+			(process.env.NEXT_PUBLIC_PORTAL_PUBLIC_HOST ||
+				process.env.LHINSIGHT_PUBLIC_HOST)) ||
+		null;
+	if (fromEnv) {
+		try {
+			const withProto = fromEnv.includes('://') ? fromEnv : `http://${fromEnv}`;
+			return new URL(withProto).hostname;
+		} catch {
+			return fromEnv.split(':')[0] || null;
+		}
+	}
+	if (typeof window !== 'undefined' && window.location?.hostname) {
+		const h = window.location.hostname;
+		if (h !== 'localhost' && h !== '127.0.0.1') return h;
+	}
+	return null;
+}
+
+function isLoopbackHost(hostname: string): boolean {
+	return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '0.0.0.0';
+}
+
+/**
+ * Jika URL memakai localhost tetapi portal dibuka lewat IP/domain (mis. 103.174.114.177),
+ * ganti host agar tab baru & iframe bisa diakses dari mesin pengguna.
+ */
+export function resolvePublicServiceUrl(rawUrl: string, defaultPort: number): string {
+	const fallback = `http://localhost:${defaultPort}`;
+	const trimmed = stripTrailingSlash(rawUrl || fallback);
+	try {
+		const parsed = new URL(trimmed.includes('://') ? trimmed : `http://${trimmed}`);
+		const port = parsed.port || String(defaultPort);
+		const protocol = parsed.protocol || 'http:';
+		const publicHost = resolvePublicHost();
+		if (publicHost && isLoopbackHost(parsed.hostname)) {
+			return stripTrailingSlash(`${protocol}//${publicHost}:${port}`);
+		}
+		return stripTrailingSlash(parsed.origin || trimmed);
+	} catch {
+		return trimmed;
+	}
+}
+
+export function rewriteLocalhostInUrl(url: string): string {
+	if (!url?.trim()) return url;
+	const publicHost = resolvePublicHost();
+	if (!publicHost) return url;
+	try {
+		const u = new URL(url);
+		if (isLoopbackHost(u.hostname)) {
+			u.hostname = publicHost;
+			return u.toString();
+		}
+	} catch {
+		/* ignore */
+	}
+	return url;
+}
+
+/** Normalisasi base URL + override link yang masih menunjuk ke localhost. */
+export function normalizeEmbedConfigForClient(config: DashboardEmbedConfig): DashboardEmbedConfig {
+	const normalized: DashboardEmbedConfig = {
+		grafanaBase: resolvePublicServiceUrl(config.grafanaBase, SERVICE_PORTS.grafana),
+		supersetBase: resolvePublicServiceUrl(config.supersetBase, SERVICE_PORTS.superset),
+		prometheusBase: resolvePublicServiceUrl(config.prometheusBase, SERVICE_PORTS.prometheus),
+		links: {},
+	};
+
+	for (const [key, val] of Object.entries(config.links || {})) {
+		if (!val) continue;
+		normalized.links![key as DashboardPortalKey] = {
+			embedUrl: val.embedUrl ? rewriteLocalhostInUrl(val.embedUrl) : undefined,
+			externalUrl: val.externalUrl ? rewriteLocalhostInUrl(val.externalUrl) : undefined,
+			embedHint: val.embedHint,
+		};
+	}
+	return normalized;
+}
+
 export function defaultEmbedConfig(): DashboardEmbedConfig {
-	const grafanaBase = stripTrailingSlash(
-		(typeof process !== 'undefined' && process.env.NEXT_PUBLIC_GRAFANA_URL) ||
-			'http://localhost:13001',
-	);
-	const supersetBase = stripTrailingSlash(
-		(typeof process !== 'undefined' && process.env.NEXT_PUBLIC_SUPERSET_URL) ||
-			'http://localhost:18089',
-	);
-	const prometheusBase = stripTrailingSlash(
-		(typeof process !== 'undefined' && process.env.NEXT_PUBLIC_PROMETHEUS_URL) ||
-			'http://localhost:19090',
-	);
-	return { grafanaBase, supersetBase, prometheusBase, links: {} };
+	const raw: DashboardEmbedConfig = {
+		grafanaBase: envOrDefault('NEXT_PUBLIC_GRAFANA_URL', `http://localhost:${SERVICE_PORTS.grafana}`),
+		supersetBase: envOrDefault(
+			'NEXT_PUBLIC_SUPERSET_URL',
+			`http://localhost:${SERVICE_PORTS.superset}`,
+		),
+		prometheusBase: envOrDefault(
+			'NEXT_PUBLIC_PROMETHEUS_URL',
+			`http://localhost:${SERVICE_PORTS.prometheus}`,
+		),
+		links: {},
+	};
+	return normalizeEmbedConfigForClient(raw);
 }
 
 function grafanaDashboardUrl(base: string, uid: string, kiosk = true): string {
@@ -47,7 +143,7 @@ function grafanaDashboardUrl(base: string, uid: string, kiosk = true): string {
 export function mergeEmbedConfig(partial?: Partial<DashboardEmbedConfig> | null): DashboardEmbedConfig {
 	const base = defaultEmbedConfig();
 	if (!partial) return base;
-	return {
+	const merged: DashboardEmbedConfig = {
 		grafanaBase: partial.grafanaBase
 			? stripTrailingSlash(partial.grafanaBase)
 			: base.grafanaBase,
@@ -59,6 +155,7 @@ export function mergeEmbedConfig(partial?: Partial<DashboardEmbedConfig> | null)
 			: base.prometheusBase,
 		links: { ...base.links, ...(partial.links || {}) },
 	};
+	return normalizeEmbedConfigForClient(merged);
 }
 
 export function buildDashboardLinks(config: DashboardEmbedConfig): Record<

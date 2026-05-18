@@ -12,6 +12,7 @@ import {
 	buildDashboardLinks,
 	defaultEmbedConfig,
 	mergeEmbedConfig,
+	normalizeEmbedConfigForClient,
 } from '../helpers/dashboardEmbedConfig';
 
 interface DashboardEmbedContextValue {
@@ -83,7 +84,10 @@ export function DashboardEmbedProvider({ children }: { children: React.ReactNode
 		};
 	}, []);
 
-	const links = useMemo(() => buildDashboardLinks(config), [config]);
+	const links = useMemo(
+		() => buildDashboardLinks(normalizeEmbedConfigForClient(config)),
+		[config],
+	);
 
 	const getLink = useCallback((key: DashboardPortalKey) => links[key], [links]);
 
