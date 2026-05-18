@@ -11,49 +11,7 @@ import Card, { CardBody } from '../../components/bootstrap/Card';
 import Icon from '../../components/icon/Icon';
 import Badge from '../../components/bootstrap/Badge';
 import Button from '../../components/bootstrap/Button';
-
-const LAYERS = [
-	{
-		id: 'staging',
-		label: 'Staging',
-		icon: 'CloudUpload',
-		color: 'primary',
-		classification: 'Staging_Layer',
-		description: 'Raw source data landing zone. CSV files uploaded from source systems.',
-		metadata: ['Source files', 'CSV format', 'No transformation'],
-		pipeline: 'Upload from data sources → MinIO staging bucket',
-	},
-	{
-		id: 'bronze',
-		label: 'Bronze',
-		icon: 'Storage',
-		color: 'primary',
-		classification: 'Bronze_Layer',
-		description: 'Raw Iceberg tables with schema inference and initial profiling.',
-		metadata: ['Raw Technical Metadata', 'Raw Lineage', 'Raw Data Profiling', 'Raw Classification (PII)'],
-		pipeline: 'staging_to_bronze.py: CSV → Iceberg via PySpark',
-	},
-	{
-		id: 'silver',
-		label: 'Silver',
-		icon: 'AutoFixHigh',
-		color: 'primary',
-		classification: 'Silver_Layer',
-		description: 'Cleaned, enriched, and quality-checked data with business context.',
-		metadata: ['Clean Metadata', 'Quality Metadata', 'Transformation Lineage', 'Business Metadata', 'Compliance Metadata'],
-		pipeline: 'bronze_to_silver.py: Quality checks + enrichment + joins',
-	},
-	{
-		id: 'gold',
-		label: 'Gold',
-		icon: 'Star',
-		color: 'primary',
-		classification: 'Gold_Layer',
-		description: 'Star schema (5 dimensions + 10 facts) for OLAP Dashboard Pimpinan.',
-		metadata: ['Business Metadata', 'KPI Metadata', 'AI Metadata', 'Consumption Metadata', 'Advanced Lineage'],
-		pipeline: 'silver_to_gold.py: Star schema aggregation + IKU computation',
-	},
-];
+import { isLayerPageId, MEDALLION_LAYERS } from '../../helpers/layerConfig';
 
 const LayersPage: NextPage = () => {
 	const router = useRouter();
@@ -70,7 +28,7 @@ const LayersPage: NextPage = () => {
 				</SubHeaderLeft>
 			</SubHeader>
 			<Page>
-				{LAYERS.map((layer, i) => (
+				{MEDALLION_LAYERS.map((layer, i) => (
 					<div key={layer.id} className='row mb-4'>
 						<div className='col-12'>
 							<Card shadow='sm' borderSize={1} borderColor={layer.color as any}>
@@ -82,7 +40,7 @@ const LayersPage: NextPage = () => {
 												size='3x'
 												color={layer.color as any}
 											/>
-											{i < LAYERS.length - 1 && (
+											{i < MEDALLION_LAYERS.length - 1 && (
 												<div className='mt-2'>
 													<Icon icon='ArrowDownward' color='primary' />
 												</div>
@@ -114,7 +72,9 @@ const LayersPage: NextPage = () => {
 												icon='ArrowForward'
 												onClick={() =>
 													router.push(
-														`/catalog?classification=${layer.classification}`,
+														isLayerPageId(layer.id)
+															? `/layers/${layer.id}`
+															: `/catalog?classification=${layer.classification}`,
 													)
 												}>
 												Browse
