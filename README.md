@@ -2,7 +2,7 @@
 
 ## Implementasi Pipeline Big Data Berbasis Arsitektur Data Lakehouse dan MLOps untuk Integrasi Data Perguruan Tinggi
 
-Repositori ini berisi implementasi pipeline big data terintegrasi untuk lingkungan perguruan tinggi, menggabungkan arsitektur **Data Lakehouse** (Medallion Bronze–Silver–Gold, Apache Iceberg, governance metadata), **Adaptive Query Execution (AQE)**, **analitik & serving** (Trino, Superset, Grafana), serta **MLOps** (MLflow, empat use case prediktif: Forecast, Risk Score, Opportunity, Anomalies) melalui portal **Insightera** (`portal-main`).
+Repositori ini berisi implementasi pipeline big data terintegrasi untuk lingkungan perguruan tinggi, menggabungkan arsitektur **Data Lakehouse** (Medallion Bronze–Silver–Gold, Apache Iceberg, governance metadata), **Adaptive Query Execution (AQE)**, **analitik & serving** (Trino, Superset, Grafana), serta **MLOps** (MLflow, empat use case prediktif: Forecast, Risk Score, Opportunity, Anomalies) melalui portal **insightera** (`portal-main`).
 
 ### Tujuan penelitian
 
@@ -80,7 +80,7 @@ Diagram khusus metadata (sumber: `Bigdata-pipeline-Metadata.jpg`):
 | **S** (Silver) | Clean, quality, transformation lineage, business, compliance | `register_silver_metadata.py` |
 | **G** (Gold) | Business, KPI, AI readiness, consumption, advanced lineage | `register_gold_metadata.py` |
 | **Atlas API** | Pencarian Solr, graph JanusGraph/HBase | http://localhost:22100 |
-| **Insightera Portal** | Data Catalog + dashboard analitik + monitoring (embed) | http://localhost:13000 |
+| **insightera Portal** | Data Catalog + dashboard analitik + monitoring (embed) | http://localhost:13000 |
 
 **UMT:** `scripts/atlas/build_umt.py` — agregasi `technical_json`, `business_json`, `operational_json` per `asset_qualified_name`.
 
@@ -390,7 +390,7 @@ Port **di mesin host** memakai rentang 15xxx–22xxx agar tidak bentrok dengan M
 | Service | Image | Port host (default) | Akses UI / klien dari host |
 |---------|-------|---------------------|----------------------------|
 | Apache Spark Master + Workers | `apache/spark:3.5.1-scala2.12-java17-python3-ubuntu` | **18080** (UI), **17077** (RPC) | http://localhost:18080 |
-| **Insightera Portal** | **node:20-alpine (Next.js)** | **13000** | **http://localhost:13000** |
+| **insightera Portal** | **node:20-alpine (Next.js)** | **13000** | **http://localhost:13000** |
 | Apache Airflow | apache/airflow:2.9.1 | **18681** | http://localhost:18681 |
 | MinIO | minio/minio:latest | **19000** (S3 API), **19001** (console) | http://localhost:19001 |
 | Apache Solr | solr:8.11.2 | **18984** | http://localhost:18984/solr/ — core **vertex_index**, **edge_index**, **fulltext_index** (JanusGraph) dibuat oleh `solr-atlas-init` |
@@ -728,7 +728,7 @@ Image **sburn/apache-atlas** juga memuat **`/apache-atlas/hbase/conf/hbase-site.
 
 ---
 
-### 9.4 Insightera Portal (Next.js — `portal-main/`)
+### 9.4 insightera Portal (Next.js — `portal-main/`)
 
 **Folder:** `portal-main/` — **portal terpadu**: modul **Data Catalog** (Atlas), **Dashboard Analitik** (Superset embed), **Monitoring** (Grafana: Insight, AQE, MLOps). Panduan: [`docs/portal/README.md`](docs/portal/README.md).
 
@@ -879,7 +879,7 @@ Artefak: `metrics/experiment_summary_latest.json`, `metrics/aqe_comparison_*.jso
 | `docs/aqe/README.md` | Ringkasan pipeline AQE |
 | `docs/mlops/README.md` | Ringkasan pipeline MLOps |
 | `docs/gold-to-serving/README.md` | Star schema, OLAP, granularitas, template dashboard KPI IKU |
-| `docs/portal/README.md` | Insightera Portal — katalog + dashboard + monitoring |
+| `docs/portal/README.md` | insightera Portal — katalog + dashboard + monitoring |
 | `portal-main/` | Kode Next.js portal |
 | `docs/monitoring-grafana/README.md` | Dashboard Grafana Insight + MLOps + AQE |
 | `monitoring/grafana/provisioning/dashboards/json/` | Template dashboard (provisioned) |
@@ -901,7 +901,7 @@ Artefak: `metrics/experiment_summary_latest.json`, `metrics/aqe_comparison_*.jso
 | `scripts/spark/silver_to_gold.py` | PySpark ETL star schema (5 dim + 10 fact) |
 | `scripts/atlas/register_gold_metadata.py` | Atlas metadata Gold (KPI, AI, Consumption) |
 | `scripts/dags/silver_gold_pipeline.py` | Airflow DAG Pipeline 3 |
-| **Insightera Portal (`portal-main`)** | |
+| **insightera Portal (`portal-main`)** | |
 | `portal-main/helpers/atlasApi.ts` | Atlas REST API client (TypeScript) |
 | `portal-main/pages/api/atlas/*.ts` | Next.js API routes — 8 proxy endpoints (search, entity, update, lineage, classifications, metrics, glossary, glossary terms) |
 | `portal-main/pages/index.tsx` | Dashboard overview |

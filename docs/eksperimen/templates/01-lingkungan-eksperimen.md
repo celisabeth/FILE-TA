@@ -30,7 +30,7 @@
 | Iceberg | 1.5.2 | Metadata |
 | Atlas | 2.3.0 — http://localhost:22100 | Metadata, MLOps |
 | Airflow | 2.9.1 — http://localhost:18681 | Semua |
-| InsightERA Portal | http://localhost:13000 | Katalog + dashboard embed |
+| insightera Portal | http://localhost:13000 | Katalog + dashboard embed |
 | Trino | http://localhost:18088 | AQE |
 | Superset | http://localhost:18089 | AQE / Dashboard Insight |
 | Grafana | http://localhost:13001 | AQE |

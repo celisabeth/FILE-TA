@@ -146,12 +146,12 @@ const Index: NextPage = () => {
 	return (
 		<PageWrapper>
 			<Head>
-				<title>InsightERA Portal — Overview</title>
+				<title>insightera Portal — Overview</title>
 			</Head>
 			<SubHeader>
 				<SubHeaderLeft>
 					<Icon icon='Dashboard' size='2x' color='primary' />
-					<span className='h4 mb-0 ms-2 fw-bold'>InsightERA Portal</span>
+					<span className='h4 mb-0 ms-2 fw-bold'>insightera Portal</span>
 					<Badge color='primary' className='ms-3'>
 						Metadata Lakehouse
 					</Badge>

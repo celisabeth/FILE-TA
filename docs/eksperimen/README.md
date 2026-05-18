@@ -21,7 +21,7 @@ Panduan operasional menjalankan **tiga metode penelitian** dalam satu stack Dock
 | Benchmark | [`../../scripts/benchmark/README.md`](../../scripts/benchmark/README.md) |
 | Generate data staging | [`../generate-data/README.md`](../generate-data/README.md) |
 | Gold → Serving & dashboard KPI | [`../gold-to-serving/README.md`](../gold-to-serving/README.md) |
-| InsightERA Portal | [`../portal/README.md`](../portal/README.md) |
+| insightera Portal | [`../portal/README.md`](../portal/README.md) |
 | Grafana (Insight + MLOps + AQE) | [`../monitoring-grafana/README.md`](../monitoring-grafana/README.md) |
 | Template isian | [`templates/`](templates/) |
 
@@ -142,7 +142,7 @@ Template: [`templates/01-lingkungan-eksperimen.md`](templates/01-lingkungan-eksp
 |---------|-----|-----------|
 | Airflow | http://localhost:18681 | airflow / airflow |
 | Atlas | http://localhost:22100 | admin / admin |
-| InsightERA Portal | http://localhost:13000 | Katalog + dashboard embed |
+| insightera Portal | http://localhost:13000 | Katalog + dashboard embed |
 | Spark UI | http://localhost:18080 | — |
 | Trino | http://localhost:18088 | — |
 | Superset | http://localhost:18089 | admin / admin |

@@ -24,7 +24,7 @@ const DashboardsHubPage: NextPage = () => {
 	return (
 		<PageWrapper>
 			<Head>
-				<title>Dashboard & Monitoring — InsightERA Portal</title>
+				<title>Dashboard & Monitoring — insightera Portal</title>
 			</Head>
 			<SubHeader>
 				<SubHeaderLeft>

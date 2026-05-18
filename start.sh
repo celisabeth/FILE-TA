@@ -2,7 +2,7 @@
 # ============================================================
 #  Lakehouse Metadata Pipeline — Full Startup Script
 #  Stack: Spark | Airflow | MinIO | Atlas | Hive | Iceberg
-#         Jupyter | InsightERA Portal (Next.js — portal-main)
+#         Jupyter | insightera Portal (Next.js — portal-main)
 # ============================================================
 
 set -e
@@ -212,8 +212,8 @@ docker compose up -d airflow-scheduler
 sleep 5
 echo -e "  ${GREEN}✅ Airflow ready (UI :18681 — airflow / airflow)${NC}"
 
-# ── 10. InsightERA Portal (Next.js) ─────────────────────
-step "Starting InsightERA Portal (portal-main)"
+# ── 10. insightera Portal (Next.js) ─────────────────────
+step "Starting insightera Portal (portal-main)"
 docker compose up -d portal 2>/dev/null || echo -e "  ${YELLOW}portal service not configured (optional)${NC}"
 sleep 3
 echo -e "  ${GREEN}✅ Portal started (if configured)${NC}"
@@ -249,7 +249,7 @@ echo -e "  ${YELLOW}Apache Atlas${NC}           ${GREEN}http://localhost:22100${
 echo -e "  ${YELLOW}Hive Metastore${NC}         ${GREEN}thrift://localhost:19083${NC}"
 echo -e "  ${YELLOW}Iceberg REST Catalog${NC}   ${GREEN}http://localhost:18181${NC}"
 echo -e "  ${YELLOW}Jupyter Notebook${NC}       ${GREEN}http://localhost:18888${NC}    (token: lakehouse)"
-echo -e "  ${YELLOW}InsightERA Portal${NC}      ${GREEN}http://localhost:13000${NC}  ${YELLOW}(/catalog · /dashboards)${NC}"
+echo -e "  ${YELLOW}insightera Portal${NC}      ${GREEN}http://localhost:13000${NC}  ${YELLOW}(/catalog · /dashboards)${NC}"
 echo ""
 echo -e "${CYAN}══════════════════════════════════════════════════════${NC}"
 echo ""

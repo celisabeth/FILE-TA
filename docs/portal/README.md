@@ -1,4 +1,4 @@
-# InsightERA Portal (`portal-main`)
+# insightera Portal (`portal-main`)
 
 **Satu pintu masuk** untuk seluruh konsumsi penelitian Data Lakehouse Insight — bukan hanya katalog metadata. Frontend Next.js (template Facit/Bootstrap) di folder [`../../portal-main/`](../../portal-main/), dijalankan sebagai service Docker **`portal`**.
 
@@ -19,7 +19,7 @@
 
 ```
                     ┌─────────────────────────────────────┐
-                    │   InsightERA Portal (:13000)        │
+                    │   insightera Portal (:13000)        │
                     │   portal-main (Next.js)             │
                     └───────────┬─────────────────────────┘
           ┌─────────────────────┼─────────────────────┐

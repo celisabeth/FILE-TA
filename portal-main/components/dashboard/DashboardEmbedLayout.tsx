@@ -18,7 +18,7 @@ const DashboardEmbedLayout: React.FC<DashboardEmbedLayoutProps> = ({ link }) => 
 	return (
 		<PageWrapper>
 			<Head>
-				<title>{link.title} — InsightERA Portal</title>
+				<title>{link.title} — insightera Portal</title>
 			</Head>
 			<SubHeader>
 				<SubHeaderLeft>

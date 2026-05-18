@@ -9,7 +9,7 @@ Panduan menyajikan **Gold Layer** (star schema IKU ITERA) ke lapisan konsumsi me
 | **Trino** | http://localhost:18088 | — |
 | **Superset** | http://localhost:18089 | admin / admin |
 | **Grafana** | http://localhost:13001 | admin / admin |
-| **InsightERA Portal** | http://localhost:13000 | Katalog + dashboard + monitoring |
+| **insightera Portal** | http://localhost:13000 | Katalog + dashboard + monitoring |
 | **Dashboard embed** | http://localhost:13000/dashboards | Superset + Grafana |
 | **KPI (portal)** | http://localhost:13000/kpi | Atlas-backed KPI view |
 

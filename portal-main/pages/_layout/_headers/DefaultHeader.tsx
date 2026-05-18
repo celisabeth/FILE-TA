@@ -22,7 +22,7 @@ const DefaultHeader = () => {
 			<HeaderRight>
 				<div className='d-flex align-items-center'>
 					<Icon icon='Storage' color='primary' className='me-2' />
-					<span className='fw-bold'>InsightERA Portal</span>
+					<span className='fw-bold'>insightera Portal</span>
 				</div>
 			</HeaderRight>
 		</Header>

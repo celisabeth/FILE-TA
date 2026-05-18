@@ -747,7 +747,7 @@ services:
     ports:
       - "${LHMETA_JUPYTER_PORT:-18888}:8888"
 
-  # ── InsightERA Portal (Next.js — portal-main) ──
+  # ── insightera Portal (Next.js — portal-main) ──
   # CLI: docker compose up -d portal  (service name; container: lhmeta-portal)
   # Satu pintu masuk: Data Catalog (Atlas) + Dashboard Analitik (Superset) + Insight/AQE/MLOps (Grafana)
   # Dev: yarn dev. Prod: LHINSIGHT_PORTAL_PRODUCTION=1 → build + next start.

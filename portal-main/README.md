@@ -1,4 +1,4 @@
-# portal-main — InsightERA Portal (Next.js)
+# portal-main — insightera Portal (Next.js)
 
 Frontend terpadu: **Data Catalog** (Atlas) + **Dashboard Analitik** (Superset) + **Monitoring** (Grafana).
 
