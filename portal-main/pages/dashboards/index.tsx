@@ -13,16 +13,75 @@ import Icon from '../../components/icon/Icon';
 import Badge from '../../components/bootstrap/Badge';
 import DashboardEmbedSettingsModal from '../../components/dashboard/DashboardEmbedSettingsModal';
 import { useDashboardEmbed } from '../../context/dashboardEmbedContext';
-import { DASHBOARD_HUB_KEYS } from '../../helpers/dashboardEmbedConfig';
-import type { DashboardPortalKey } from '../../helpers/dashboardPortal';
+import {
+	DASHBOARD_KPI_KEYS,
+	DASHBOARD_MONITORING_KEYS,
+} from '../../helpers/dashboardEmbedConfig';
+import type { DashboardPortalKey, DashboardPortalLink } from '../../helpers/dashboardPortal';
 
 const PATH_BY_KEY: Record<DashboardPortalKey, string> = {
 	superset: '/dashboards/analitik',
+	supersetAqeOff: '/dashboards/kpi-aqe-off',
+	supersetAqeOn: '/dashboards/kpi-aqe-on',
 	grafanaInsight: '/dashboards/insight',
 	grafanaAqe: '/dashboards/monitoring-aqe',
 	grafanaMlops: '/dashboards/monitoring-mlops',
 	prometheus: '/dashboards',
 };
+
+function DashboardCardGrid({
+	keys,
+	links,
+	onOpenSettings,
+}: {
+	keys: DashboardPortalKey[];
+	links: Record<DashboardPortalKey, DashboardPortalLink>;
+	onOpenSettings: () => void;
+}) {
+	return (
+		<div className='row g-4'>
+			{keys.map((key) => {
+				const item = links[key];
+				return (
+					<div key={item.key} className='col-12 col-lg-6'>
+						<Card stretch className={`border-${item.color} border-2`}>
+							<CardHeader>
+								<CardLabel icon={item.icon} iconColor={item.color}>
+									<CardTitle>{item.title}</CardTitle>
+									<CardSubTitle tag='div' className='text-muted'>
+										{item.description}
+									</CardSubTitle>
+								</CardLabel>
+							</CardHeader>
+							<CardBody>
+								<p className='small text-muted text-truncate mb-3' title={item.embedUrl}>
+									{item.embedUrl}
+								</p>
+								<div className='d-flex flex-wrap gap-2'>
+									<Link
+										href={PATH_BY_KEY[item.key] || '/dashboards'}
+										passHref
+										legacyBehavior>
+										<Button color={item.color} icon='Fullscreen'>
+											Buka halaman embed
+										</Button>
+									</Link>
+									<Button
+										color='dark'
+										isLight
+										icon='Settings'
+										onClick={onOpenSettings}>
+										URL Embed
+									</Button>
+								</div>
+							</CardBody>
+						</Card>
+					</div>
+				);
+			})}
+		</div>
+	);
+}
 
 const DashboardsHubPage: NextPage = () => {
 	const { links, source, config } = useDashboardEmbed();
@@ -50,13 +109,18 @@ const DashboardsHubPage: NextPage = () => {
 						<Card stretch>
 							<CardBody>
 								<p className='mb-2'>
-									Satu portal untuk <strong>Data Catalog</strong> (Atlas),{' '}
-									<strong>Dashboard Analitik</strong> (Superset), dan{' '}
-									<strong>Monitoring</strong> (Grafana). URL embed dikonfigurasi dari
-									portal — tidak perlu edit env di VM.
+									<strong>KPI IKU</strong> (Superset + Trino, schema{' '}
+									<code>lakehouse.gold</code>) terpisah dari{' '}
+									<strong>monitoring pipeline</strong> (Grafana + Prometheus). Audit
+									AQE OFF/ON memakai salinan <code>gold_aqe_off</code> /{' '}
+									<code>gold_aqe_on</code> di Superset; speedup AQE di Monitoring
+									AQE.
 								</p>
 								<Badge color='info' isLight className='me-2'>
 									Sumber: {source}
+								</Badge>
+								<Badge color='light' isLight className='me-2'>
+									Superset: {config.supersetBase}
 								</Badge>
 								<Badge color='light' isLight>
 									Grafana: {config.grafanaBase}
@@ -65,47 +129,18 @@ const DashboardsHubPage: NextPage = () => {
 						</Card>
 					</div>
 				</div>
-				<div className='row g-4'>
-					{DASHBOARD_HUB_KEYS.map((key) => {
-						const item = links[key];
-						return (
-							<div key={item.key} className='col-12 col-lg-6'>
-								<Card stretch className={`border-${item.color} border-2`}>
-									<CardHeader>
-										<CardLabel icon={item.icon} iconColor={item.color}>
-											<CardTitle>{item.title}</CardTitle>
-											<CardSubTitle tag='div' className='text-muted'>
-												{item.description}
-											</CardSubTitle>
-										</CardLabel>
-									</CardHeader>
-									<CardBody>
-										<p className='small text-muted text-truncate mb-3' title={item.embedUrl}>
-											{item.embedUrl}
-										</p>
-										<div className='d-flex flex-wrap gap-2'>
-											<Link
-												href={PATH_BY_KEY[item.key] || '/dashboards'}
-												passHref
-												legacyBehavior>
-												<Button color={item.color} icon='Fullscreen'>
-													Buka halaman embed
-												</Button>
-											</Link>
-											<Button
-												color='dark'
-												isLight
-												icon='Settings'
-												onClick={() => setSettingsOpen(true)}>
-												URL Embed
-											</Button>
-										</div>
-									</CardBody>
-								</Card>
-							</div>
-						);
-					})}
-				</div>
+				<h5 className='mb-3'>KPI &amp; analitik (Superset)</h5>
+				<DashboardCardGrid
+					keys={DASHBOARD_KPI_KEYS}
+					links={links}
+					onOpenSettings={() => setSettingsOpen(true)}
+				/>
+				<h5 className='mb-3 mt-2'>Monitoring &amp; insight (Grafana)</h5>
+				<DashboardCardGrid
+					keys={DASHBOARD_MONITORING_KEYS}
+					links={links}
+					onOpenSettings={() => setSettingsOpen(true)}
+				/>
 			</Page>
 			<DashboardEmbedSettingsModal isOpen={settingsOpen} setIsOpen={setSettingsOpen} />
 		</PageWrapper>

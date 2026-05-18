@@ -2,6 +2,14 @@
 
 Salin ke **SQL Lab** Superset, sesuaikan schema (`gold` / `gold_aqe_off` / `gold_aqe_on`), simpan sebagai dataset virtual.
 
+**Ganti prefix tabel:**
+
+| Konteks | Contoh FROM |
+|---------|-------------|
+| KPI utama | `lakehouse.gold.fact_rekap_iku_institusi` |
+| Audit AQE OFF (koneksi `lakehouse_aqe_off`) | `gold_aqe_off.fact_rekap_iku_institusi` |
+| Audit AQE ON (koneksi `lakehouse_aqe_on`) | `gold_aqe_on.fact_rekap_iku_institusi` |
+
 ## v_rekap_iku_tahun
 
 ```sql
@@ -48,6 +56,14 @@ JOIN lakehouse.gold.dim_waktu w ON f.waktu_id = w.waktu_id
 GROUP BY p.nama_jurusan, w.tahun
 ORDER BY w.tahun, p.nama_jurusan;
 ```
+
+## Varian AQE OFF (koneksi `lakehouse_aqe_off`)
+
+Ganti `lakehouse.gold` → `gold_aqe_off` pada semua query di atas, atau gunakan koneksi terpisah sehingga cukup `gold_aqe_off.fact_rekap_iku_institusi`.
+
+## Varian AQE ON (koneksi `lakehouse_aqe_on`)
+
+Ganti prefix menjadi `gold_aqe_on.*`.
 
 ## Catatan eksekusi
 

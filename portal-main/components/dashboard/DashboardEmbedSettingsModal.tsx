@@ -11,9 +11,11 @@ import type { DashboardPortalKey } from '../../helpers/dashboardPortal';
 import { DASHBOARD_HUB_KEYS, mergeEmbedConfig } from '../../helpers/dashboardEmbedConfig';
 
 const LINK_LABELS: Record<DashboardPortalKey, string> = {
-	superset: 'Dashboard Analitik (Superset)',
+	superset: 'Dashboard Analitik — lakehouse.gold (Superset)',
+	supersetAqeOff: 'KPI IKU AQE OFF — gold_aqe_off (Superset)',
+	supersetAqeOn: 'KPI IKU AQE ON — gold_aqe_on (Superset)',
 	grafanaInsight: 'Dashboard Insight (Grafana)',
-	grafanaAqe: 'Monitoring AQE (Grafana)',
+	grafanaAqe: 'Monitoring AQE — metrik pipeline (Grafana)',
 	grafanaMlops: 'Monitoring MLOps (Grafana)',
 	prometheus: 'Prometheus',
 };

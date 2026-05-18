@@ -2,14 +2,12 @@
  * Metadata dashboard embed — URL aktual dari context / API (lihat dashboardEmbedConfig.ts).
  */
 
-import {
-	buildDashboardLinks,
-	defaultEmbedConfig,
-	DASHBOARD_HUB_KEYS,
-} from './dashboardEmbedConfig';
+import { buildDashboardLinks, defaultEmbedConfig, DASHBOARD_HUB_KEYS } from './dashboardEmbedConfig';
 
 export type DashboardPortalKey =
 	| 'superset'
+	| 'supersetAqeOff'
+	| 'supersetAqeOn'
 	| 'grafanaInsight'
 	| 'grafanaAqe'
 	| 'grafanaMlops'
@@ -20,13 +18,17 @@ export interface DashboardPortalLink {
 	title: string;
 	description: string;
 	icon: string;
-	color: 'primary' | 'info' | 'success' | 'warning' | 'danger';
+	color: 'primary' | 'secondary' | 'dark' | 'info' | 'success' | 'warning' | 'danger';
 	embedUrl: string;
 	externalUrl: string;
 	embedHint?: string;
 }
 
-export { DASHBOARD_HUB_KEYS };
+export {
+	DASHBOARD_HUB_KEYS,
+	DASHBOARD_KPI_KEYS,
+	DASHBOARD_MONITORING_KEYS,
+} from './dashboardEmbedConfig';
 
 /** Default statis (env) — halaman klien sebaiknya pakai useDashboardEmbed(). */
 const DEFAULT_LINKS = buildDashboardLinks(defaultEmbedConfig());

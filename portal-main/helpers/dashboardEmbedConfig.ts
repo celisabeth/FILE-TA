@@ -140,6 +140,20 @@ function grafanaDashboardUrl(base: string, uid: string, kiosk = true): string {
 	return `${stripTrailingSlash(base)}/d/${uid}${q}`;
 }
 
+/** Path atau URL penuh embed Superset (dashboard/?standalone=1). */
+function supersetEmbedUrl(base: string, pathOrUrl: string): string {
+	const trimmed = pathOrUrl.trim();
+	if (trimmed.includes('://')) {
+		return rewriteLocalhostInUrl(trimmed);
+	}
+	const path = trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
+	return `${stripTrailingSlash(base)}${path}`;
+}
+
+function supersetPathFromEnv(envName: string, fallbackPath: string): string {
+	return envOrDefault(envName, fallbackPath);
+}
+
 export function mergeEmbedConfig(partial?: Partial<DashboardEmbedConfig> | null): DashboardEmbedConfig {
 	const base = defaultEmbedConfig();
 	if (!partial) return base;
@@ -170,12 +184,55 @@ export function buildDashboardLinks(config: DashboardEmbedConfig): Record<
 			key: 'superset',
 			title: 'Dashboard Analitik KPI IKU',
 			description:
-				'Apache Superset — chart & dashboard OLAP dari Gold star schema (Trino). Executive IKU, per prodi, tata kelola.',
+				'Superset + Trino — star schema lakehouse.gold (KPI Renstra, SAKIP, drill-down prodi).',
 			icon: 'Analytics',
 			color: 'primary',
-			embedUrl: `${supersetBase}/superset/welcome/?standalone=1`,
-			externalUrl: `${supersetBase}/superset/welcome/?standalone=1`,
-			embedHint: 'Login Superset: admin / admin. Buat dataset dari lakehouse.gold lalu chart.',
+			embedUrl: supersetEmbedUrl(
+				supersetBase,
+				supersetPathFromEnv(
+					'NEXT_PUBLIC_SUPERSET_EMBED_PATH',
+					'/superset/welcome/?standalone=1',
+				),
+			),
+			externalUrl: '',
+			embedHint:
+				'Koneksi Trino: trino://admin@trino:8080/lakehouse → schema gold. Panduan: docs/gold-to-serving/koneksi-trino-superset.md',
+		},
+		supersetAqeOff: {
+			key: 'supersetAqeOff',
+			title: 'KPI IKU — AQE OFF',
+			description:
+				'Superset — salinan Gold hasil pipeline AQE OFF (schema gold_aqe_off, katalog lakehouse_aqe_off).',
+			icon: 'ToggleOff',
+			color: 'secondary',
+			embedUrl: supersetEmbedUrl(
+				supersetBase,
+				supersetPathFromEnv(
+					'NEXT_PUBLIC_SUPERSET_EMBED_AQE_OFF_PATH',
+					'/superset/welcome/?standalone=1',
+				),
+			),
+			externalUrl: '',
+			embedHint:
+				'Audit parity data BAB IV — bukan metrik speedup (itu di Monitoring AQE / Grafana). Set URL embed setelah dashboard Superset OFF dibuat.',
+		},
+		supersetAqeOn: {
+			key: 'supersetAqeOn',
+			title: 'KPI IKU — AQE ON',
+			description:
+				'Superset — salinan Gold hasil pipeline AQE ON (schema gold_aqe_on, katalog lakehouse_aqe_on).',
+			icon: 'ToggleOn',
+			color: 'dark',
+			embedUrl: supersetEmbedUrl(
+				supersetBase,
+				supersetPathFromEnv(
+					'NEXT_PUBLIC_SUPERSET_EMBED_AQE_ON_PATH',
+					'/superset/welcome/?standalone=1',
+				),
+			),
+			externalUrl: '',
+			embedHint:
+				'Bandingkan nilai IKU dengan halaman KPI AQE OFF. Performa pipeline: /dashboards/monitoring-aqe.',
 		},
 		grafanaInsight: {
 			key: 'grafanaInsight',
@@ -247,9 +304,21 @@ export function buildDashboardLinks(config: DashboardEmbedConfig): Record<
 	return links;
 }
 
-export const DASHBOARD_HUB_KEYS: DashboardPortalKey[] = [
+/** KPI deskriptif — Superset + Trino (OLAP). */
+export const DASHBOARD_KPI_KEYS: DashboardPortalKey[] = [
 	'superset',
+	'supersetAqeOff',
+	'supersetAqeOn',
+];
+
+/** Monitoring & prediktif — Grafana + Prometheus. */
+export const DASHBOARD_MONITORING_KEYS: DashboardPortalKey[] = [
 	'grafanaInsight',
 	'grafanaAqe',
 	'grafanaMlops',
+];
+
+export const DASHBOARD_HUB_KEYS: DashboardPortalKey[] = [
+	...DASHBOARD_KPI_KEYS,
+	...DASHBOARD_MONITORING_KEYS,
 ];

@@ -83,6 +83,20 @@ export const dashboardsMenu = {
 		icon: 'Analytics',
 		subMenu: null,
 	},
+	kpiAqeOff: {
+		id: 'kpiAqeOff',
+		text: 'KPI AQE OFF',
+		path: 'dashboards/kpi-aqe-off',
+		icon: 'ToggleOff',
+		subMenu: null,
+	},
+	kpiAqeOn: {
+		id: 'kpiAqeOn',
+		text: 'KPI AQE ON',
+		path: 'dashboards/kpi-aqe-on',
+		icon: 'ToggleOn',
+		subMenu: null,
+	},
 	dashboardInsight: {
 		id: 'dashboardInsight',
 		text: 'Dashboard Insight',

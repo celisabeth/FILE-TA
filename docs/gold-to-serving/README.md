@@ -15,6 +15,10 @@ Panduan menyajikan **Gold Layer** (star schema IKU ITERA) ke lapisan konsumsi me
 
 **Template dashboard:** [`templates/`](templates/)
 
+**Panduan koneksi Trino → Superset:** [`koneksi-trino-superset.md`](koneksi-trino-superset.md)
+
+**Rekomendasi Superset vs Grafana & AQE OFF/ON:** [`arsitektur-dashboard-serving.md`](arsitektur-dashboard-serving.md)
+
 ---
 
 ## 1. Arsitektur Gold → Serving
@@ -321,22 +325,27 @@ SELECT 'ON',  COUNT(*) FROM lakehouse.gold_aqe_on.dim_prodi;
 
 ## 7. Konfigurasi Trino & Superset
 
+> **Panduan lengkap (langkah demi langkah, 3 koneksi, troubleshooting, embed portal):** [`koneksi-trino-superset.md`](koneksi-trino-superset.md)
+
 ### 7.1 Katalog Trino
 
 | Katalog | Schema Gold | Dipakai untuk |
 |---------|-------------|---------------|
-| `lakehouse` | `gold`, `gold_aqe_off`, `gold_aqe_on` | Eksperimen penuh Insight |
-| `lakehouse_aqe_off` | `gold_aqe_off` | Audit AQE OFF |
-| `lakehouse_aqe_on` | `gold_aqe_on` | Audit AQE ON |
+| `lakehouse` | `gold`, `gold_aqe_off`, `gold_aqe_on` | Eksperimen penuh Insight — **KPI utama: `gold`** |
+| `lakehouse_aqe_off` | `gold_aqe_off` | Audit AQE OFF (Superset + portal `/dashboards/kpi-aqe-off`) |
+| `lakehouse_aqe_on` | `gold_aqe_on` | Audit AQE ON (Superset + portal `/dashboards/kpi-aqe-on`) |
 
 Properties: [`../../trino/etc/catalog/`](../../trino/etc/catalog/)
 
-### 7.2 Koneksi Superset
+### 7.2 Koneksi Superset (ringkas)
 
-1. http://localhost:18089 — login `admin` / `admin`
-2. **Settings → Database → + Database → Trino**
-3. URI (dari container): `trino://admin@trino:8080/lakehouse`
-4. URI (dari host): `trino://admin@localhost:18088/lakehouse`
+| Koneksi | URI (dari container Superset) |
+|---------|-------------------------------|
+| Lakehouse Gold (IKU) | `trino://admin@trino:8080/lakehouse` |
+| AQE OFF | `trino://admin@trino:8080/lakehouse_aqe_off` |
+| AQE ON | `trino://admin@trino:8080/lakehouse_aqe_on` |
+
+Login: http://localhost:18089 — **admin** / **admin**
 
 ### 7.3 Dataset fisik (minimum)
 
@@ -379,7 +388,14 @@ Melengkapi OLAP deskriptif: Forecast, Risk, Opportunity, Anomalies — [`templat
 
 ### Dashboard E — Evaluasi AQE (penelitian)
 
-Panel teknis (durasi pipeline, query Trino) → Grafana + `metrics/aqe_comparison_*.json`.
+| Aspek | Alat | Portal |
+|-------|------|--------|
+| **Performa** (speedup, durasi Spark/Trino) | Grafana `lakehouse-aqe-experiment` | `/dashboards/monitoring-aqe` |
+| **KPI parity** (nilai IKU dari salinan Gold OFF vs ON) | Superset × 2 dashboard | `/dashboards/kpi-aqe-off`, `/dashboards/kpi-aqe-on` |
+
+Detail rekomendasi: [`arsitektur-dashboard-serving.md`](arsitektur-dashboard-serving.md) · Template KPI OFF/ON: [`templates/07-dashboard-kpi-aqe-off-on.md`](templates/07-dashboard-kpi-aqe-off-on.md)
+
+Metrik mentah: `metrics/aqe_comparison_*.json` → Grafana (bukan Superset).
 
 ---
 
@@ -438,8 +454,11 @@ GROUP BY p.nama_prodi;
 4. [ ] Dataset fisik + virtual §7.3
 5. [ ] Dashboard Executive + per IKU — isi [`templates/`](templates/)
 6. [ ] (Opsional) Grafana prediktif + screenshot BAB IV
-7. [ ] (Opsional) Banding `gold_aqe_off` vs `gold_aqe_on` untuk BAB IV §4.1.5
+7. [ ] (Opsional) Superset KPI AQE OFF/ON + embed portal § Dashboard E
+8. [ ] (Opsional) Grafana Monitoring AQE untuk speedup BAB IV
 
-**Portal:** [`../portal/README.md`](../portal/README.md)
+**Portal:** [`../portal/README.md`](../portal/README.md) · embed: `/dashboards/analitik`, `/dashboards/kpi-aqe-off`, `/dashboards/kpi-aqe-on`
+
+**Panduan koneksi:** [`koneksi-trino-superset.md`](koneksi-trino-superset.md)
 
 **Dokumen terkait:** [`../../README.md`](../../README.md) · [`../silver-to-gold/README.md`](../silver-to-gold/README.md) · [`../eksperimen/README.md`](../eksperimen/README.md) · [`../monitoring-grafana/README.md`](../monitoring-grafana/README.md)
