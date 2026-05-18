@@ -189,8 +189,14 @@ def _upsert_lakehouse_dataset(entity: dict) -> dict | None:
     return _atlas_request("PUT", f"/api/atlas/v2/entity/guid/{guid}", entity)
 
 
-def register_staging_entity(table_name: str) -> dict | None:
-    """Daftarkan file CSV staging sebagai entity Atlas."""
+def register_staging_entity(table_name: str, profiling: dict | None = None) -> dict | None:
+    """Daftarkan file CSV staging sebagai entity Atlas (+ statistik profiling jika ada)."""
+    prof = profiling or {}
+    schema = prof.get("schema") or {}
+    row_count = int(prof.get("row_count") or 0)
+    column_count = int(prof.get("column_count") or len(schema) or 0)
+    now = datetime.utcnow().isoformat() + "Z"
+
     entity = {
         "entity": {
             "typeName": "lakehouse_dataset",
@@ -201,6 +207,22 @@ def register_staging_entity(table_name: str) -> dict | None:
                 "layer": "staging",
                 "format": "csv",
                 "location": f"s3a://staging/{table_name}.csv",
+                "row_count": row_count,
+                "column_count": column_count,
+                "schema_def": json.dumps(schema),
+                "profiling": json.dumps({
+                    "columns": prof.get("columns", {}),
+                    "business": {
+                        "owner": "Tim Data Ingestion",
+                        "domain": "ITERA Data Lakehouse",
+                        "glossary_terms": [],
+                        "iku_relevance": [],
+                        "update_frequency": "batch (per upload CSV)",
+                    },
+                    "profiled_at": prof.get("profiled_at") or now,
+                }),
+                "pii_columns": json.dumps(prof.get("pii_columns", [])),
+                "ingested_at": now,
             },
             "classifications": [{"typeName": "Staging_Layer"}],
         }
@@ -324,7 +346,7 @@ def register_all_metadata(
     for table_name, profiling in profiling_results.items():
         logger.info("\n── %s ──", table_name)
         try:
-            register_staging_entity(table_name)
+            register_staging_entity(table_name, profiling)
             register_bronze_entity(table_name, profiling)
             register_lineage(table_name)
             success += 1

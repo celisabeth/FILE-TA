@@ -233,6 +233,13 @@ def register_gold_entity(table_name: str, profiling: dict) -> dict | None:
 
     profiling_enriched = {
         "schema": profiling.get("schema", {}),
+        "business": {
+            "owner": consumption.get("owner", "Biro Akademik & Perencanaan"),
+            "domain": "ITERA Data Lakehouse",
+            "glossary_terms": profiling.get("glossary_terms", []),
+            "iku_relevance": [iku_code] if iku_code else [],
+            "update_frequency": consumption.get("refresh_frequency", "harian (OLAP refresh)"),
+        },
         "star_schema": {
             "table_type": table_type,
             "olap_role": consumption.get("olap_role", ""),

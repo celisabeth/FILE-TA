@@ -29,6 +29,13 @@ def _count_csv_rows(csv_path: Path) -> int:
         return sum(1 for _ in reader)
 
 
+def _count_csv_columns(csv_path: Path) -> int:
+    with csv_path.open(newline="", encoding="utf-8") as f:
+        reader = csv.reader(f)
+        header = next(reader, None)
+        return len(header) if header else 0
+
+
 def summarize_staging(staging_dir: Path) -> dict:
     tables = []
     total_rows = 0
@@ -37,12 +44,14 @@ def summarize_staging(staging_dir: Path) -> dict:
     for csv_path in sorted(staging_dir.glob("*.csv")):
         size = csv_path.stat().st_size
         n = _count_csv_rows(csv_path)
+        cols = _count_csv_columns(csv_path)
         total_rows += n
         total_bytes += size
         tables.append({
             "file": csv_path.name,
             "table_name": csv_path.stem,
             "row_count": n,
+            "column_count": cols,
             "size_bytes": size,
             "size_mb": round(size / (1024**2), 2),
         })

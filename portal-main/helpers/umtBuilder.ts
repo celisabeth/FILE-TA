@@ -5,6 +5,8 @@ import {
 	normalizeDatasetAttributes,
 	searchEntities,
 } from './atlasApi';
+import { loadDatasetSummaryIndex } from './metricsReader';
+import { enrichUmtRows } from './umtEnrichment';
 
 export interface UmtRow {
 	asset_qualified_name: string;
@@ -81,6 +83,8 @@ function buildOperationalJson(
 function resolveLastEnrichedAt(attrs: Record<string, any>): string | null {
 	if (attrs.enriched_at) return String(attrs.enriched_at);
 	if (attrs.ingested_at) return String(attrs.ingested_at);
+	const profiling = parseJsonField(attrs.profiling);
+	if (profiling.profiled_at) return String(profiling.profiled_at);
 	return null;
 }
 
@@ -119,7 +123,10 @@ export async function buildUmtFromAtlas(limit = 500): Promise<{
 }> {
 	const result = await searchEntities('lakehouse_dataset', undefined, undefined, limit, 0);
 	const entities = await hydrateAtlasEntities(result.entities || []);
-	const rows = sortUmtRows(entities.map(entityToUmtRow));
+	const datasetSummary = await loadDatasetSummaryIndex();
+	const rows = sortUmtRows(
+		enrichUmtRows(entities.map(entityToUmtRow), datasetSummary),
+	);
 
 	return {
 		rows,

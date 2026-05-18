@@ -136,3 +136,50 @@ export async function readJsonFile<T = Record<string, unknown>>(filePath: string
 	const text = await fs.readFile(filePath, 'utf-8');
 	return JSON.parse(text) as T;
 }
+
+/** Ringkasan CSV staging terbaru (dataset_summary_*.json). */
+export async function resolveDatasetSummaryPath(): Promise<string | null> {
+	const root = metricsRoot();
+	const ordered = [path.join(root, 'dataset_summary_latest.json')];
+	for (const p of ordered) {
+		if (await fileExists(p)) return p;
+	}
+
+	const runDirs: string[] = [];
+	const fromPtr = await runDirFromPointer(root, 'metadata');
+	if (fromPtr) runDirs.push(fromPtr);
+	const fromIdx = await runDirFromIndex(root, 'metadata');
+	if (fromIdx && !runDirs.includes(fromIdx)) runDirs.push(fromIdx);
+
+	for (const runDir of runDirs) {
+		const hit = await newestMatching(runDir, /^dataset_summary_.*\.json$/);
+		if (hit) return hit;
+	}
+
+	return (await newestMatching(root, /^dataset_summary_.*\.json$/)) || null;
+}
+
+export interface DatasetSummaryTable {
+	table_name: string;
+	row_count?: number;
+	column_count?: number;
+	file?: string;
+}
+
+export async function loadDatasetSummaryIndex(): Promise<
+	Record<string, DatasetSummaryTable>
+> {
+	const filePath = await resolveDatasetSummaryPath();
+	if (!filePath) return {};
+
+	try {
+		const raw = await readJsonFile<{ tables?: DatasetSummaryTable[] }>(filePath);
+		const index: Record<string, DatasetSummaryTable> = {};
+		for (const row of raw.tables || []) {
+			if (row.table_name) index[row.table_name] = row;
+		}
+		return index;
+	} catch {
+		return {};
+	}
+}

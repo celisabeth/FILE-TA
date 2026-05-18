@@ -24,6 +24,7 @@ from typing import Any
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from atlas.atlas_client import ATLAS_URL, normalize_dataset_attributes, parse_json_field, search_entities
+from atlas.umt_enrichment import enrich_umt_rows
 
 logger = logging.getLogger("build_umt")
 
@@ -86,8 +87,11 @@ def _operational_json(attrs: dict, classifications: list) -> dict:
 def _last_enriched_at(attrs: dict, layer: str) -> str | None:
     if attrs.get("enriched_at"):
         return str(attrs["enriched_at"])
-    if layer in ("silver", "gold", "bronze", "staging") and attrs.get("ingested_at"):
+    if attrs.get("ingested_at"):
         return str(attrs["ingested_at"])
+    profiling = parse_json_field(attrs.get("profiling"))
+    if profiling.get("profiled_at"):
+        return str(profiling["profiled_at"])
     return None
 
 
@@ -114,7 +118,7 @@ def fetch_all_datasets(limit: int = 500) -> list[dict]:
 
 def build_umt(limit: int = 500) -> dict:
     entities = fetch_all_datasets(limit)
-    rows = [entity_to_umt_row(e) for e in entities]
+    rows = enrich_umt_rows([entity_to_umt_row(e) for e in entities])
     rows.sort(
         key=lambda r: (
             LAYER_ORDER.index(r["layer"]) if r["layer"] in LAYER_ORDER else 99,
