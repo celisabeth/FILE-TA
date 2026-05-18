@@ -19,6 +19,7 @@ Panduan operasional menjalankan **tiga metode penelitian** dalam satu stack Dock
 | Ringkasan AQE | [`../aqe/README.md`](../aqe/README.md) |
 | Ringkasan MLOps | [`../mlops/README.md`](../mlops/README.md) |
 | Benchmark | [`../../scripts/benchmark/README.md`](../../scripts/benchmark/README.md) |
+| Generate data staging | [`../generate-data/README.md`](../generate-data/README.md) |
 | Gold → Serving & dashboard KPI | [`../gold-to-serving/README.md`](../gold-to-serving/README.md) |
 | InsightERA Portal | [`../portal/README.md`](../portal/README.md) |
 | Grafana (Insight + MLOps + AQE) | [`../monitoring-grafana/README.md`](../monitoring-grafana/README.md) |
@@ -33,7 +34,10 @@ Panduan operasional menjalankan **tiga metode penelitian** dalam satu stack Dock
 ```bash
 cd /path/to/Data-Lakehouse-Insight
 cp .env.example .env          # opsional
-python3 scripts/generate_bronze_data.py --mode full
+# Generate CSV staging — panduan: docs/generate-data/README.md
+./scripts/generate_data.sh full              # profil metadata (~80k baris)
+# ./scripts/generate_data.sh full insight    # E2E ringan + skew
+# ./scripts/generate_data.sh full aqe          # eksperimen AQE penuh (~1M mhs)
 ./start.sh
 mkdir -p metrics && chmod 1777 metrics
 
@@ -112,7 +116,7 @@ flowchart TD
 | Fase | Aktivitas | DAG / perintah | BAB III | BAB IV |
 |------|-----------|----------------|---------|--------|
 | **0** | Stack Docker + metrics | `./start.sh` | Lingkungan | Konteks |
-| **1** | Dataset ITERA | `generate_bronze_data.py --mode full` | Dataset | Deskripsi data |
+| **1** | Dataset ITERA | `generate_data.sh full` / `append` | Dataset | Deskripsi data |
 | **A** | Metadata Medallion + Atlas | `metadata_full_experiment` | Metadata governance | §4.1.1–4.1.2, §4.1.4, §4.1.6 |
 | **B** | AQE OFF/ON + workload | `aqe_full_experiment` | AQE config | §4.1.2–4.1.4, §4.1.6 query |
 | **C** | MLOps train + infer | `mlops_pipeline` | ML lifecycle | §4.1.4 MLOps, §4.1.5 |
@@ -152,13 +156,34 @@ Template: [`templates/01-lingkungan-eksperimen.md`](templates/01-lingkungan-eksp
 
 ## 4. Fase 1 — Generate dataset
 
+Panduan lengkap: [`../generate-data/README.md`](../generate-data/README.md)
+
 ```bash
-python3 scripts/generate_bronze_data.py --mode full --dry-run
-python3 scripts/generate_bronze_data.py --mode full
+# Rencana volume
+./scripts/generate_data.sh dry-run aqe
+
+# Default penelitian Insight (metadata, ~80k baris)
+./scripts/generate_data.sh full
+
+# E2E + skew sedang
+# ./scripts/generate_data.sh full insight
+
+# AQE penuh (~1M mahasiswa)
+# ./scripts/generate_data.sh full aqe
+
+python3 scripts/count_staging_rows.py
 ls -la data/staging/*.csv
 ```
 
-Opsional ringkasan otomatis:
+**Tambah baris lalu uji ulang:**
+
+```bash
+./scripts/generate_data.sh append 5000
+python3 scripts/count_staging_rows.py
+# lalu trigger ulang DAG yang relevan
+```
+
+Ringkasan otomatis (JSON metrik):
 
 ```bash
 PYTHONPATH=scripts INSIGHT_METRICS_DIR=metrics \

@@ -10,6 +10,8 @@ Repositori ini berisi implementasi pipeline big data terintegrasi untuk lingkung
 2. **Mengimplementasikan** pipeline big data berbasis Data Lakehouse dan MLOps untuk mendukung integrasi, pengolahan, dan analitik data perguruan tinggi.
 3. **Melakukan evaluasi komparatif** terhadap implementasi pipeline berdasarkan aspek performa, kualitas data, skalabilitas, dan efektivitas integrasi data.
 
+**Generate data staging:** [`docs/generate-data/README.md`](docs/generate-data/README.md) — `./scripts/generate_data.sh full` · tambah baris: `./scripts/generate_data.sh append 5000`
+
 ---
 
 ## Tech Stack (ringkas)
@@ -791,7 +793,7 @@ Panduan operasional menjalankan seluruh pipeline metadata, mengumpulkan JSON met
 **Jalankan cepat (tiga metode):**
 
 ```bash
-python3 scripts/generate_bronze_data.py --mode full
+./scripts/generate_data.sh full          # profil metadata (~80k baris); lihat docs/generate-data/
 ./start.sh
 mkdir -p metrics && chmod 1777 metrics
 
@@ -840,7 +842,10 @@ Artefak: `metrics/experiment_summary_latest.json`, `metrics/aqe_comparison_*.jso
 | `monitoring/grafana/provisioning/dashboards/json/` | Template dashboard (provisioned) |
 | `scripts/benchmark/` | Skrip evaluasi kualitas metadata & inventaris Atlas |
 | `metrics/` | Folder output metrik eksperimen (di-mount ke Airflow) |
+| `docs/generate-data/README.md` | Panduan generate CSV + profil volume + append |
 | `scripts/generate_bronze_data.py` | Generator data sintetis ITERA (12 CSV) |
+| `scripts/generate_data.sh` | Wrapper: full / append / dry-run / count |
+| `scripts/count_staging_rows.py` | Hitung baris per file staging |
 | **Pipeline 1: Staging → Bronze** | |
 | `scripts/spark/staging_to_bronze.py` | PySpark ETL CSV → Iceberg |
 | `scripts/atlas/register_bronze_metadata.py` | Atlas metadata Bronze |
