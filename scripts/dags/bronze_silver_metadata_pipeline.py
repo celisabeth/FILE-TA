@@ -129,7 +129,7 @@ def log_quality_report(**context):
 # ─── DAG definition ─────────────────────────────────────────────────────────
 
 with DAG(
-    dag_id="bronze_to_silver_pipeline",
+    dag_id="bronze_silver_metadata_pipeline",
     description="Bronze → Silver + quality check + metadata enrichment → Atlas",
     default_args=default_args,
     start_date=datetime(2024, 1, 1),
