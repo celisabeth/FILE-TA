@@ -15,6 +15,7 @@ import base64
 import json
 import logging
 import urllib.error
+import urllib.parse
 import urllib.request
 from datetime import datetime
 
@@ -195,6 +196,20 @@ def create_gold_types():
 
 # ── 2. Entity registration ────────────────────────────────────────────────
 
+def _entity_guid_for_qualified_name(qualified_name: str) -> str | None:
+    path = (
+        "/api/atlas/v2/entity/uniqueAttribute/type/lakehouse_dataset"
+        f"?attr:qualifiedName={urllib.parse.quote(qualified_name)}"
+    )
+    try:
+        result = _atlas_request("GET", path)
+        if result and result.get("entity"):
+            return result["entity"].get("guid")
+    except Exception:
+        pass
+    return None
+
+
 def register_gold_entity(table_name: str, profiling: dict) -> dict | None:
     table_type = profiling.get("table_type", "fact")
     consumption = CONSUMPTION_META.get(table_name, {})
@@ -270,9 +285,15 @@ def register_gold_entity(table_name: str, profiling: dict) -> dict | None:
         }
     }
 
-    result = _atlas_request("POST", "/api/atlas/v2/entity", entity)
+    qn = f"gold.{table_name}@{CLUSTER_NAME}"
+    guid = _entity_guid_for_qualified_name(qn)
+    if guid:
+        entity["entity"]["guid"] = guid
+        result = _atlas_request("PUT", f"/api/atlas/v2/entity/guid/{guid}", entity)
+    else:
+        result = _atlas_request("POST", "/api/atlas/v2/entity", entity)
     if result:
-        logger.info("  ✓ Gold entity: %s [%s]", table_name, table_type)
+        logger.info("  ✓ Gold entity: %s [%s] (rows=%s)", table_name, table_type, profiling.get("row_count", 0))
     return result
 
 

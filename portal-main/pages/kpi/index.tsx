@@ -20,88 +20,8 @@ import Badge from '../../components/bootstrap/Badge';
 import Button from '../../components/bootstrap/Button';
 import Progress from '../../components/bootstrap/Progress';
 import Spinner from '../../components/bootstrap/Spinner';
-import type { AtlasEntity } from '../../helpers/atlasApi';
-import {
-	LEADERSHIP_CONSUMERS,
-	kpiStatusColor,
-	matchIkuEntity,
-	mergeAtlasEntities,
-	parseProfiling,
-} from '../../helpers/kpiAtlas';
-
-const IKU_DEFINITIONS = [
-	{
-		code: 'IKU-1',
-		name: 'Lulusan bekerja/studi/wirausaha',
-		icon: 'School',
-		color: 'primary',
-		target2024: 78,
-		fact: 'fact_iku1_lulusan',
-	},
-	{
-		code: 'IKU-2',
-		name: 'Mahasiswa MBKM / prestasi nasional',
-		icon: 'EmojiEvents',
-		color: 'primary',
-		target2024: 35,
-		fact: 'fact_iku2_mbkm',
-	},
-	{
-		code: 'IKU-3',
-		name: 'Dosen tridarma luar/praktisi',
-		icon: 'Groups',
-		color: 'primary',
-		target2024: 25,
-		fact: 'fact_iku3_dosen_tridarma',
-	},
-	{
-		code: 'IKU-4',
-		name: 'Dosen S3/sertifikat/praktisi',
-		icon: 'WorkspacePremium',
-		color: 'primary',
-		target2024: 50,
-		fact: 'fact_iku4_kualifikasi_dosen',
-	},
-	{
-		code: 'IKU-5',
-		name: 'Rasio output penelitian intl per dosen',
-		icon: 'Science',
-		color: 'primary',
-		target2024: 0.25,
-		fact: 'fact_iku5_penelitian_pkm',
-	},
-	{
-		code: 'IKU-6',
-		name: 'Prodi bekerjasama mitra',
-		icon: 'Handshake',
-		color: 'primary',
-		target2024: 60,
-		fact: 'fact_iku6_kerjasama_prodi',
-	},
-	{
-		code: 'IKU-7',
-		name: 'MK case method / team-based',
-		icon: 'AutoStories',
-		color: 'primary',
-		target2024: 40,
-		fact: 'fact_iku7_metode_pembelajaran',
-	},
-	{
-		code: 'IKU-8',
-		name: 'Prodi akreditasi internasional',
-		icon: 'Public',
-		color: 'primary',
-		target2024: 3.0,
-		fact: 'fact_iku8_akreditasi_internasional',
-	},
-];
-
-async function fetchAtlasSearch(params: Record<string, string>) {
-	const qs = new URLSearchParams(params).toString();
-	const res = await fetch(`/api/atlas/search?${qs}`);
-	if (!res.ok) return { entities: [] as AtlasEntity[], approximateCount: 0 };
-	return res.json();
-}
+import type { KpiCardView, KpiDashboardPayload } from '../../helpers/kpiAtlas';
+import { IKU_DEFINITIONS, LEADERSHIP_CONSUMERS, kpiStatusColor } from '../../helpers/kpiAtlas';
 
 function formatCapaian(value: number | null | undefined, code: string): string {
 	if (value == null || Number.isNaN(value)) return '—';
@@ -111,48 +31,21 @@ function formatCapaian(value: number | null | undefined, code: string): string {
 
 const KpiDashboard: NextPage = () => {
 	const router = useRouter();
-	const [goldEntities, setGoldEntities] = useState<AtlasEntity[]>([]);
+	const [dashboard, setDashboard] = useState<KpiDashboardPayload | null>(null);
 	const [loading, setLoading] = useState(true);
-	const [goldCount, setGoldCount] = useState(0);
 	const [fetchError, setFetchError] = useState<string | null>(null);
 
 	const fetchKpiData = useCallback(async () => {
 		setLoading(true);
 		setFetchError(null);
 		try {
-			const [kpiRes, goldRes, queryRes] = await Promise.all([
-				fetchAtlasSearch({
-					typeName: 'lakehouse_dataset',
-					classification: 'KPI_Metric',
-					limit: '50',
-				}),
-				fetchAtlasSearch({
-					typeName: 'lakehouse_dataset',
-					classification: 'Gold_Layer',
-					limit: '100',
-				}),
-				fetchAtlasSearch({
-					typeName: 'lakehouse_dataset',
-					query: 'gold.fact_iku',
-					limit: '50',
-				}),
-			]);
-
-			const merged = mergeAtlasEntities(
-				kpiRes.entities || [],
-				goldRes.entities || [],
-				queryRes.entities || [],
-			).filter(
-				(e) =>
-					e.attributes?.layer === 'gold' ||
-					(e.attributes?.qualifiedName || '').startsWith('gold.'),
-			);
-
-			setGoldEntities(merged);
-			setGoldCount(goldRes.approximateCount || merged.length);
-		} catch (err: any) {
-			setGoldEntities([]);
-			setFetchError(err?.message || 'Gagal memuat metadata Atlas');
+			const res = await fetch('/api/atlas/kpi-dashboard');
+			const data = await res.json();
+			if (!res.ok) throw new Error(data.error || 'Gagal memuat KPI dashboard');
+			setDashboard(data as KpiDashboardPayload);
+		} catch (err: unknown) {
+			setDashboard(null);
+			setFetchError(err instanceof Error ? err.message : 'Gagal memuat metadata Atlas');
 		} finally {
 			setLoading(false);
 		}
@@ -162,9 +55,13 @@ const KpiDashboard: NextPage = () => {
 		fetchKpiData();
 	}, [fetchKpiData]);
 
-	const matchedIkuCount = IKU_DEFINITIONS.filter((iku) =>
-		matchIkuEntity(goldEntities, iku),
-	).length;
+	const matchedIkuCount = dashboard?.ikuRegistered ?? 0;
+	const goldCount = dashboard?.goldCount ?? 0;
+	const dimensionCount = dashboard?.dimensionCount ?? 0;
+	const factCount = dashboard?.factCount ?? 0;
+	const cardsByCode = new Map(
+		(dashboard?.cards || []).map((c) => [c.code, c] as [string, KpiCardView]),
+	);
 
 	return (
 		<PageWrapper>
@@ -211,7 +108,7 @@ const KpiDashboard: NextPage = () => {
 						<Card shadow='sm'>
 							<CardBody className='text-center py-4'>
 								<Icon icon='ViewColumn' size='3x' color='primary' />
-								<h2 className='mt-3 mb-1 fw-bold'>5</h2>
+								<h2 className='mt-3 mb-1 fw-bold'>{dimensionCount}</h2>
 								<p className='text-muted mb-0'>Dimensions</p>
 							</CardBody>
 						</Card>
@@ -220,7 +117,7 @@ const KpiDashboard: NextPage = () => {
 						<Card shadow='sm'>
 							<CardBody className='text-center py-4'>
 								<Icon icon='TableChart' size='3x' color='primary' />
-								<h2 className='mt-3 mb-1 fw-bold'>10</h2>
+								<h2 className='mt-3 mb-1 fw-bold'>{factCount}</h2>
 								<p className='text-muted mb-0'>Fact Tables</p>
 							</CardBody>
 						</Card>
@@ -265,19 +162,14 @@ const KpiDashboard: NextPage = () => {
 								) : (
 									<div className='row'>
 										{IKU_DEFINITIONS.map((iku) => {
-											const matched = matchIkuEntity(goldEntities, iku);
-											const profiling = parseProfiling(matched);
-											const kpiMeta = profiling.kpi || {};
-											const rowCount = matched?.attributes?.row_count || 0;
-
-											const capaian = kpiMeta.nilai_capaian ?? null;
-											const target =
-												kpiMeta.nilai_target ?? iku.target2024;
-											const status = kpiMeta.status_capaian as
-												| string
-												| undefined;
+											const card = cardsByCode.get(iku.code);
+											const registered = card?.registered ?? false;
+											const rowCount = card?.rowCount ?? 0;
+											const capaian = card?.capaian ?? null;
+											const target = card?.target ?? iku.target2024;
+											const status = card?.status;
 											const satuan =
-												kpiMeta.satuan ||
+												card?.satuan ||
 												(iku.code === 'IKU-5' ? 'Rasio' : '%');
 
 											const progressPct =
@@ -365,28 +257,26 @@ const KpiDashboard: NextPage = () => {
 																/>
 															</div>
 
-															{kpiMeta.formula && (
+															{card?.formula && (
 																<div className='mb-2'>
 																	<small className='text-muted d-block'>
 																		Formula
 																	</small>
 																	<code className='small'>
-																		{kpiMeta.formula}
+																		{card.formula}
 																	</code>
 																</div>
 															)}
 
 															<div className='d-flex justify-content-between align-items-center mt-3'>
 																<small className='text-muted'>
-																	{rowCount
-																		? `${Number(
-																				rowCount,
-																			).toLocaleString()} baris`
-																		: matched
+																	{rowCount > 0
+																		? `${rowCount.toLocaleString()} baris`
+																		: registered
 																			? '0 baris'
 																			: 'Belum terdaftar'}
 																</small>
-																{matched && (
+																{registered && card?.qualifiedName && (
 																	<Button
 																		color={
 																			iku.color as any
@@ -396,9 +286,7 @@ const KpiDashboard: NextPage = () => {
 																		onClick={() =>
 																			router.push(
 																				`/catalog/${encodeURIComponent(
-																					matched
-																						.attributes
-																						?.qualifiedName,
+																					card.qualifiedName,
 																				)}`,
 																			)
 																		}>

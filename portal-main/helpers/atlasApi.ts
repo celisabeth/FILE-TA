@@ -75,6 +75,28 @@ export async function getEntity(guid: string): Promise<{ entity: AtlasEntity }> 
 	);
 }
 
+/** Muat atribut lengkap (row_count, profiling.kpi, …) — search/basic tidak mengirimnya. */
+export async function hydrateAtlasEntities(entities: AtlasEntity[]): Promise<AtlasEntity[]> {
+	const hydrated: AtlasEntity[] = [];
+	for (const stub of entities) {
+		if (!stub.guid) {
+			hydrated.push(stub);
+			continue;
+		}
+		try {
+			const full = await getEntity(stub.guid);
+			const entity = full.entity ?? (full as unknown as AtlasEntity);
+			if (!entity.classifications?.length && stub.classifications?.length) {
+				entity.classifications = stub.classifications;
+			}
+			hydrated.push(entity);
+		} catch {
+			hydrated.push(stub);
+		}
+	}
+	return hydrated;
+}
+
 export async function getEntityByQualifiedName(
 	typeName: string,
 	qualifiedName: string,

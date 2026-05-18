@@ -1,5 +1,5 @@
 import type { AtlasEntity } from './atlasApi';
-import { layerFromQualifiedName, searchEntities } from './atlasApi';
+import { hydrateAtlasEntities, layerFromQualifiedName, searchEntities } from './atlasApi';
 import { parseEntityProfiling, getBusinessMeta } from './entityProfiling';
 
 export interface GlossaryTermFromMetadata {
@@ -212,9 +212,21 @@ export async function buildGlossaryFromAtlas(limit = 500): Promise<{
 	fallback: GlossaryTermFromMetadata[];
 	silverEntityCount: number;
 	generatedAt: string;
+	entities: AtlasEntity[];
 }> {
-	const result = await searchEntities('lakehouse_dataset', undefined, undefined, limit, 0);
-	const entities = result.entities || [];
+	const [allRes, silverRes, goldRes] = await Promise.all([
+		searchEntities('lakehouse_dataset', undefined, undefined, limit, 0),
+		searchEntities('lakehouse_dataset', undefined, 'Silver_Layer', limit, 0),
+		searchEntities('lakehouse_dataset', undefined, 'Gold_Layer', limit, 0),
+	]);
+
+	const stubs = mergeEntityLists(
+		allRes.entities || [],
+		silverRes.entities || [],
+		goldRes.entities || [],
+	);
+	const entities = await hydrateAtlasEntities(stubs);
+
 	const silverCount = entities.filter(
 		(e) => (e.attributes?.layer || layerFromQualifiedName(e.attributes?.qualifiedName)) === 'silver',
 	).length;
@@ -224,13 +236,90 @@ export async function buildGlossaryFromAtlas(limit = 500): Promise<{
 		fallback: FALLBACK_TERMS,
 		silverEntityCount: silverCount,
 		generatedAt: new Date().toISOString(),
+		entities,
 	};
+}
+
+/** Kata kunci untuk menghubungkan istilah lokal ke aset katalog (qualifiedName). */
+const TERM_LINK_ALIASES: Record<string, string[]> = {
+	iku: ['iku-', 'indikator kinerja', 'fact_iku', 'renstra'],
+	renstra: ['renstra', 'iku', 'rencana strategis', 'fact_iku'],
+	mbkm: ['mbkm', 'silver_mahasiswa', 'kerjasama'],
+	tridarma: ['tridarma', 'kegiatan_dosen', 'silver_dosen'],
+	serdos: ['serdos', 'sertifikasi', 'silver_dosen'],
+	sakip: ['sakip', 'tata_kelola', 'fact_tata'],
+	pii: ['pii', 'pii_columns', 'silver_mahasiswa', 'silver_dosen'],
+	'medallion architecture': ['bronze.', 'silver.', 'gold.', 'staging.'],
+	'star schema': ['dim_', 'fact_', 'gold.'],
+	'data lineage': ['lineage', 'etl.', 'staging_to_bronze', 'bronze_to_silver'],
+	'apache iceberg': ['iceberg', 'warehouse'],
+	'apache atlas': ['lakehouse_dataset', 'atlas'],
+	'data quality score': ['quality', 'quarantine', 'silver_'],
+	prodi: ['dim_prodi', 'silver_prodi', 'raw_prodi'],
+	nidn: ['dosen', 'nidn'],
+	nim: ['mahasiswa', 'nim'],
+};
+
+function mergeEntityLists(...lists: AtlasEntity[][]): AtlasEntity[] {
+	const byGuid = new Map<string, AtlasEntity>();
+	for (const list of lists) {
+		for (const e of list) {
+			if (e?.guid) byGuid.set(e.guid, e);
+		}
+	}
+	return [...byGuid.values()];
+}
+
+function entitySearchText(entity: AtlasEntity): string {
+	const attrs = entity.attributes || {};
+	const profiling = parseEntityProfiling(attrs.profiling);
+	const biz = getBusinessMeta(profiling) || {};
+	const kpi = (profiling.kpi as Record<string, unknown>) || {};
+	const parts: string[] = [
+		String(attrs.qualifiedName || ''),
+		String(attrs.name || ''),
+		String(attrs.description || ''),
+		String(attrs.layer || ''),
+		...(biz.glossary_terms || []),
+		...(biz.iku_relevance || []),
+		String(kpi.iku_code || ''),
+		String(kpi.iku_nama || ''),
+	];
+	return parts.join(' ').toLowerCase();
+}
+
+export function linkRelatedAssets(
+	terms: GlossaryTermFromMetadata[],
+	entities: AtlasEntity[],
+): GlossaryTermFromMetadata[] {
+	const indexed = entities
+		.map((e) => ({
+			qn: String(e.attributes?.qualifiedName || ''),
+			text: entitySearchText(e),
+		}))
+		.filter((x) => x.qn);
+
+	return terms.map((term) => {
+		if (term.related_assets && term.related_assets.length > 0) {
+			return term;
+		}
+		const needle = term.term.toLowerCase();
+		const aliases = TERM_LINK_ALIASES[needle] || [needle];
+		const related: string[] = [];
+		for (const { qn, text } of indexed) {
+			if (aliases.some((a) => a.length > 2 && text.includes(a))) {
+				if (!related.includes(qn)) related.push(qn);
+			}
+		}
+		return { ...term, related_assets: related.slice(0, 6) };
+	});
 }
 
 export function mergeGlossaryTerms(
 	atlasTerms: { term: string; definition: string; category: string; guid?: string }[],
 	metadataTerms: GlossaryTermFromMetadata[],
 	fallbackTerms: GlossaryTermFromMetadata[],
+	entities: AtlasEntity[] = [],
 ): Array<GlossaryTermFromMetadata & { source: string; guid?: string }> {
 	const map = new Map<string, GlossaryTermFromMetadata & { source: string; guid?: string }>();
 
@@ -238,17 +327,30 @@ export function mergeGlossaryTerms(
 		map.set(t.term.toLowerCase(), { ...t, source: 'local' });
 	}
 	for (const t of metadataTerms) {
-		map.set(t.term.toLowerCase(), { ...t, source: t.source });
+		const key = t.term.toLowerCase();
+		const prev = map.get(key);
+		map.set(key, {
+			...prev,
+			...t,
+			source: t.source,
+			related_assets: t.related_assets?.length ? t.related_assets : prev?.related_assets,
+		});
 	}
 	for (const t of atlasTerms) {
-		map.set(t.term.toLowerCase(), {
+		const key = t.term.toLowerCase();
+		const prev = map.get(key);
+		map.set(key, {
 			term: t.term,
-			definition: t.definition,
-			category: t.category,
+			definition: t.definition || prev?.definition || '',
+			category: t.category || prev?.category || 'Atlas',
 			source: 'atlas',
 			guid: t.guid,
+			related_assets: prev?.related_assets,
 		});
 	}
 
-	return [...map.values()].sort((a, b) => a.term.localeCompare(b.term));
+	const merged = [...map.values()].sort((a, b) => a.term.localeCompare(b.term));
+	return linkRelatedAssets(merged, entities) as Array<
+		GlossaryTermFromMetadata & { source: string; guid?: string }
+	>;
 }

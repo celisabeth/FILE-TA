@@ -4,7 +4,6 @@ import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { mergeGlossaryTerms } from '../../helpers/glossaryFromMetadata';
 import PageWrapper from '../../layout/PageWrapper/PageWrapper';
 import SubHeader, { SubHeaderLeft, SubHeaderRight } from '../../layout/SubHeader/SubHeader';
 import Page from '../../layout/Page/Page';
@@ -63,61 +62,25 @@ const GlossaryPage: NextPage = () => {
 
 	const fetchGlossary = useCallback(async () => {
 		setLoading(true);
-
-		const localTerms: GlossaryTerm[] = FALLBACK_TERMS.map((t) => ({
-			...t,
-			source: 'local' as const,
-		}));
-
 		try {
-			const [glossaryRes, metadataRes] = await Promise.all([
-				fetch('/api/atlas/glossary'),
-				fetch('/api/atlas/glossary-terms'),
-			]);
-
-			let atlasTerms: { term: string; definition: string; category: string; guid?: string }[] =
-				[];
-			let metadataTerms: GlossaryTerm[] = [];
-			let fallbackFromApi = localTerms;
-
-			if (metadataRes.ok) {
-				const meta = await metadataRes.json();
-				metadataTerms = (meta.terms || []).map((t: GlossaryTerm) => ({
-					...t,
-					source: t.source || 'silver_metadata',
-				}));
-				if (meta.fallback?.length) {
-					fallbackFromApi = meta.fallback.map((t: GlossaryTerm) => ({
-						...t,
-						source: 'local' as const,
-					}));
-				}
-				setSilverSyncedCount(meta.silverEntityCount ?? 0);
+			const res = await fetch('/api/atlas/glossary-bundle');
+			const data = await res.json();
+			if (!res.ok) {
+				throw new Error(data.error || 'Gagal memuat glossary');
 			}
 
-			if (glossaryRes.ok) {
-				const glossaries = await glossaryRes.json();
-				setAtlasGlossaries(glossaries);
-				setAtlasConnected(true);
-
-				for (const g of glossaries) {
-					if (g.terms) {
-						for (const t of g.terms) {
-							atlasTerms.push({
-								guid: t.termGuid || t.guid,
-								term: t.displayText || t.name,
-								definition: t.shortDescription || t.longDescription || '',
-								category: g.name || 'Atlas',
-							});
-						}
-					}
-				}
-			}
-
-			const merged = mergeGlossaryTerms(atlasTerms, metadataTerms, fallbackFromApi);
-			setTerms(merged);
+			setAtlasGlossaries(data.glossaries || []);
+			setAtlasConnected(Boolean(data.atlasConnected));
+			setSilverSyncedCount(data.silverEntityCount ?? 0);
+			setTerms((data.terms || []) as GlossaryTerm[]);
 		} catch {
+			const localTerms: GlossaryTerm[] = FALLBACK_TERMS.map((t) => ({
+				...t,
+				source: 'local' as const,
+			}));
 			setTerms(localTerms);
+			setAtlasConnected(false);
+			setSilverSyncedCount(0);
 		} finally {
 			setLoading(false);
 		}
@@ -307,6 +270,13 @@ const GlossaryPage: NextPage = () => {
 																<td>
 																	{t.related_assets?.length ? (
 																		<small>
+																			<Badge
+																				color='primary'
+																				isLight
+																				className='me-1'>
+																				{t.related_assets.length}{' '}
+																				aset
+																			</Badge>
 																			{t.related_assets
 																				.slice(0, 2)
 																				.map((qn) => (
@@ -320,12 +290,14 @@ const GlossaryPage: NextPage = () => {
 																			{t.related_assets.length > 2 && (
 																				<span className='text-muted'>
 																					+{t.related_assets.length - 2}{' '}
-																					more
+																					lainnya
 																				</span>
 																			)}
 																		</small>
 																	) : (
-																		<span className='text-muted'>—</span>
+																		<span className='text-muted'>
+																			0 aset
+																		</span>
 																	)}
 																</td>
 															</tr>

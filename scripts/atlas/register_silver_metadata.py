@@ -15,6 +15,7 @@ import base64
 import json
 import logging
 import urllib.error
+import urllib.parse
 import urllib.request
 from datetime import datetime
 
@@ -235,6 +236,20 @@ def create_silver_types():
 # 2. Register Silver entities (dengan enriched metadata)
 # ---------------------------------------------------------------------------
 
+def _entity_guid_for_qualified_name(qualified_name: str) -> str | None:
+    path = (
+        "/api/atlas/v2/entity/uniqueAttribute/type/lakehouse_dataset"
+        f"?attr:qualifiedName={urllib.parse.quote(qualified_name)}"
+    )
+    try:
+        result = _atlas_request("GET", path)
+        if result and result.get("entity"):
+            return result["entity"].get("guid")
+    except Exception:
+        pass
+    return None
+
+
 def register_silver_entity(table_name: str, profiling: dict) -> dict | None:
     """Register Silver table entity dengan metadata lengkap."""
     biz = BUSINESS_METADATA.get(table_name, {})
@@ -282,9 +297,15 @@ def register_silver_entity(table_name: str, profiling: dict) -> dict | None:
         }
     }
 
-    result = _atlas_request("POST", "/api/atlas/v2/entity", entity)
+    qn = f"silver.{table_name}@{CLUSTER_NAME}"
+    guid = _entity_guid_for_qualified_name(qn)
+    if guid:
+        entity["entity"]["guid"] = guid
+        result = _atlas_request("PUT", f"/api/atlas/v2/entity/guid/{guid}", entity)
+    else:
+        result = _atlas_request("POST", "/api/atlas/v2/entity", entity)
     if result:
-        logger.info("  ✓ Silver entity: %s", table_name)
+        logger.info("  ✓ Silver entity: %s (glossary_terms=%d)", table_name, len(biz.get("glossary_terms", [])))
     return result
 
 
