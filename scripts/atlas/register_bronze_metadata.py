@@ -195,7 +195,15 @@ def register_bronze_entity(table_name: str, profiling: dict) -> dict | None:
                 "row_count": profiling.get("row_count", 0),
                 "column_count": profiling.get("column_count", 0),
                 "schema_def": json.dumps(profiling.get("schema", {})),
-                "profiling": json.dumps(profiling.get("columns", {})),
+                "profiling": json.dumps({
+                    "columns": profiling.get("columns", {}),
+                    "business": {
+                        "owner": "data-platform",
+                        "glossary_terms": [],
+                        "iku_relevance": [],
+                        "update_frequency": "batch",
+                    },
+                }),
                 "pii_columns": json.dumps(profiling.get("pii_columns", [])),
                 "ingested_at": datetime.utcnow().isoformat() + "Z",
             },

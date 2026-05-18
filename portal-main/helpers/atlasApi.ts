@@ -70,7 +70,9 @@ export async function searchEntities(
 }
 
 export async function getEntity(guid: string): Promise<{ entity: AtlasEntity }> {
-	return atlasRequest(`/api/atlas/v2/entity/guid/${guid}`);
+	return atlasRequest(
+		`/api/atlas/v2/entity/guid/${guid}?minExtInfo=false&ignoreRelationships=true`,
+	);
 }
 
 export async function getEntityByQualifiedName(

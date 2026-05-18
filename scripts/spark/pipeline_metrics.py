@@ -12,12 +12,24 @@ from typing import Any
 
 
 def metrics_dir(path: str | None = None) -> Path:
-    return Path(
-        path
-        or os.environ.get("INSIGHT_METRICS_DIR")
+    if path:
+        return Path(path)
+    try:
+        from benchmark.experiment_run import resolve_metrics_dir
+
+        return resolve_metrics_dir()
+    except Exception:
+        pass
+    env = (
+        os.environ.get("INSIGHT_METRICS_DIR")
         or os.environ.get("META_METRICS_DIR")
-        or os.environ.get("AQE_METRICS_DIR", "/opt/airflow/metrics")
+        or os.environ.get("AQE_METRICS_DIR")
     )
+    if env:
+        return Path(env)
+    if Path("/opt/airflow/metrics").is_dir():
+        return Path("/opt/airflow/metrics")
+    return Path("metrics")
 
 
 def utc_now() -> datetime:

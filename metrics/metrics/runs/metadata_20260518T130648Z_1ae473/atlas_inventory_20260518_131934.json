@@ -1,0 +1,59 @@
+{
+  "generated_at": "2026-05-18T13:19:34.123329+00:00",
+  "atlas_url": "http://atlas:21000",
+  "entity_counts": {
+    "lakehouse_dataset_total": 45,
+    "lakehouse_etl_process_total": 30,
+    "by_layer": {
+      "staging": 12,
+      "bronze": 12,
+      "silver": 6,
+      "gold": 15
+    },
+    "staging_csv_entities": 42,
+    "bronze_entities": 30,
+    "silver_entities": 15,
+    "gold_entities": 15
+  },
+  "metadata_coverage": {
+    "bronze": {
+      "entity_count": 12,
+      "schema_documented_pct": 0.0,
+      "owner_steward_pct": 0.0,
+      "glossary_term_pct": 0.0,
+      "classification_pii_pct": 0.0
+    },
+    "silver": {
+      "entity_count": 6,
+      "schema_documented_pct": 0.0,
+      "owner_steward_pct": 0.0,
+      "glossary_term_pct": 0.0,
+      "classification_pii_pct": 0.0
+    },
+    "gold": {
+      "entity_count": 15,
+      "schema_documented_pct": 0.0,
+      "owner_steward_pct": 0.0,
+      "glossary_term_pct": 0.0,
+      "classification_pii_pct": 0.0
+    }
+  },
+  "lineage_completeness": {
+    "bronze": {
+      "sampled": 12,
+      "with_incoming_pct": 100.0,
+      "with_outgoing_pct": 91.67
+    },
+    "silver": {
+      "sampled": 6,
+      "with_incoming_pct": 100.0,
+      "with_outgoing_pct": 100.0
+    },
+    "gold": {
+      "sampled": 15,
+      "with_incoming_pct": 80.0,
+      "with_outgoing_pct": 0.0
+    }
+  },
+  "classifications_registered": null
+}

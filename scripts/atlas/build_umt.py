@@ -17,53 +17,17 @@ import argparse
 import json
 import logging
 import os
-import urllib.error
-import urllib.request
+import sys
 from datetime import datetime, timezone
 from typing import Any
 
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+
+from atlas.atlas_client import ATLAS_URL, parse_json_field, search_entities
+
 logger = logging.getLogger("build_umt")
 
-ATLAS_URL = os.environ.get("ATLAS_URL", "http://atlas:21000")
-ATLAS_USER = os.environ.get("ATLAS_USER", "admin")
-ATLAS_PASS = os.environ.get("ATLAS_PASS", "admin")
-CLUSTER_NAME = "lakehouse"
-
 LAYER_ORDER = ("staging", "bronze", "silver", "gold", "unknown")
-
-
-def _auth_header() -> str:
-    import base64
-
-    token = base64.b64encode(f"{ATLAS_USER}:{ATLAS_PASS}".encode()).decode()
-    return f"Basic {token}"
-
-
-def _atlas_post(path: str, body: dict) -> dict:
-    url = f"{ATLAS_URL.rstrip('/')}{path}"
-    data = json.dumps(body).encode()
-    req = urllib.request.Request(
-        url,
-        data=data,
-        headers={"Content-Type": "application/json", "Authorization": _auth_header()},
-        method="POST",
-    )
-    with urllib.request.urlopen(req, timeout=60) as resp:
-        return json.loads(resp.read().decode())
-
-
-def _parse_json(raw: Any) -> dict:
-    if not raw:
-        return {}
-    if isinstance(raw, dict):
-        return raw
-    if isinstance(raw, str):
-        try:
-            val = json.loads(raw)
-            return val if isinstance(val, dict) else {}
-        except json.JSONDecodeError:
-            return {}
-    return {}
 
 
 def _layer_from_qn(qn: str, attrs: dict) -> str:
@@ -83,7 +47,7 @@ def _technical_json(attrs: dict) -> dict:
         except json.JSONDecodeError:
             pii = []
     return {
-        "schema": _parse_json(attrs.get("schema_def")),
+        "schema": parse_json_field(attrs.get("schema_def")),
         "format": attrs.get("format"),
         "location": attrs.get("location"),
         "row_count": attrs.get("row_count"),
@@ -93,7 +57,7 @@ def _technical_json(attrs: dict) -> dict:
 
 
 def _business_json(attrs: dict) -> dict:
-    profiling = _parse_json(attrs.get("profiling"))
+    profiling = parse_json_field(attrs.get("profiling"))
     business = profiling.get("business") or {}
     return {
         "description": attrs.get("description"),
@@ -109,7 +73,7 @@ def _business_json(attrs: dict) -> dict:
 
 
 def _operational_json(attrs: dict, classifications: list) -> dict:
-    profiling = _parse_json(attrs.get("profiling"))
+    profiling = parse_json_field(attrs.get("profiling"))
     return {
         "classifications": [c.get("typeName") for c in classifications if c.get("typeName")],
         "quality": profiling.get("quality"),
@@ -145,9 +109,7 @@ def entity_to_umt_row(entity: dict) -> dict:
 
 
 def fetch_all_datasets(limit: int = 500) -> list[dict]:
-    body = {"typeName": "lakehouse_dataset", "limit": limit, "offset": 0}
-    result = _atlas_post("/api/atlas/v2/search/basic", body)
-    return result.get("entities") or []
+    return search_entities("lakehouse_dataset", limit=limit, hydrate=True)
 
 
 def build_umt(limit: int = 500) -> dict:

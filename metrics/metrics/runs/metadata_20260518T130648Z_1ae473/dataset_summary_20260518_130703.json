@@ -1,0 +1,95 @@
+{
+  "staging_dir": "/opt/airflow/data/staging",
+  "generated_at": "2026-05-18T13:07:03.067024+00:00",
+  "summary": {
+    "table_count": 12,
+    "total_rows": 79170,
+    "total_size_mb": 8.41
+  },
+  "tables": [
+    {
+      "file": "raw_akreditasi.csv",
+      "table_name": "raw_akreditasi",
+      "row_count": 89,
+      "size_bytes": 8232,
+      "size_mb": 0.01
+    },
+    {
+      "file": "raw_dosen.csv",
+      "table_name": "raw_dosen",
+      "row_count": 820,
+      "size_bytes": 85883,
+      "size_mb": 0.08
+    },
+    {
+      "file": "raw_kegiatan_dosen.csv",
+      "table_name": "raw_kegiatan_dosen",
+      "row_count": 2049,
+      "size_bytes": 216904,
+      "size_mb": 0.21
+    },
+    {
+      "file": "raw_kerjasama.csv",
+      "table_name": "raw_kerjasama",
+      "row_count": 410,
+      "size_bytes": 46176,
+      "size_mb": 0.04
+    },
+    {
+      "file": "raw_keuangan.csv",
+      "table_name": "raw_keuangan",
+      "row_count": 560,
+      "size_bytes": 46663,
+      "size_mb": 0.04
+    },
+    {
+      "file": "raw_lulusan.csv",
+      "table_name": "raw_lulusan",
+      "row_count": 8714,
+      "size_bytes": 1051339,
+      "size_mb": 1.0
+    },
+    {
+      "file": "raw_mahasiswa.csv",
+      "table_name": "raw_mahasiswa",
+      "row_count": 51000,
+      "size_bytes": 5630249,
+      "size_mb": 5.37
+    },
+    {
+      "file": "raw_mbkm.csv",
+      "table_name": "raw_mbkm",
+      "row_count": 7966,
+      "size_bytes": 804081,
+      "size_mb": 0.77
+    },
+    {
+      "file": "raw_penelitian.csv",
+      "table_name": "raw_penelitian",
+      "row_count": 1623,
+      "size_bytes": 271474,
+      "size_mb": 0.26
+    },
+    {
+      "file": "raw_pengabdian.csv",
+      "table_name": "raw_pengabdian",
+      "row_count": 874,
+      "size_bytes": 116953,
+      "size_mb": 0.11
+    },
+    {
+      "file": "raw_prestasi_mahasiswa.csv",
+      "table_name": "raw_prestasi_mahasiswa",
+      "row_count": 5040,
+      "size_bytes": 540760,
+      "size_mb": 0.52
+    },
+    {
+      "file": "raw_prodi.csv",
+      "table_name": "raw_prodi",
+      "row_count": 25,
+      "size_bytes": 1655,
+      "size_mb": 0.0
+    }
+  ]
+}

@@ -9,25 +9,19 @@ Logika selaras dengan portal-main/helpers/metadataQualityEvaluator.ts
 from __future__ import annotations
 
 import argparse
-import base64
 import json
 import logging
 import os
 import sys
-import urllib.error
-import urllib.request
 from datetime import datetime, timezone
 from typing import Any
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
+from atlas.atlas_client import ATLAS_URL, parse_json_field, search_entities
 from benchmark._common import metrics_dir, utc_now, write_json
 
 logger = logging.getLogger("benchmark.atlas_quality")
-
-ATLAS_URL = os.environ.get("ATLAS_URL", "http://atlas:21000")
-ATLAS_USER = os.environ.get("ATLAS_USER", "admin")
-ATLAS_PASS = os.environ.get("ATLAS_PASS", "admin")
 
 EVAL_LAYERS = [
     ("bronze", "Bronze", "Bronze_Layer"),
@@ -43,36 +37,8 @@ METHODOLOGY = (
 )
 
 
-def _auth_header() -> str:
-    token = base64.b64encode(f"{ATLAS_USER}:{ATLAS_PASS}".encode()).decode()
-    return f"Basic {token}"
-
-
-def _atlas_post(path: str, body: dict) -> dict:
-    url = f"{ATLAS_URL.rstrip('/')}{path}"
-    data = json.dumps(body).encode()
-    req = urllib.request.Request(
-        url,
-        data=data,
-        headers={"Content-Type": "application/json", "Authorization": _auth_header()},
-        method="POST",
-    )
-    with urllib.request.urlopen(req, timeout=60) as resp:
-        return json.loads(resp.read().decode())
-
-
 def _parse_json(raw: Any) -> dict:
-    if not raw:
-        return {}
-    if isinstance(raw, dict):
-        return raw
-    if isinstance(raw, str):
-        try:
-            val = json.loads(raw)
-            return val if isinstance(val, dict) else {}
-        except json.JSONDecodeError:
-            return {}
-    return {}
+    return parse_json_field(raw)
 
 
 def _filled(val: Any) -> bool:
@@ -240,17 +206,16 @@ def _evaluate_entity(layer: str, entity: dict) -> dict[str, int]:
 
 
 def _search_entities(classification: str, limit: int = 200) -> list[dict]:
-    body = {
-        "typeName": "lakehouse_dataset",
-        "classification": classification,
-        "excludeDeletedEntities": True,
-        "limit": limit,
-    }
+    """Search + GET per guid agar schema_def, profiling, timestamps terbaca."""
     try:
-        result = _atlas_post("/api/atlas/v2/search/basic", body)
-        return result.get("entities") or []
-    except urllib.error.URLError as exc:
-        logger.warning("Atlas search failed (%s): %s", classification, exc)
+        return search_entities(
+            "lakehouse_dataset",
+            classification=classification,
+            limit=limit,
+            hydrate=True,
+        )
+    except Exception as exc:
+        logger.warning("Atlas search/hydrate failed (%s): %s", classification, exc)
         return []
 
 

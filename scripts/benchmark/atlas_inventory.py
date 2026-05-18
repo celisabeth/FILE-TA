@@ -19,6 +19,7 @@ from typing import Any
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
+from atlas.atlas_client import parse_json_field, search_entities as atlas_search_entities
 from benchmark._common import metrics_dir, utc_now, write_json
 
 logger = logging.getLogger("benchmark.atlas_inventory")
@@ -64,6 +65,14 @@ def _search_count(type_name: str, **extra) -> int:
 
 
 def _search_entities(type_name: str, limit: int = 500, **extra) -> list[dict]:
+    if type_name == "lakehouse_dataset":
+        classification = extra.get("classification")
+        return atlas_search_entities(
+            type_name,
+            classification=classification,
+            limit=limit,
+            hydrate=True,
+        )
     body = {"typeName": type_name, "excludeDeletedEntities": True, "limit": limit, **extra}
     result = _atlas_request("POST", "/api/atlas/v2/search/basic", body)
     return (result or {}).get("entities") or []
@@ -117,22 +126,13 @@ def _has_lineage(guid: str) -> tuple[bool, bool]:
 
 def _coverage_row(entity: dict) -> dict[str, bool]:
     attrs = entity.get("attributes") or {}
-    profiling_raw = attrs.get("profiling")
-    profiling: dict = {}
-    if isinstance(profiling_raw, str):
-        try:
-            profiling = json.loads(profiling_raw)
-        except json.JSONDecodeError:
-            profiling = {}
-    elif isinstance(profiling_raw, dict):
-        profiling = profiling_raw
-
+    profiling = parse_json_field(attrs.get("profiling"))
     business = profiling.get("business") or {}
     classifications = entity.get("classifications") or []
     class_names = {c.get("typeName") for c in classifications}
 
-    schema = attrs.get("schema_def")
-    schema_ok = bool(schema and schema != "{}")
+    schema = parse_json_field(attrs.get("schema_def"))
+    schema_ok = len(schema) > 0
 
     return {
         "schema_documented": schema_ok,

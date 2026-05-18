@@ -24,11 +24,48 @@ def _collect_by_glob(directory: Path, pattern: str, max_files: int = 3) -> list[
     return [load_json(f) | {"_file": f.name} for f in files[-max_files:]]
 
 
-def _latest(directory: Path, pattern: str) -> dict | None:
+def _latest(directory: Path, pattern: str) -> tuple[dict | None, str | None]:
     files = sorted(directory.glob(pattern), key=lambda p: p.stat().st_mtime)
     if not files:
-        return None
-    return load_json(files[-1])
+        return None, None
+    f = files[-1]
+    return load_json(f), f.name
+
+
+def _latest_anywhere(mdir: Path, pattern: str) -> tuple[dict | None, str | None]:
+    hit, name = _latest(mdir, pattern)
+    if hit:
+        return hit, name
+    try:
+        from benchmark.experiment_run import root_metrics_dir
+
+        root = root_metrics_dir()
+        if root.resolve() != mdir.resolve():
+            return _latest(root, pattern)
+    except Exception:
+        pass
+    manifest = mdir / "manifest.json"
+    if manifest.is_file():
+        import json
+
+        data = json.loads(manifest.read_text(encoding="utf-8"))
+        import fnmatch
+
+        for art in reversed(data.get("artifacts") or []):
+            fname = art.get("file") or ""
+            if fnmatch.fnmatch(fname, pattern):
+                candidate = mdir / fname
+                if candidate.is_file():
+                    return load_json(candidate), fname
+                try:
+                    from benchmark.experiment_run import root_metrics_dir
+
+                    stray = root_metrics_dir() / fname
+                    if stray.is_file():
+                        return load_json(stray), fname
+                except Exception:
+                    pass
+    return None, None
 
 
 def aggregate(
@@ -47,15 +84,26 @@ def aggregate(
     else:
         mdir = metrics_path
 
-    quality = _latest(mdir, "metadata_quality_*.json") or _latest(mdir, "metadata_quality_latest.json")
-    inventory = _latest(mdir, "atlas_inventory_*.json") or _latest(mdir, "atlas_inventory_latest.json")
-    umt = _latest(mdir, "umt_*.json") or _latest(mdir, "umt_latest.json")
+    quality, _ = _latest_anywhere(mdir, "metadata_quality_*.json")
+    if not quality:
+        quality, _ = _latest_anywhere(mdir, "metadata_quality_latest.json")
+    inventory, _ = _latest_anywhere(mdir, "atlas_inventory_*.json")
+    if not inventory:
+        inventory, _ = _latest_anywhere(mdir, "atlas_inventory_latest.json")
+    umt, umt_file = _latest_anywhere(mdir, "umt_*.json")
+    if not umt:
+        umt, umt_file = _latest_anywhere(mdir, "umt_latest.json")
 
-    pipelines = {
-        "staging_to_bronze": _latest(mdir, "staging_to_bronze_*.json"),
-        "bronze_to_silver": _latest(mdir, "bronze_to_silver_*.json"),
-        "silver_to_gold": _latest(mdir, "silver_to_gold_*.json"),
-    }
+    pipelines = {}
+    pipeline_files: dict[str, str | None] = {}
+    for key, pattern in (
+        ("staging_to_bronze", "staging_to_bronze_*.json"),
+        ("bronze_to_silver", "bronze_to_silver_*.json"),
+        ("silver_to_gold", "silver_to_gold_*.json"),
+    ):
+        payload, fname = _latest_anywhere(mdir, pattern)
+        pipelines[key] = payload
+        pipeline_files[key] = fname
 
     total_pipeline_sec = sum(
         float(p.get("duration_sec", 0))
@@ -78,8 +126,9 @@ def aggregate(
         "umt": {
             "approximate_count": (umt or {}).get("approximate_count"),
             "generated_at": (umt or {}).get("generated_at"),
-            "_file": "umt_latest.json" if umt else None,
+            "_file": umt_file,
         },
+        "pipeline_metric_files": pipeline_files,
         "registration_snapshots": _collect_by_glob(mdir, "atlas_registration_*.json"),
     }
 

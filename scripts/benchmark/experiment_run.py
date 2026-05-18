@@ -36,10 +36,21 @@ def root_metrics_dir() -> Path:
         or os.environ.get("AQE_METRICS_DIR")
     )
     if env:
-        return Path(env)
-    if Path("/opt/airflow/metrics").is_dir():
-        return Path("/opt/airflow/metrics")
-    return Path("metrics")
+        root = Path(env)
+    elif Path("/opt/airflow/metrics").is_dir():
+        root = Path("/opt/airflow/metrics")
+    else:
+        root = Path("metrics")
+
+    try:
+        root = root.resolve()
+    except OSError:
+        root = root.absolute()
+
+    # Hindari folder ganda metrics/metrics/ saat path relatif dipakai dari dalam metrics/
+    while root.name == "metrics" and root.parent.name == "metrics":
+        root = root.parent
+    return root
 
 
 def runs_root() -> Path:
@@ -198,10 +209,18 @@ def resolve_metrics_dir(track: str | None = None) -> Path:
 
 
 def register_artifact(filename: str, *, role: str | None = None) -> None:
-    """Catat file ke manifest.json run aktif."""
+    """Catat file ke manifest.json run aktif; salin dari root jika tertulis di luar run folder."""
     run_dir = current_run_dir()
     if not run_dir:
         return
+    dest = run_dir / filename
+    if not dest.is_file():
+        stray = root_metrics_dir() / filename
+        if stray.is_file() and stray.resolve() != dest.resolve():
+            dest.write_bytes(stray.read_bytes())
+        elif not dest.is_file():
+            return
+
     manifest_path = run_dir / "manifest.json"
     if not manifest_path.is_file():
         return

@@ -1,0 +1,10 @@
+{
+  "layer": "bronze",
+  "generated_at": "2026-05-18T13:10:22.231558+00:00",
+  "atlas_url": "http://atlas:21000",
+  "counts": {
+    "lakehouse_dataset": 40,
+    "lakehouse_etl_process": 26,
+    "bronze_classified": 26
+  }
+}

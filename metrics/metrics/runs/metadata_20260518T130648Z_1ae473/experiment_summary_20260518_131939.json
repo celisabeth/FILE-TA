@@ -1,0 +1,256 @@
+{
+  "experiment_id": "metadata_20260518T130648Z_1ae473",
+  "experiment_track": "metadata",
+  "experiment_run_id": "metadata_20260518T130648Z_1ae473",
+  "generated_at": "2026-05-18T13:19:39.162962+00:00",
+  "metrics_directory": "/opt/airflow/metrics/runs/metadata_20260518T130648Z_1ae473",
+  "dataset_summaries": [
+    {
+      "staging_dir": "/opt/airflow/data/staging",
+      "generated_at": "2026-05-18T13:07:03.067024+00:00",
+      "summary": {
+        "table_count": 12,
+        "total_rows": 79170,
+        "total_size_mb": 8.41
+      },
+      "tables": [
+        {
+          "file": "raw_akreditasi.csv",
+          "table_name": "raw_akreditasi",
+          "row_count": 89,
+          "size_bytes": 8232,
+          "size_mb": 0.01
+        },
+        {
+          "file": "raw_dosen.csv",
+          "table_name": "raw_dosen",
+          "row_count": 820,
+          "size_bytes": 85883,
+          "size_mb": 0.08
+        },
+        {
+          "file": "raw_kegiatan_dosen.csv",
+          "table_name": "raw_kegiatan_dosen",
+          "row_count": 2049,
+          "size_bytes": 216904,
+          "size_mb": 0.21
+        },
+        {
+          "file": "raw_kerjasama.csv",
+          "table_name": "raw_kerjasama",
+          "row_count": 410,
+          "size_bytes": 46176,
+          "size_mb": 0.04
+        },
+        {
+          "file": "raw_keuangan.csv",
+          "table_name": "raw_keuangan",
+          "row_count": 560,
+          "size_bytes": 46663,
+          "size_mb": 0.04
+        },
+        {
+          "file": "raw_lulusan.csv",
+          "table_name": "raw_lulusan",
+          "row_count": 8714,
+          "size_bytes": 1051339,
+          "size_mb": 1.0
+        },
+        {
+          "file": "raw_mahasiswa.csv",
+          "table_name": "raw_mahasiswa",
+          "row_count": 51000,
+          "size_bytes": 5630249,
+          "size_mb": 5.37
+        },
+        {
+          "file": "raw_mbkm.csv",
+          "table_name": "raw_mbkm",
+          "row_count": 7966,
+          "size_bytes": 804081,
+          "size_mb": 0.77
+        },
+        {
+          "file": "raw_penelitian.csv",
+          "table_name": "raw_penelitian",
+          "row_count": 1623,
+          "size_bytes": 271474,
+          "size_mb": 0.26
+        },
+        {
+          "file": "raw_pengabdian.csv",
+          "table_name": "raw_pengabdian",
+          "row_count": 874,
+          "size_bytes": 116953,
+          "size_mb": 0.11
+        },
+        {
+          "file": "raw_prestasi_mahasiswa.csv",
+          "table_name": "raw_prestasi_mahasiswa",
+          "row_count": 5040,
+          "size_bytes": 540760,
+          "size_mb": 0.52
+        },
+        {
+          "file": "raw_prodi.csv",
+          "table_name": "raw_prodi",
+          "row_count": 25,
+          "size_bytes": 1655,
+          "size_mb": 0.0
+        }
+      ],
+      "_file": "dataset_summary_20260518_130703.json"
+    }
+  ],
+  "pipelines": {
+    "staging_to_bronze": null,
+    "bronze_to_silver": null,
+    "silver_to_gold": null
+  },
+  "pipeline_runtime_total_sec": null,
+  "metadata_quality": {
+    "generated_at": "2026-05-18T13:19:29.650351+00:00",
+    "atlas_url": "http://atlas:21000",
+    "layers": [
+      {
+        "layer": "bronze",
+        "label": "Bronze",
+        "entity_count": 30,
+        "completeness": 33,
+        "accuracy": 0,
+        "timeliness": 0,
+        "consistency": 16,
+        "completeness_score_1_5": 2,
+        "accuracy_score_1_5": 1,
+        "timeliness_score_1_5": 1,
+        "consistency_score_1_5": 1
+      },
+      {
+        "layer": "silver",
+        "label": "Silver",
+        "entity_count": 15,
+        "completeness": 23,
+        "accuracy": 0,
+        "timeliness": 0,
+        "consistency": 16,
+        "completeness_score_1_5": 1,
+        "accuracy_score_1_5": 1,
+        "timeliness_score_1_5": 1,
+        "consistency_score_1_5": 1
+      },
+      {
+        "layer": "gold",
+        "label": "Gold",
+        "entity_count": 15,
+        "completeness": 25,
+        "accuracy": 0,
+        "timeliness": 0,
+        "consistency": 40,
+        "completeness_score_1_5": 1,
+        "accuracy_score_1_5": 1,
+        "timeliness_score_1_5": 1,
+        "consistency_score_1_5": 2
+      }
+    ],
+    "methodology": "Skor dihitung dari rata-rata entitas lakehouse_dataset per layer di Atlas: Completeness = kelengkapan atribut wajib; Accuracy = validitas skema/profil kualitas; Timeliness = kesegaran ingested_at/enriched_at; Consistency = keselarasan layer, qualifiedName, lokasi, dan klasifikasi. Skala 1–5 = pembulatan skor % ÷ 20."
+  },
+  "atlas_inventory": {
+    "generated_at": "2026-05-18T13:19:34.123329+00:00",
+    "atlas_url": "http://atlas:21000",
+    "entity_counts": {
+      "lakehouse_dataset_total": 45,
+      "lakehouse_etl_process_total": 30,
+      "by_layer": {
+        "staging": 12,
+        "bronze": 12,
+        "silver": 6,
+        "gold": 15
+      },
+      "staging_csv_entities": 42,
+      "bronze_entities": 30,
+      "silver_entities": 15,
+      "gold_entities": 15
+    },
+    "metadata_coverage": {
+      "bronze": {
+        "entity_count": 12,
+        "schema_documented_pct": 0.0,
+        "owner_steward_pct": 0.0,
+        "glossary_term_pct": 0.0,
+        "classification_pii_pct": 0.0
+      },
+      "silver": {
+        "entity_count": 6,
+        "schema_documented_pct": 0.0,
+        "owner_steward_pct": 0.0,
+        "glossary_term_pct": 0.0,
+        "classification_pii_pct": 0.0
+      },
+      "gold": {
+        "entity_count": 15,
+        "schema_documented_pct": 0.0,
+        "owner_steward_pct": 0.0,
+        "glossary_term_pct": 0.0,
+        "classification_pii_pct": 0.0
+      }
+    },
+    "lineage_completeness": {
+      "bronze": {
+        "sampled": 12,
+        "with_incoming_pct": 100.0,
+        "with_outgoing_pct": 91.67
+      },
+      "silver": {
+        "sampled": 6,
+        "with_incoming_pct": 100.0,
+        "with_outgoing_pct": 100.0
+      },
+      "gold": {
+        "sampled": 15,
+        "with_incoming_pct": 80.0,
+        "with_outgoing_pct": 0.0
+      }
+    },
+    "classifications_registered": null
+  },
+  "umt": {
+    "approximate_count": 45,
+    "generated_at": "2026-05-18T13:19:25.477608Z",
+    "_file": "umt_latest.json"
+  },
+  "registration_snapshots": [
+    {
+      "layer": "bronze",
+      "generated_at": "2026-05-18T13:10:22.231558+00:00",
+      "atlas_url": "http://atlas:21000",
+      "counts": {
+        "lakehouse_dataset": 40,
+        "lakehouse_etl_process": 26,
+        "bronze_classified": 26
+      },
+      "_file": "atlas_registration_bronze_20260518_131022.json"
+    },
+    {
+      "layer": "silver",
+      "generated_at": "2026-05-18T13:14:06.297083+00:00",
+      "atlas_url": "http://atlas:21000",
+      "counts": {
+        "lakehouse_dataset": 40,
+        "lakehouse_etl_process": 26,
+        "silver_classified": 11
+      },
+      "_file": "atlas_registration_silver_20260518_131406.json"
+    },
+    {
+      "layer": "gold",
+      "generated_at": "2026-05-18T13:19:19.284051+00:00",
+      "atlas_url": "http://atlas:21000",
+      "counts": {
+        "lakehouse_dataset": 44,
+        "lakehouse_etl_process": 30,
+        "gold_classified": 15
+      },
+      "_file": "atlas_registration_gold_20260518_131919.json"
+    }
+  ]
+}

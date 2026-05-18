@@ -1,0 +1,64 @@
+{
+  "run_id": "metadata_20260518T130648Z_1ae473",
+  "track": "metadata",
+  "label": "metadata_20260518T130648Z_1ae473",
+  "dag_id": "metadata_full_experiment",
+  "dag_run_id": "manual__2026-05-18T20:06:38+07:00",
+  "notes": null,
+  "started_at": "2026-05-18T13:06:48.748383+00:00",
+  "ended_at": "2026-05-18T13:19:39.173979+00:00",
+  "artifacts": [
+    {
+      "file": "dataset_summary_20260518_130703.json",
+      "recorded_at": "2026-05-18T13:07:03.068401+00:00"
+    },
+    {
+      "file": "staging_to_bronze_20260518_131007.json",
+      "recorded_at": "2026-05-18T13:10:07.378933+00:00",
+      "role": "pipeline:staging_to_bronze"
+    },
+    {
+      "file": "atlas_registration_bronze_20260518_131022.json",
+      "recorded_at": "2026-05-18T13:10:22.363077+00:00"
+    },
+    {
+      "file": "bronze_to_silver_20260518_131359.json",
+      "recorded_at": "2026-05-18T13:13:59.396055+00:00",
+      "role": "pipeline:bronze_to_silver"
+    },
+    {
+      "file": "atlas_registration_silver_20260518_131406.json",
+      "recorded_at": "2026-05-18T13:14:06.478508+00:00"
+    },
+    {
+      "file": "silver_to_gold_20260518_131905.json",
+      "recorded_at": "2026-05-18T13:19:05.123095+00:00",
+      "role": "pipeline:silver_to_gold"
+    },
+    {
+      "file": "atlas_registration_gold_20260518_131919.json",
+      "recorded_at": "2026-05-18T13:19:19.405511+00:00"
+    },
+    {
+      "file": "umt_20260518_131925.json",
+      "recorded_at": "2026-05-18T13:19:25.483289+00:00",
+      "role": "umt"
+    },
+    {
+      "file": "metadata_quality_20260518_131929.json",
+      "recorded_at": "2026-05-18T13:19:29.652350+00:00",
+      "role": "metadata_quality"
+    },
+    {
+      "file": "atlas_inventory_20260518_131934.json",
+      "recorded_at": "2026-05-18T13:19:34.189391+00:00",
+      "role": "atlas_inventory"
+    },
+    {
+      "file": "experiment_summary_20260518_131939.json",
+      "recorded_at": "2026-05-18T13:19:39.173023+00:00",
+      "role": "experiment_summary"
+    }
+  ],
+  "summary_file": "experiment_summary_20260518_131939.json"
+}

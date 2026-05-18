@@ -1,0 +1,46 @@
+{
+  "generated_at": "2026-05-18T13:19:29.650351+00:00",
+  "atlas_url": "http://atlas:21000",
+  "layers": [
+    {
+      "layer": "bronze",
+      "label": "Bronze",
+      "entity_count": 30,
+      "completeness": 33,
+      "accuracy": 0,
+      "timeliness": 0,
+      "consistency": 16,
+      "completeness_score_1_5": 2,
+      "accuracy_score_1_5": 1,
+      "timeliness_score_1_5": 1,
+      "consistency_score_1_5": 1
+    },
+    {
+      "layer": "silver",
+      "label": "Silver",
+      "entity_count": 15,
+      "completeness": 23,
+      "accuracy": 0,
+      "timeliness": 0,
+      "consistency": 16,
+      "completeness_score_1_5": 1,
+      "accuracy_score_1_5": 1,
+      "timeliness_score_1_5": 1,
+      "consistency_score_1_5": 1
+    },
+    {
+      "layer": "gold",
+      "label": "Gold",
+      "entity_count": 15,
+      "completeness": 25,
+      "accuracy": 0,
+      "timeliness": 0,
+      "consistency": 40,
+      "completeness_score_1_5": 1,
+      "accuracy_score_1_5": 1,
+      "timeliness_score_1_5": 1,
+      "consistency_score_1_5": 2
+    }
+  ],
+  "methodology": "Skor dihitung dari rata-rata entitas lakehouse_dataset per layer di Atlas: Completeness = kelengkapan atribut wajib; Accuracy = validitas skema/profil kualitas; Timeliness = kesegaran ingested_at/enriched_at; Consistency = keselarasan layer, qualifiedName, lokasi, dan klasifikasi. Skala 1–5 = pembulatan skor % ÷ 20."
+}

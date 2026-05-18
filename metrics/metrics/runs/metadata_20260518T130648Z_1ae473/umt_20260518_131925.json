@@ -1,0 +1,1446 @@
+{
+  "generated_at": "2026-05-18T13:19:25.477608Z",
+  "approximate_count": 45,
+  "rows": [
+    {
+      "asset_qualified_name": "staging.raw_akreditasi@lakehouse",
+      "guid": "edd03982-6450-4689-98c8-db802a7d12a2",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_akreditasi.csv",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "staging.raw_dosen@lakehouse",
+      "guid": "0b0831a5-faf1-4348-bf32-ae184ed6d03e",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_dosen.csv",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "staging.raw_kegiatan_dosen@lakehouse",
+      "guid": "294dc1f6-1d7b-443b-8e8c-7613f4d5f3f6",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_kegiatan_dosen.csv",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "staging.raw_kerjasama@lakehouse",
+      "guid": "225ce227-d98e-4a35-8ff9-1339d9d414ef",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_kerjasama.csv",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "staging.raw_keuangan@lakehouse",
+      "guid": "90c633cd-6b6c-4640-97ec-03342a63a34c",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_keuangan.csv",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "staging.raw_lulusan@lakehouse",
+      "guid": "7f368c32-a40e-4973-bb9d-d2ab29e549a3",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_lulusan.csv",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "staging.raw_mahasiswa@lakehouse",
+      "guid": "731989aa-8e44-46fe-a8e1-83bf970d1dbb",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_mahasiswa.csv",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "staging.raw_mbkm@lakehouse",
+      "guid": "801025b2-0862-4c25-bfba-6e54678fa661",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_mbkm.csv",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "staging.raw_penelitian@lakehouse",
+      "guid": "3f1a0c1c-9d36-44f5-b16d-a0950757e6d4",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_penelitian.csv",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "staging.raw_pengabdian@lakehouse",
+      "guid": "06d584a0-b773-43bd-bbe4-0c5a7a4609ff",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_pengabdian.csv",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "staging.raw_prestasi_mahasiswa@lakehouse",
+      "guid": "21c379fa-c6d9-414c-b4b8-a2a597660b42",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_prestasi_mahasiswa.csv",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "staging.raw_prodi@lakehouse",
+      "guid": "cdd81937-24cc-408d-a933-bce6eddf2271",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_prodi.csv",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "bronze.raw_akreditasi@lakehouse",
+      "guid": "7a732105-46ad-44e6-8293-0124df16c6a1",
+      "layer": "bronze",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Iceberg table in Bronze layer: lakehouse.bronze.raw_akreditasi",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "bronze.raw_dosen@lakehouse",
+      "guid": "2c92080e-0839-44da-a914-83a223bd56c8",
+      "layer": "bronze",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Iceberg table in Bronze layer: lakehouse.bronze.raw_dosen",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "bronze.raw_kegiatan_dosen@lakehouse",
+      "guid": "21113aec-a623-42ba-95a4-e87be9324385",
+      "layer": "bronze",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Iceberg table in Bronze layer: lakehouse.bronze.raw_kegiatan_dosen",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "bronze.raw_kerjasama@lakehouse",
+      "guid": "7c73bd5e-a9e4-42b5-8475-f8609c1ec8ac",
+      "layer": "bronze",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Iceberg table in Bronze layer: lakehouse.bronze.raw_kerjasama",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "bronze.raw_keuangan@lakehouse",
+      "guid": "9ce66a7b-5a17-4140-9eb8-4497fe90cc89",
+      "layer": "bronze",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Iceberg table in Bronze layer: lakehouse.bronze.raw_keuangan",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "bronze.raw_lulusan@lakehouse",
+      "guid": "1d0bc6df-434c-4eb9-a7b7-ab5167a17c46",
+      "layer": "bronze",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Iceberg table in Bronze layer: lakehouse.bronze.raw_lulusan",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "bronze.raw_mahasiswa@lakehouse",
+      "guid": "de450f9a-5495-4d88-bfcb-488bc13765fd",
+      "layer": "bronze",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Iceberg table in Bronze layer: lakehouse.bronze.raw_mahasiswa",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "bronze.raw_mbkm@lakehouse",
+      "guid": "2655a877-dcf3-479f-b7ac-9912fca2b67a",
+      "layer": "bronze",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Iceberg table in Bronze layer: lakehouse.bronze.raw_mbkm",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "bronze.raw_penelitian@lakehouse",
+      "guid": "2545dc31-f7f1-42bb-bb91-a13f12364aff",
+      "layer": "bronze",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Iceberg table in Bronze layer: lakehouse.bronze.raw_penelitian",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "bronze.raw_pengabdian@lakehouse",
+      "guid": "8a9b3065-e959-481e-ac9c-eb059ddc82dc",
+      "layer": "bronze",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Iceberg table in Bronze layer: lakehouse.bronze.raw_pengabdian",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "bronze.raw_prestasi_mahasiswa@lakehouse",
+      "guid": "953def87-20d9-4b7b-8b93-a36a5b07b86f",
+      "layer": "bronze",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Iceberg table in Bronze layer: lakehouse.bronze.raw_prestasi_mahasiswa",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "bronze.raw_prodi@lakehouse",
+      "guid": "be81d15b-73a1-4622-8e4c-78147423640f",
+      "layer": "bronze",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Iceberg table in Bronze layer: lakehouse.bronze.raw_prodi",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "silver.silver_akreditasi_aktif@lakehouse",
+      "guid": "0c942a4d-3362-4039-87be-5f0c38da9831",
+      "layer": "silver",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Akreditasi terakhir per prodi yang masih berlaku, termasuk flag akreditasi internasional. Sumber IKU-8 (prodi akreditasi/sertifikat internasional).",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "silver.silver_dosen@lakehouse",
+      "guid": "2300f449-059e-481c-99a8-2e1cee498dc5",
+      "layer": "silver",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Data dosen ITERA dengan flag kualifikasi (S3, sertifikasi, praktisi) dan aktivitas tridarma. Sumber IKU-3 (dosen tridarma luar) dan IKU-4 (kualifikasi dosen).",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "silver.silver_kerjasama_aktif@lakehouse",
+      "guid": "851e4943-82f3-4c28-ae6f-a3147bc58c2c",
+      "layer": "silver",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Kerjasama (MoU/PKS) ITERA yang masih aktif, dengan flag program MBKM. Sumber IKU-6 (persentase prodi bekerjasama dengan mitra).",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "silver.silver_lulusan@lakehouse",
+      "guid": "88b4a717-3969-4471-a563-9438e7c064c1",
+      "layer": "silver",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Data lulusan ITERA dengan flag status pasca-lulus (bekerja, studi lanjut, wirausaha). Merupakan sumber utama IKU-1 (persentase lulusan terserap).",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "silver.silver_mahasiswa@lakehouse",
+      "guid": "0d2ede2e-6694-4b1e-b33a-89cf825fe14c",
+      "layer": "silver",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Data mahasiswa aktif ITERA yang telah di-enriched dengan nama prodi, jurusan, dan flag MBKM (≥20 SKS luar kampus). Sumber utama untuk IKU-2 (mahasiswa MBKM/prestasi) dan basis dimensi mahasiswa di Gold layer.",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "silver.silver_penelitian_pkm@lakehouse",
+      "guid": "dbe579aa-bc7a-42fc-8cda-3131d47d4cf0",
+      "layer": "silver",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Gabungan data penelitian dan pengabdian masyarakat (PkM) dosen ITERA dengan flag rekognisi internasional dan penerapan masyarakat. Sumber IKU-5 (rasio output penelitian per dosen).",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "gold.dim_dosen@lakehouse",
+      "guid": "1a9c6bdc-bcbb-4a09-a5cc-5e369c385929",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Gold dimension: dim_dosen",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "gold.dim_mahasiswa@lakehouse",
+      "guid": "8807bcfe-449b-47ea-bfe9-ed9d7f4208bf",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Gold dimension: dim_mahasiswa",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "gold.dim_prodi@lakehouse",
+      "guid": "ab324339-160a-4cb5-9019-a9d86519ef1f",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Gold dimension: dim_prodi",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "gold.dim_topik_penelitian@lakehouse",
+      "guid": "78bbf427-9bf6-4740-b7a6-75f97c4d376d",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Gold dimension: dim_topik_penelitian",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "gold.dim_waktu@lakehouse",
+      "guid": "2099a928-8e5f-4055-aa24-9cfdd7d61c39",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Gold dimension: dim_waktu",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "gold.fact_iku1_lulusan@lakehouse",
+      "guid": "bd52220f-6bd5-4010-ae29-72a3334a1563",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "IKU-1: Lulusan bekerja/studi lanjut/wirausaha — Formula: (lulusan_bekerja + lulusan_lanjut_studi + lulusan_wirausaha) / total_lulusan * 100",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "gold.fact_iku2_mbkm@lakehouse",
+      "guid": "525e34ee-ee69-4292-8ec4-3c61ed35f2b2",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "IKU-2: Mahasiswa MBKM ≥20 SKS / prestasi nasional — Formula: mahasiswa_memenuhi_iku2 / total_mahasiswa_aktif * 100",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "gold.fact_iku3_dosen_tridarma@lakehouse",
+      "guid": "2dae004f-12c7-4841-a2d8-7d6a1429d82c",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "IKU-3: Dosen tridarma luar/praktisi/bina prestasi — Formula: dosen_memenuhi_iku3 / total_dosen_tetap * 100",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "gold.fact_iku4_kualifikasi_dosen@lakehouse",
+      "guid": "f3ee553a-de88-4a5c-9fdc-64d6a3824987",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "IKU-4: Dosen S3/sertifikat kompetensi/praktisi — Formula: dosen_memenuhi_iku4 / total_dosen_tetap * 100",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "gold.fact_iku5_penelitian_pkm@lakehouse",
+      "guid": "d744d641-3982-4591-af86-14c89e82f477",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "IKU-5: Rasio output penelitian rekognisi intl per dosen — Formula: total_output_eligible / total_dosen",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "gold.fact_iku6_kerjasama_prodi@lakehouse",
+      "guid": "4bd910cd-d575-4795-9d84-66c7a78b1f3b",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "IKU-6: Prodi bekerjasama dengan mitra — Formula: prodi_berkerjasama / total_prodi_s1 * 100",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "gold.fact_iku7_metode_pembelajaran@lakehouse",
+      "guid": "53f9e86f-4490-4407-a272-4bac96a934c9",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "IKU-7: MK case method / team-based project — Formula: mk_memenuhi / total_mk * 100",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "gold.fact_iku8_akreditasi_internasional@lakehouse",
+      "guid": "d123d6cd-155a-4183-9dc3-f66cf5fd705a",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "IKU-8: Prodi akreditasi/sertifikat internasional — Formula: prodi_akreditasi_internasional / total_prodi_s1 * 100",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "gold.fact_rekap_iku_institusi@lakehouse",
+      "guid": "ad4b7530-29f1-4570-b295-aa1a90e27b26",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Gold fact: fact_rekap_iku_institusi",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    },
+    {
+      "asset_qualified_name": "gold.fact_tata_kelola@lakehouse",
+      "guid": "0a29e03e-74e5-4f8e-868b-b34d5596c0d4",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {},
+        "format": null,
+        "location": null,
+        "row_count": null,
+        "column_count": null,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Gold fact: fact_tata_kelola",
+        "owner": null,
+        "domain": null,
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": null,
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": null
+    }
+  ]
+}

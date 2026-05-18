@@ -1,6 +1,6 @@
 import path from 'path';
 import type { AtlasEntity } from './atlasApi';
-import { layerFromQualifiedName, searchEntities } from './atlasApi';
+import { getEntity, layerFromQualifiedName, searchEntities } from './atlasApi';
 import { metricsRoot, readJsonFile, resolveMetadataQualityPath } from './metricsReader';
 
 export interface LayerQualityMetrics {
@@ -312,6 +312,27 @@ export async function loadMetadataQualityFromMetrics(): Promise<MetadataQualityR
 	};
 }
 
+async function hydrateAtlasEntities(entities: AtlasEntity[]): Promise<AtlasEntity[]> {
+	const hydrated: AtlasEntity[] = [];
+	for (const stub of entities) {
+		if (!stub.guid) {
+			hydrated.push(stub);
+			continue;
+		}
+		try {
+			const full = await getEntity(stub.guid);
+			const entity = full.entity ?? (full as unknown as AtlasEntity);
+			if (!entity.classifications?.length && stub.classifications?.length) {
+				entity.classifications = stub.classifications;
+			}
+			hydrated.push(entity);
+		} catch {
+			hydrated.push(stub);
+		}
+	}
+	return hydrated;
+}
+
 export async function buildMetadataQualityReport(): Promise<MetadataQualityReport> {
 	const layerResults: LayerQualityMetrics[] = [];
 
@@ -323,7 +344,8 @@ export async function buildMetadataQualityReport(): Promise<MetadataQualityRepor
 			100,
 			0,
 		);
-		layerResults.push(aggregateLayer(cfg.layer, cfg.label, result.entities || []));
+		const entities = await hydrateAtlasEntities(result.entities || []);
+		layerResults.push(aggregateLayer(cfg.layer, cfg.label, entities));
 	}
 
 	return {
