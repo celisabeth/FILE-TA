@@ -161,6 +161,7 @@ Portal menyediakan halaman embed terpisah:
 | `% IKU aneh setelah agregasi` | SUM pada kolom persen | Pakai **AVG** atau hitung ulang dari count |
 | Embed portal blank | X-Frame / login | Buka URL embed di tab baru; login Superset sekali |
 | URI `localhost` dari VM remote | Host salah | Pakai IP VM: `103.174.114.177:18088` |
+| `Column 'record_count' cannot be resolved` | Metrik/partisi Iceberg di chart, bukan kolom | Hapus `record_count` dari chart; pakai `COUNT(*)` — [panduan §11.1](panduan-lengkap-dashboard-superset.md#111-error-record_count--file_count-superset--trino) |
 
 **Uji URI dari container Superset:**
 

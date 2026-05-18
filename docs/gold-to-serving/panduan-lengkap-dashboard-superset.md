@@ -35,10 +35,10 @@ flowchart LR
     Dash2[Dashboard AQE OFF]
     Dash3[Dashboard AQE ON]
   end
-  subgraph portal [Portal]
-    P1[/dashboards/analitik]
-    P2[/dashboards/kpi-aqe-off]
-    P3[/dashboards/kpi-aqe-on]
+  subgraph portal [Portal Insightera]
+    P1["dashboards/analitik"]
+    P2["dashboards/kpi-aqe-off"]
+    P3["dashboards/kpi-aqe-on"]
   end
   G1 --> C1 --> DB1 --> D1 --> Dash1 --> P1
   G2 --> C2 --> DB2 --> D2 --> Dash2 --> P2
@@ -358,6 +358,55 @@ Format embed: `http://<IP-VM>:18089/superset/dashboard/<ID>/?standalone=1`
 | `% IKU salah` | SUM pada kolom persen | Pakai **AVG** |
 | Embed portal blank | Belum login Superset / URL salah | Buka URL embed di tab baru; login sekali |
 | Hanya 1 dashboard perlu | Penelitian operasional | Cukup Langkah C; OFF/ON opsional BAB IV |
+| **`Column 'record_count' cannot be resolved`** | Bukan kolom tabel — metadata partisi Iceberg (`file_count`, `record_count`, `total_size`) ikut terpilih di chart | Hapus metrik `record_count`; pakai kolom data saja atau `COUNT(*)` — lihat §11.1 |
+
+### 11.1 Error `record_count` / `file_count` (Superset + Trino)
+
+Pesan seperti:
+
+```text
+Column 'record_count' cannot be resolved
+```
+
+sering muncul pada dataset **`dim_waktu`** (atau tabel Iceberg lain) ketika di chart/metric/filter terpilih **`record_count`**, **`file_count`**, atau **`total_size`**.
+
+Itu **bukan** kolom star schema. Teks `Latest partition: .../record_count=72/...` di UI Superset hanya **statistik file Iceberg**, bukan field yang bisa di-`SELECT`.
+
+**Kolom valid `dim_waktu`:**
+
+| Kolom | Tipe |
+|-------|------|
+| `waktu_id` | BIGINT |
+| `tahun` | BIGINT |
+| `semester` | VARCHAR |
+| `triwulan` | BIGINT |
+| `bulan` | BIGINT |
+| `nama_bulan` | VARCHAR |
+
+**Perbaikan di Superset:**
+
+1. **Data** → **Datasets** → buka dataset bermasalah (mis. `dim_waktu`)  
+2. **⋮** → **Sync columns from source**  
+3. Tab **Columns** → hapus / jangan pakai `record_count`, `file_count`, `total_size` jika muncul  
+4. Buka **chart** yang error → **Metrics**: ganti `record_count` → **COUNT(\*)** atau hapus metrik  
+5. **Filters / Dimensions**: hanya `tahun`, `bulan`, `semester`, dll.
+
+**Uji di SQL Lab (harus sukses):**
+
+```sql
+SELECT waktu_id, tahun, semester, triwulan, bulan, nama_bulan
+FROM lakehouse.gold.dim_waktu
+ORDER BY tahun, bulan
+LIMIT 20;
+```
+
+Untuk jumlah baris:
+
+```sql
+SELECT COUNT(*) AS jumlah_baris FROM lakehouse.gold.dim_waktu;
+```
+
+Jangan: `SELECT record_count FROM lakehouse.gold.dim_waktu`.
 
 ---
 
