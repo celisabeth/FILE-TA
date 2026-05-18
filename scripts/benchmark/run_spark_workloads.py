@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from benchmark._common import metrics_dir, utc_now, write_json
 from benchmark.workloads import spark_silver_workloads
 from spark.aqe_config import read_applied_aqe_configs, resolve_aqe_scenario
-from spark.bronze_to_silver import get_spark_session
+from spark.bronze_to_silver_aqe import get_spark_session
 
 logger = logging.getLogger("benchmark.spark_workloads")
 
