@@ -47,10 +47,10 @@ const DashboardEmbedLayout: React.FC<DashboardEmbedLayoutProps> = ({ linkKey }) 
 						className='ms-2'
 						icon='OpenInNew'
 						tag='a'
-						href={link.externalUrl}
+						href={link.embedUrl}
 						target='_blank'
 						rel='noopener noreferrer'>
-						Buka layanan
+						Buka di tab baru
 					</Button>
 				</SubHeaderRight>
 			</SubHeader>
@@ -63,7 +63,11 @@ const DashboardEmbedLayout: React.FC<DashboardEmbedLayoutProps> = ({ linkKey }) 
 					<EmbeddedServiceFrame link={link} />
 				)}
 			</Page>
-			<DashboardEmbedSettingsModal isOpen={settingsOpen} setIsOpen={setSettingsOpen} />
+			<DashboardEmbedSettingsModal
+				isOpen={settingsOpen}
+				setIsOpen={setSettingsOpen}
+				highlightKey={linkKey}
+			/>
 		</PageWrapper>
 	);
 };

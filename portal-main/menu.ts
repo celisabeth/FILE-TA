@@ -90,24 +90,19 @@ export const dashboardsMenu = {
 		icon: 'AutoGraph',
 		subMenu: null,
 	},
-	monitoring: {
-		id: 'monitoring',
-		text: 'Monitoring',
-		icon: 'Monitor',
-		subMenu: {
-			monitoringAqe: {
-				id: 'monitoringAqe',
-				text: 'AQE Pipeline',
-				path: 'dashboards/monitoring-aqe',
-				icon: 'Speed',
-			},
-			monitoringMlops: {
-				id: 'monitoringMlops',
-				text: 'MLOps Pipeline',
-				path: 'dashboards/monitoring-mlops',
-				icon: 'PrecisionManufacturing',
-			},
-		},
+	monitoringAqe: {
+		id: 'monitoringAqe',
+		text: 'Monitoring AQE',
+		path: 'dashboards/monitoring-aqe',
+		icon: 'Speed',
+		subMenu: null,
+	},
+	monitoringMlops: {
+		id: 'monitoringMlops',
+		text: 'Monitoring MLOps',
+		path: 'dashboards/monitoring-mlops',
+		icon: 'PrecisionManufacturing',
+		subMenu: null,
 	},
 };
 

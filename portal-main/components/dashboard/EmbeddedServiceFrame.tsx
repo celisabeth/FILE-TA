@@ -25,18 +25,18 @@ const EmbeddedServiceFrame: React.FC<EmbeddedServiceFrameProps> = ({
 						color='info'
 						isLink
 						tag='a'
-						href={link.externalUrl}
+						href={link.embedUrl}
 						target='_blank'
 						rel='noopener noreferrer'
 						className='ms-1'>
-						Buka tab baru
+						Buka di tab baru
 					</Button>
 				</Alert>
 			)}
 			{loadError && (
 				<Alert color='warning' className='mb-3'>
-					Embed mungkin diblokir (X-Frame-Options / CORS). Gunakan tombol &quot;Buka
-					layanan&quot; di header atau pastikan Grafana{' '}
+					Embed mungkin diblokir (X-Frame-Options / CORS). Gunakan tombol &quot;Buka di tab
+					baru&quot; di header atau pastikan Grafana{' '}
 					<code>GF_SECURITY_ALLOW_EMBEDDING=true</code>.
 				</Alert>
 			)}

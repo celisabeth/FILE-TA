@@ -174,7 +174,7 @@ export function buildDashboardLinks(config: DashboardEmbedConfig): Record<
 			icon: 'Analytics',
 			color: 'primary',
 			embedUrl: `${supersetBase}/superset/welcome/?standalone=1`,
-			externalUrl: `${supersetBase}/`,
+			externalUrl: `${supersetBase}/superset/welcome/?standalone=1`,
 			embedHint: 'Login Superset: admin / admin. Buat dataset dari lakehouse.gold lalu chart.',
 		},
 		grafanaInsight: {
@@ -236,6 +236,12 @@ export function buildDashboardLinks(config: DashboardEmbedConfig): Record<
 		if (o.embedUrl) links[key].embedUrl = o.embedUrl.trim();
 		if (o.externalUrl) links[key].externalUrl = o.externalUrl.trim();
 		if (o.embedHint) links[key].embedHint = o.embedHint;
+	}
+
+	for (const key of Object.keys(links) as DashboardPortalKey[]) {
+		if (!links[key].externalUrl?.trim()) {
+			links[key].externalUrl = links[key].embedUrl;
+		}
 	}
 
 	return links;

@@ -80,24 +80,24 @@ const DashboardsHubPage: NextPage = () => {
 										</CardLabel>
 									</CardHeader>
 									<CardBody>
+										<p className='small text-muted text-truncate mb-3' title={item.embedUrl}>
+											{item.embedUrl}
+										</p>
 										<div className='d-flex flex-wrap gap-2'>
 											<Link
 												href={PATH_BY_KEY[item.key] || '/dashboards'}
 												passHref
 												legacyBehavior>
 												<Button color={item.color} icon='Fullscreen'>
-													Buka embed
+													Buka halaman embed
 												</Button>
 											</Link>
 											<Button
 												color='dark'
 												isLight
-												icon='OpenInNew'
-												tag='a'
-												href={item.externalUrl}
-												target='_blank'
-												rel='noopener noreferrer'>
-												Tab baru
+												icon='Settings'
+												onClick={() => setSettingsOpen(true)}>
+												URL Embed
 											</Button>
 										</div>
 									</CardBody>

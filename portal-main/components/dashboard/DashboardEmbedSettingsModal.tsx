@@ -21,9 +21,11 @@ const LINK_LABELS: Record<DashboardPortalKey, string> = {
 interface Props {
 	isOpen: boolean;
 	setIsOpen: (open: boolean) => void;
+	/** Sorot satu dashboard saat dibuka dari halaman embed tertentu. */
+	highlightKey?: DashboardPortalKey;
 }
 
-const DashboardEmbedSettingsModal: React.FC<Props> = ({ isOpen, setIsOpen }) => {
+const DashboardEmbedSettingsModal: React.FC<Props> = ({ isOpen, setIsOpen, highlightKey }) => {
 	const {
 		config,
 		links,
@@ -64,7 +66,9 @@ const DashboardEmbedSettingsModal: React.FC<Props> = ({ isOpen, setIsOpen }) => 
 		});
 		try {
 			await saveConfig(toSave);
-			setSuccess('Konfigurasi disimpan di server (data/embed-config.json). Semua pengguna portal memakai URL ini.');
+			setSuccess(
+				'Konfigurasi disimpan di server (data/embed-config.json). Semua pengguna portal memakai URL embed ini.',
+			);
 		} catch (e: unknown) {
 			setError(e instanceof Error ? e.message : 'Gagal menyimpan');
 		} finally {
@@ -74,7 +78,9 @@ const DashboardEmbedSettingsModal: React.FC<Props> = ({ isOpen, setIsOpen }) => 
 
 	const handlePreview = () => {
 		updateBases({ grafanaBase, supersetBase, prometheusBase });
-		setSuccess('Pratinjau diterapkan di browser ini. Klik Simpan ke server agar permanen untuk semua user.');
+		setSuccess(
+			'Pratinjau diterapkan di browser ini. Klik Simpan ke server agar permanen untuk semua user.',
+		);
 	};
 
 	return (
@@ -87,10 +93,9 @@ const DashboardEmbedSettingsModal: React.FC<Props> = ({ isOpen, setIsOpen }) => 
 			</ModalHeader>
 			<ModalBody>
 				<p className='text-muted small'>
-					Atur base URL Grafana, Superset, dan Prometheus tanpa mengubah variabel lingkungan di
-					VM. Jika masih memakai <code>localhost</code>, portal akan mengganti host ke alamat
-					yang sama dengan browser Anda (mis. <code>103.174.114.177</code>) agar tombol{' '}
-					<strong>Tab baru</strong> dapat dibuka.
+					Atur URL yang dimuat di iframe portal (bukan halaman utama Grafana/Superset).
+					Jika masih memakai <code>localhost</code>, host diganti ke alamat browser Anda
+					(mis. <code>103.174.114.177</code>).
 				</p>
 				<Alert color='info' isLight>
 					Sumber aktif: <strong>{source}</strong>
@@ -108,6 +113,7 @@ const DashboardEmbedSettingsModal: React.FC<Props> = ({ isOpen, setIsOpen }) => 
 					</Alert>
 				)}
 
+				<h6 className='mb-3'>Base URL layanan</h6>
 				<FormGroup>
 					<Label>Grafana base URL</Label>
 					<Input
@@ -118,7 +124,7 @@ const DashboardEmbedSettingsModal: React.FC<Props> = ({ isOpen, setIsOpen }) => 
 						placeholder={`http://${typeof window !== 'undefined' ? window.location.hostname : '103.174.114.177'}:13001`}
 					/>
 					<small className='text-muted'>
-						Contoh embed Insight: {links.grafanaInsight.embedUrl}
+						Dipakai untuk menghitung URL embed Grafana jika field per-dashboard dikosongkan.
 					</small>
 				</FormGroup>
 
@@ -144,31 +150,45 @@ const DashboardEmbedSettingsModal: React.FC<Props> = ({ isOpen, setIsOpen }) => 
 					/>
 				</FormGroup>
 
+				<h6 className='mb-3 mt-4'>URL embed per dashboard (iframe)</h6>
+				{DASHBOARD_HUB_KEYS.map((key) => {
+					const override = config.links?.[key];
+					const built = links[key];
+					const isHighlight = highlightKey === key;
+					return (
+						<CardEmbedOverride
+							key={key}
+							label={LINK_LABELS[key]}
+							embedUrl={override?.embedUrl ?? built.embedUrl}
+							onEmbedChange={(v) =>
+								updateLinkOverride(key, { embedUrl: v, externalUrl: v })
+							}
+							onClear={() => clearLinkOverride(key)}
+							hasOverride={Boolean(override?.embedUrl)}
+							highlight={isHighlight}
+						/>
+					);
+				})}
+
 				<Button
 					color='link'
 					className='px-0 mb-3'
 					onClick={() => setAdvanced(!advanced)}
 					icon={advanced ? 'ExpandLess' : 'ExpandMore'}>
-					URL embed per dashboard (lanjutan)
+					Prometheus (opsional)
 				</Button>
 
-				{advanced &&
-					DASHBOARD_HUB_KEYS.concat(['prometheus'] as DashboardPortalKey[]).map((key) => {
-						const override = config.links?.[key];
-						const built = links[key];
-						return (
-							<CardEmbedOverride
-								key={key}
-								label={LINK_LABELS[key]}
-								embedUrl={override?.embedUrl ?? built.embedUrl}
-								externalUrl={override?.externalUrl ?? built.externalUrl}
-								onEmbedChange={(v) => updateLinkOverride(key, { embedUrl: v })}
-								onExternalChange={(v) => updateLinkOverride(key, { externalUrl: v })}
-								onClear={() => clearLinkOverride(key)}
-								hasOverride={Boolean(override?.embedUrl || override?.externalUrl)}
-							/>
-						);
-					})}
+				{advanced && (
+					<CardEmbedOverride
+						label={LINK_LABELS.prometheus}
+						embedUrl={config.links?.prometheus?.embedUrl ?? links.prometheus.embedUrl}
+						onEmbedChange={(v) =>
+							updateLinkOverride('prometheus', { embedUrl: v, externalUrl: v })
+						}
+						onClear={() => clearLinkOverride('prometheus')}
+						hasOverride={Boolean(config.links?.prometheus?.embedUrl)}
+					/>
+				)}
 			</ModalBody>
 			<ModalFooter>
 				<Button color='light' onClick={() => resetToDefaults()}>
@@ -188,22 +208,21 @@ const DashboardEmbedSettingsModal: React.FC<Props> = ({ isOpen, setIsOpen }) => 
 function CardEmbedOverride({
 	label,
 	embedUrl,
-	externalUrl,
 	onEmbedChange,
-	onExternalChange,
 	onClear,
 	hasOverride,
+	highlight,
 }: {
 	label: string;
 	embedUrl: string;
-	externalUrl: string;
 	onEmbedChange: (v: string) => void;
-	onExternalChange: (v: string) => void;
 	onClear: () => void;
 	hasOverride: boolean;
+	highlight?: boolean;
 }) {
 	return (
-		<div className='border rounded p-3 mb-3'>
+		<div
+			className={`border rounded p-3 mb-3${highlight ? ' border-primary border-2' : ''}`}>
 			<div className='d-flex justify-content-between align-items-center mb-2'>
 				<strong className='small'>{label}</strong>
 				{hasOverride && (
@@ -212,20 +231,12 @@ function CardEmbedOverride({
 					</Button>
 				)}
 			</div>
-			<FormGroup>
-				<Label className='small'>Embed URL (iframe)</Label>
+			<FormGroup className='mb-0'>
+				<Label className='small'>URL embed (iframe)</Label>
 				<Input
 					value={embedUrl}
 					onChange={(e: React.ChangeEvent<HTMLInputElement>) => onEmbedChange(e.target.value)}
-				/>
-			</FormGroup>
-			<FormGroup className='mb-0'>
-				<Label className='small'>External URL (tab baru)</Label>
-				<Input
-					value={externalUrl}
-					onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-						onExternalChange(e.target.value)
-					}
+					placeholder='http://103.174.114.177:13001/d/...?orgId=1&kiosk'
 				/>
 			</FormGroup>
 		</div>
