@@ -15,6 +15,7 @@ import base64
 import json
 import logging
 import urllib.error
+import urllib.parse
 import urllib.request
 from datetime import datetime
 
@@ -112,6 +113,7 @@ def create_lakehouse_types():
                     _attr("profiling", "string"),
                     _attr("pii_columns", "string"),
                     _attr("ingested_at", "string"),
+                    _attr("enriched_at", "string"),
                 ],
             },
             {
@@ -154,6 +156,39 @@ def _attr(name: str, type_name: str) -> dict:
 # 2. Entity registration
 # ---------------------------------------------------------------------------
 
+def _entity_guid_for_qualified_name(qualified_name: str) -> str | None:
+    path = (
+        "/api/atlas/v2/entity/uniqueAttribute/type/lakehouse_dataset"
+        f"?attr:qualifiedName={urllib.parse.quote(qualified_name)}"
+    )
+    try:
+        result = _atlas_request("GET", path)
+        if result and result.get("entity"):
+            return result["entity"].get("guid")
+    except Exception:
+        pass
+    return None
+
+
+def _upsert_lakehouse_dataset(entity: dict) -> dict | None:
+    """POST baru atau PUT jika entitas sudah ada (hindari 409 yang mengabaikan atribut)."""
+    qn = entity["entity"]["attributes"]["qualifiedName"]
+    guid = _entity_guid_for_qualified_name(qn)
+    if guid:
+        entity["entity"]["guid"] = guid
+        result = _atlas_request("PUT", f"/api/atlas/v2/entity/guid/{guid}", entity)
+        if result is not None:
+            return result
+    result = _atlas_request("POST", "/api/atlas/v2/entity", entity)
+    if result is not None:
+        return result
+    guid = _entity_guid_for_qualified_name(qn)
+    if not guid:
+        return None
+    entity["entity"]["guid"] = guid
+    return _atlas_request("PUT", f"/api/atlas/v2/entity/guid/{guid}", entity)
+
+
 def register_staging_entity(table_name: str) -> dict | None:
     """Daftarkan file CSV staging sebagai entity Atlas."""
     entity = {
@@ -170,7 +205,7 @@ def register_staging_entity(table_name: str) -> dict | None:
             "classifications": [{"typeName": "Staging_Layer"}],
         }
     }
-    result = _atlas_request("POST", "/api/atlas/v2/entity", entity)
+    result = _upsert_lakehouse_dataset(entity)
     if result:
         logger.info("  ✓ Staging entity: %s", table_name)
     return result
@@ -210,7 +245,7 @@ def register_bronze_entity(table_name: str, profiling: dict) -> dict | None:
             "classifications": classifications,
         }
     }
-    result = _atlas_request("POST", "/api/atlas/v2/entity", entity)
+    result = _upsert_lakehouse_dataset(entity)
     if result:
         logger.info("  ✓ Bronze entity: %s (rows=%s)", table_name, f"{profiling.get('row_count', 0):,}")
     return result

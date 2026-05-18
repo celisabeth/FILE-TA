@@ -12,6 +12,7 @@ import json
 import logging
 import os
 import urllib.error
+import urllib.parse
 import urllib.request
 from typing import Any
 
@@ -47,6 +48,38 @@ def atlas_request(method: str, path: str, body: dict | None = None, *, timeout: 
         return None
 
 
+def normalize_dataset_attributes(attrs: Any) -> dict[str, Any]:
+    """Samakan bentuk atribut Atlas (search stub vs GET penuh, alias camelCase)."""
+    if not attrs:
+        return {}
+    if isinstance(attrs, list):
+        merged: dict[str, Any] = {}
+        for item in attrs:
+            if isinstance(item, dict) and item.get("name") is not None:
+                merged[str(item["name"])] = item.get("value")
+        attrs = merged
+    if not isinstance(attrs, dict):
+        return {}
+
+    out = dict(attrs)
+    aliases: dict[str, tuple[str, ...]] = {
+        "row_count": ("rowCount",),
+        "column_count": ("columnCount",),
+        "schema_def": ("schemaDef", "schema"),
+        "pii_columns": ("piiColumns",),
+        "ingested_at": ("ingestedAt",),
+        "enriched_at": ("enrichedAt",),
+        "qualifiedName": ("qualified_name",),
+    }
+    for canonical, alts in aliases.items():
+        if out.get(canonical) is None:
+            for alt in alts:
+                if out.get(alt) is not None:
+                    out[canonical] = out[alt]
+                    break
+    return out
+
+
 def parse_json_field(raw: Any) -> dict:
     if not raw:
         return {}
@@ -61,11 +94,51 @@ def parse_json_field(raw: Any) -> dict:
     return {}
 
 
+def guid_for_qualified_name(qualified_name: str, type_name: str = "lakehouse_dataset") -> str | None:
+    path = (
+        f"/api/atlas/v2/entity/uniqueAttribute/type/{type_name}"
+        f"?attr:qualifiedName={urllib.parse.quote(qualified_name)}"
+    )
+    result = atlas_request("GET", path)
+    if not result:
+        return None
+    entity = result.get("entity") or result
+    return entity.get("guid") if isinstance(entity, dict) else None
+
+
+def upsert_entity(entity_body: dict, *, type_name: str = "lakehouse_dataset") -> dict | None:
+    """POST entitas baru atau PUT jika qualifiedName sudah ada (termasuk setelah HTTP 409)."""
+    qn = (entity_body.get("entity") or {}).get("attributes", {}).get("qualifiedName")
+    if not qn:
+        return atlas_request("POST", "/api/atlas/v2/entity", entity_body)
+
+    guid = guid_for_qualified_name(str(qn), type_name)
+    if guid:
+        entity_body.setdefault("entity", {})["guid"] = guid
+        put = atlas_request("PUT", f"/api/atlas/v2/entity/guid/{guid}", entity_body)
+        if put is not None:
+            return put
+
+    post = atlas_request("POST", "/api/atlas/v2/entity", entity_body)
+    if post is not None:
+        return post
+
+    guid = guid_for_qualified_name(str(qn), type_name)
+    if not guid:
+        return None
+    entity_body.setdefault("entity", {})["guid"] = guid
+    return atlas_request("PUT", f"/api/atlas/v2/entity/guid/{guid}", entity_body)
+
+
 def fetch_entity_by_guid(guid: str) -> dict | None:
     result = atlas_request("GET", f"/api/atlas/v2/entity/guid/{guid}?minExtInfo=false&ignoreRelationships=true")
     if not result:
         return None
-    return result.get("entity") or result
+    entity = result.get("entity") or result
+    if isinstance(entity, dict) and entity.get("attributes") is not None:
+        entity = dict(entity)
+        entity["attributes"] = normalize_dataset_attributes(entity["attributes"])
+    return entity
 
 
 def hydrate_entities(entities: list[dict], *, log_every: int = 0) -> list[dict]:

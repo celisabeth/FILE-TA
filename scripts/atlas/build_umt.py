@@ -23,7 +23,7 @@ from typing import Any
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from atlas.atlas_client import ATLAS_URL, parse_json_field, search_entities
+from atlas.atlas_client import ATLAS_URL, normalize_dataset_attributes, parse_json_field, search_entities
 
 logger = logging.getLogger("build_umt")
 
@@ -92,7 +92,7 @@ def _last_enriched_at(attrs: dict, layer: str) -> str | None:
 
 
 def entity_to_umt_row(entity: dict) -> dict:
-    attrs = entity.get("attributes") or {}
+    attrs = normalize_dataset_attributes(entity.get("attributes"))
     qn = str(attrs.get("qualifiedName") or "")
     layer = _layer_from_qn(qn, attrs)
     classifications = entity.get("classifications") or []

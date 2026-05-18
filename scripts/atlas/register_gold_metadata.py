@@ -292,6 +292,11 @@ def register_gold_entity(table_name: str, profiling: dict) -> dict | None:
         result = _atlas_request("PUT", f"/api/atlas/v2/entity/guid/{guid}", entity)
     else:
         result = _atlas_request("POST", "/api/atlas/v2/entity", entity)
+    if result is None:
+        guid = _entity_guid_for_qualified_name(qn)
+        if guid:
+            entity["entity"]["guid"] = guid
+            result = _atlas_request("PUT", f"/api/atlas/v2/entity/guid/{guid}", entity)
     if result:
         logger.info("  ✓ Gold entity: %s [%s] (rows=%s)", table_name, table_type, profiling.get("row_count", 0))
     return result

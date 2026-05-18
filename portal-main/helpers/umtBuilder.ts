@@ -1,5 +1,10 @@
 import type { AtlasEntity } from './atlasApi';
-import { layerFromQualifiedName, searchEntities } from './atlasApi';
+import {
+	hydrateAtlasEntities,
+	layerFromQualifiedName,
+	normalizeDatasetAttributes,
+	searchEntities,
+} from './atlasApi';
 
 export interface UmtRow {
 	asset_qualified_name: string;
@@ -80,7 +85,7 @@ function resolveLastEnrichedAt(attrs: Record<string, any>): string | null {
 }
 
 export function entityToUmtRow(entity: AtlasEntity): UmtRow {
-	const attrs = entity.attributes || {};
+	const attrs = normalizeDatasetAttributes(entity.attributes);
 	const qn = String(attrs.qualifiedName || '');
 	const layer = String(attrs.layer || layerFromQualifiedName(qn));
 	const classifications = entity.classifications || [];
@@ -113,7 +118,8 @@ export async function buildUmtFromAtlas(limit = 500): Promise<{
 	generatedAt: string;
 }> {
 	const result = await searchEntities('lakehouse_dataset', undefined, undefined, limit, 0);
-	const rows = sortUmtRows((result.entities || []).map(entityToUmtRow));
+	const entities = await hydrateAtlasEntities(result.entities || []);
+	const rows = sortUmtRows(entities.map(entityToUmtRow));
 
 	return {
 		rows,

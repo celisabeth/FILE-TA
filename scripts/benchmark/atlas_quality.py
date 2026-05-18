@@ -18,7 +18,7 @@ from typing import Any
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from atlas.atlas_client import ATLAS_URL, parse_json_field, search_entities
+from atlas.atlas_client import ATLAS_URL, normalize_dataset_attributes, parse_json_field, search_entities
 from benchmark._common import metrics_dir, utc_now, write_json
 
 logger = logging.getLogger("benchmark.atlas_quality")
@@ -194,7 +194,7 @@ def _score_consistency(layer: str, attrs: dict, classifications: list) -> int:
 
 
 def _evaluate_entity(layer: str, entity: dict) -> dict[str, int]:
-    attrs = entity.get("attributes") or {}
+    attrs = normalize_dataset_attributes(entity.get("attributes"))
     profiling = _parse_json(attrs.get("profiling"))
     classifications = entity.get("classifications") or []
     return {

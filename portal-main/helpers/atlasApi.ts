@@ -69,10 +69,41 @@ export async function searchEntities(
 	});
 }
 
+/** Samakan atribut dari search stub vs GET penuh (termasuk alias camelCase Atlas). */
+export function normalizeDatasetAttributes(
+	attrs: Record<string, any> | undefined,
+): Record<string, any> {
+	if (!attrs) return {};
+	const out: Record<string, any> = { ...attrs };
+	const aliases: Record<string, string[]> = {
+		row_count: ['rowCount'],
+		column_count: ['columnCount'],
+		schema_def: ['schemaDef', 'schema'],
+		pii_columns: ['piiColumns'],
+		ingested_at: ['ingestedAt'],
+		enriched_at: ['enrichedAt'],
+	};
+	for (const [canonical, alts] of Object.entries(aliases)) {
+		if (out[canonical] == null) {
+			for (const alt of alts) {
+				if (out[alt] != null) {
+					out[canonical] = out[alt];
+					break;
+				}
+			}
+		}
+	}
+	return out;
+}
+
 export async function getEntity(guid: string): Promise<{ entity: AtlasEntity }> {
-	return atlasRequest(
+	const full = await atlasRequest<{ entity: AtlasEntity }>(
 		`/api/atlas/v2/entity/guid/${guid}?minExtInfo=false&ignoreRelationships=true`,
 	);
+	if (full.entity?.attributes) {
+		full.entity.attributes = normalizeDatasetAttributes(full.entity.attributes);
+	}
+	return full;
 }
 
 /** Muat atribut lengkap (row_count, profiling.kpi, …) — search/basic tidak mengirimnya. */
@@ -80,7 +111,10 @@ export async function hydrateAtlasEntities(entities: AtlasEntity[]): Promise<Atl
 	const hydrated: AtlasEntity[] = [];
 	for (const stub of entities) {
 		if (!stub.guid) {
-			hydrated.push(stub);
+			hydrated.push({
+				...stub,
+				attributes: normalizeDatasetAttributes(stub.attributes),
+			});
 			continue;
 		}
 		try {
@@ -91,7 +125,10 @@ export async function hydrateAtlasEntities(entities: AtlasEntity[]): Promise<Atl
 			}
 			hydrated.push(entity);
 		} catch {
-			hydrated.push(stub);
+			hydrated.push({
+				...stub,
+				attributes: normalizeDatasetAttributes(stub.attributes),
+			});
 		}
 	}
 	return hydrated;

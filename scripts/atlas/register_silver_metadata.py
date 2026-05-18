@@ -304,6 +304,11 @@ def register_silver_entity(table_name: str, profiling: dict) -> dict | None:
         result = _atlas_request("PUT", f"/api/atlas/v2/entity/guid/{guid}", entity)
     else:
         result = _atlas_request("POST", "/api/atlas/v2/entity", entity)
+    if result is None:
+        guid = _entity_guid_for_qualified_name(qn)
+        if guid:
+            entity["entity"]["guid"] = guid
+            result = _atlas_request("PUT", f"/api/atlas/v2/entity/guid/{guid}", entity)
     if result:
         logger.info("  ✓ Silver entity: %s (glossary_terms=%d)", table_name, len(biz.get("glossary_terms", [])))
     return result
