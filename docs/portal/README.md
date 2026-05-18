@@ -153,6 +153,8 @@ Buka http://localhost:3000 (atau port dev Next.js).
 
 Jika container lama masih ada: `docker compose rm -f data-catalog` lalu `docker compose up -d portal`.
 
+**IDE / TypeScript:** folder `data-catalog-main` adalah symlink ke `portal-main` (kompatibilitas path lama). Buka workspace `Data-Lakehouse-Insight` atau folder `portal-main` langsung. Reload window jika error tsconfig masih muncul.
+
 ---
 
 ## 9. Dokumen terkait

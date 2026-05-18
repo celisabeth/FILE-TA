@@ -1,0 +1,9 @@
+{
+  "typescript.tsdk": "portal-main/node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "eslint.workingDirectories": [{ "directory": "portal-main", "changeProcessCWD": true }],
+  "search.exclude": {
+    "**/portal-main/node_modules": true,
+    "**/portal-main/.next": true
+  }
+}
