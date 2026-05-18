@@ -17,11 +17,17 @@ def metrics_dir() -> Path:
         or os.environ.get("AQE_METRICS_DIR")
     )
     if env:
-        return Path(env)
-    docker_mount = Path("/opt/airflow/metrics")
-    if docker_mount.is_dir():
-        return docker_mount
-    return Path("metrics")
+        d = Path(env)
+    elif Path("/opt/airflow/metrics").is_dir():
+        d = Path("/opt/airflow/metrics")
+    else:
+        d = Path("metrics")
+    d.mkdir(parents=True, exist_ok=True)
+    try:
+        os.chmod(d, 0o1777)
+    except OSError:
+        pass
+    return d
 
 
 def utc_now() -> datetime:

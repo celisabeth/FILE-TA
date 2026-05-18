@@ -19,9 +19,10 @@ RUN mkdir -p /opt/spark-jars \
 USER airflow
 RUN pip install --no-cache-dir pyspark==3.5.1 boto3 mlflow scikit-learn pandas psycopg2-binary
 
-COPY docker-init.sh /docker-init.sh
+COPY docker-init.sh docker-entrypoint.sh /
 USER root
-RUN chmod +x /docker-init.sh
-USER airflow
+RUN chmod +x /docker-init.sh /docker-entrypoint.sh
+# Entrypoint runs as root so ./metrics bind-mount dapat di-chown untuk UID airflow
+ENTRYPOINT ["/docker-entrypoint.sh"]
 
 ENV SPARK_JARS_DIR="/opt/spark-jars"

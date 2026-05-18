@@ -29,8 +29,14 @@ cur.close()
 conn.close()
 PY
 
-mkdir -p /opt/airflow/metrics
-chmod 1777 /opt/airflow/metrics 2>/dev/null || true
+METRICS_DIR="${META_METRICS_DIR:-/opt/airflow/metrics}"
+mkdir -p "${METRICS_DIR}"
+if [ "$(id -u)" -eq 0 ]; then
+  chown -R "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-0}" "${METRICS_DIR}" 2>/dev/null || true
+  chmod 1777 "${METRICS_DIR}" 2>/dev/null || true
+else
+  chmod 1777 "${METRICS_DIR}" 2>/dev/null || true
+fi
 
 echo "=== Airflow init: db migrate (schema) ==="
 airflow db migrate

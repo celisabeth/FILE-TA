@@ -514,6 +514,24 @@ services:
       - "${LHINSIGHT_MLFLOW_PORT:-15500}:5000"
 
   # ─────────────────────────────────────────────
+  # METRICS DIR (writable oleh Airflow UID 50000 + metrics-exporter)
+  # ─────────────────────────────────────────────
+  metrics-init:
+    image: busybox:1.36
+    container_name: lhmeta-metrics-init
+    user: "0:0"
+    volumes:
+      - ./metrics:/metrics
+    command: >
+      sh -c "
+        mkdir -p /metrics &&
+        chmod 1777 /metrics &&
+        chown -R 50000:0 /metrics 2>/dev/null || true &&
+        echo 'metrics dir ready'
+      "
+    restart: "no"
+
+  # ─────────────────────────────────────────────
   # AIRFLOW (Webserver + Scheduler)
   # UI: host default http://localhost:18681  (airflow / airflow)
   # ─────────────────────────────────────────────
@@ -521,7 +539,10 @@ services:
     build: ./airflow
     container_name: lhmeta-airflow-init
     networks: [lakehouse-net]
+    user: "0:0"
     depends_on:
+      metrics-init:
+        condition: service_completed_successfully
       postgres:
         condition: service_healthy
     environment:
@@ -543,6 +564,8 @@ services:
     hostname: airflow-webserver
     networks: [lakehouse-net]
     depends_on:
+      metrics-init:
+        condition: service_completed_successfully
       postgres:
         condition: service_healthy
       airflow-init:
@@ -647,6 +670,9 @@ services:
     container_name: lhmeta-metrics-exporter
     hostname: metrics-exporter
     networks: [lakehouse-net]
+    depends_on:
+      metrics-init:
+        condition: service_completed_successfully
     command:
       - python
       - /app/scripts/benchmark/metrics_exporter.py

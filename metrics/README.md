@@ -16,6 +16,19 @@ Hasil eksperimen metadata otomatis ditulis ke folder ini (di VM/host: `./metrics
 | `atlas_inventory_latest.json` | Coverage + lineage completeness |
 | `umt_latest.json` | Unified Metadata Table snapshot |
 
+## Izin folder (Permission denied)
+
+Airflow menulis sebagai UID **50000**. Jika task gagal menulis JSON:
+
+```bash
+mkdir -p metrics
+chmod 1777 metrics
+# atau lewat Compose:
+docker compose run --rm metrics-init
+```
+
+Lalu rebuild/restart Airflow dan trigger ulang DAG.
+
 ## Menjalankan
 
 ```bash

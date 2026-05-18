@@ -558,6 +558,17 @@ docker compose up -d airflow-webserver airflow-scheduler
 
 Login UI: http://localhost:18681 — `airflow` / `airflow`
 
+**Airflow DAG — `Permission denied` pada `/opt/airflow/metrics/*.json`**  
+Folder `./metrics` di host harus bisa ditulis user Airflow (UID 50000):
+
+```bash
+mkdir -p metrics && chmod 1777 metrics
+docker compose run --rm metrics-init
+docker compose build airflow-webserver airflow-scheduler
+docker compose up -d --force-recreate airflow-webserver airflow-scheduler
+docker exec lhmeta-airflow-scheduler airflow dags trigger metadata_full_experiment
+```
+
 **Hive Metastore — `timeout after 60s` di `start.sh` padahal log sudah `Starting Hive Metastore Server`**  
 Penyebab umum: healthcheck lama memakai `nc` (tidak ada di image `apache/hive:4.0.0`) sehingga status Docker tetap `starting`. Init schema PostgreSQL juga butuh 1–2 menit pada first run.
 

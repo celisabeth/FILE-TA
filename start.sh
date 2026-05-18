@@ -18,6 +18,9 @@ NC='\033[0m'
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$SCRIPT_DIR"
 
+mkdir -p metrics data/staging
+chmod 1777 metrics 2>/dev/null || sudo chmod 1777 metrics 2>/dev/null || true
+
 STEP=0
 TOTAL=10
 
@@ -189,6 +192,7 @@ echo -e "  ${GREEN}✅ Spark cluster + Jupyter ready${NC}"
 
 # ── 9. Orchestration ─────────────────────────────────────
 step "Starting Airflow (init + webserver + scheduler)"
+docker compose run --rm metrics-init 2>/dev/null || true
 for db in airflow_db iceberg_catalog superset_db mlflow_db; do
   docker exec lhmeta-postgres psql -U admin -d postgres -tc \
     "SELECT 1 FROM pg_database WHERE datname='${db}'" 2>/dev/null | grep -q 1 \
