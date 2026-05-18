@@ -29,10 +29,10 @@ const Logo: FC<ILogoProps> = ({ width, height = 32 }) => {
 			/>
 			{/* Text */}
 			<text x='40' y='22' fontFamily='system-ui, sans-serif' fontSize='14' fontWeight='700' fill='currentColor'>
-				insightera Portal
+				Insightera
 			</text>
 			<text x='40' y='34' fontFamily='system-ui, sans-serif' fontSize='8' fontWeight='400' fill='currentColor' opacity='0.6'>
-				Metadata Lakehouse
+				Data Lakehouse
 			</text>
 		</svg>
 	);

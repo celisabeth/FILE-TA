@@ -16,7 +16,7 @@ const DefaultFooter = () => {
 						<Logo height={24} />
 					</Link>
 					<span className='footer-catalog-copy small text-muted text-md-end'>
-						&copy; {year} Data Lakehouse Metadata
+						&copy; {year} Data Lakehouse Insightera
 					</span>
 				</div>
 			</div>
