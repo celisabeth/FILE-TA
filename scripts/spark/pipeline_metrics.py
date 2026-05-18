@@ -31,14 +31,18 @@ def persist_pipeline_run_metrics(
     started_at: datetime,
     ended_at: datetime,
     metrics_dir_path: str | None = None,
+    scenario: str | None = None,
+    spark_configs: dict[str, str] | None = None,
     extra: dict[str, Any] | None = None,
 ) -> Path:
-    """Tulis hasil run pipeline ke JSON (staging, silver, gold, dll.)."""
+    """Tulis hasil run pipeline ke JSON (staging, silver, gold, AQE, dll.)."""
     out_dir = metrics_dir(metrics_dir_path)
     out_dir.mkdir(parents=True, exist_ok=True)
 
+    sc = (scenario or "default").upper().replace(" ", "_")
     ts = ended_at.strftime("%Y%m%d_%H%M%S")
-    path = out_dir / f"{pipeline}_{ts}.json"
+    suffix = f"_{sc}" if scenario else ""
+    path = out_dir / f"{pipeline}{suffix}_{ts}.json"
 
     duration = (ended_at - started_at).total_seconds()
     written = {k: v for k, v in results.items() if isinstance(v, dict) and v.get("written")}
@@ -58,8 +62,31 @@ def persist_pipeline_run_metrics(
         },
         "tables": results,
     }
+    if scenario:
+        payload["aqe_scenario"] = scenario
+    if spark_configs:
+        payload["spark_configs"] = spark_configs
     if extra:
         payload.update(extra)
 
     path.write_text(json.dumps(payload, indent=2, default=str), encoding="utf-8")
     return path
+
+
+def latest_metrics_file(
+    pipeline: str,
+    scenario: str | None = None,
+    metrics_dir_path: str | None = None,
+) -> Path | None:
+    """Ambil file metrik terbaru untuk pipeline (dan skenario opsional)."""
+    out_dir = metrics_dir(metrics_dir_path)
+    if not out_dir.is_dir():
+        return None
+    if scenario:
+        sc = scenario.upper()
+        candidates = sorted(out_dir.glob(f"{pipeline}_*{sc}*.json"), key=lambda p: p.stat().st_mtime)
+        if not candidates:
+            candidates = sorted(out_dir.glob(f"{pipeline}_aqe_{sc}_*.json"), key=lambda p: p.stat().st_mtime)
+    else:
+        candidates = sorted(out_dir.glob(f"{pipeline}_*.json"), key=lambda p: p.stat().st_mtime)
+    return candidates[-1] if candidates else None

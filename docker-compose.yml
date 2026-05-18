@@ -444,6 +444,9 @@ services:
       - ./conf/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf
       - ./conf/core-site.xml:/opt/spark/conf/core-site.xml
       - ./jars:/opt/spark/extra-jars
+      - ./scripts:/opt/airflow/scripts:ro
+    environment:
+      PYTHONPATH: /opt/airflow/scripts
 
   spark-worker-2:
     image: apache/spark:3.5.1-scala2.12-java17-python3-ubuntu
@@ -465,6 +468,9 @@ services:
       - ./conf/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf
       - ./conf/core-site.xml:/opt/spark/conf/core-site.xml
       - ./jars:/opt/spark/extra-jars
+      - ./scripts:/opt/airflow/scripts:ro
+    environment:
+      PYTHONPATH: /opt/airflow/scripts
 
   # ─────────────────────────────────────────────
   # TRINO (Query Engine — Gold / AQE catalogs)
