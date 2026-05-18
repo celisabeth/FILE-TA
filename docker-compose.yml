@@ -771,8 +771,10 @@ services:
       - NEXT_PUBLIC_PROMETHEUS_URL=${LHINSIGHT_PROMETHEUS_PUBLIC_URL:-http://localhost:19090}
       - ATLAS_USER=admin
       - ATLAS_PASS=admin
+      - INSIGHT_METRICS_DIR=/metrics
     volumes:
       - ./portal-main:/app
+      - ./metrics:/metrics:ro
       - portal-node-modules:/app/node_modules
     ports:
       - "${LHINSIGHT_PORTAL_PORT:-${LHMETA_CATALOG_PORT:-13000}}:3000"

@@ -1,5 +1,7 @@
+import path from 'path';
 import type { AtlasEntity } from './atlasApi';
 import { layerFromQualifiedName, searchEntities } from './atlasApi';
+import { metricsRoot, readJsonFile, resolveMetadataQualityPath } from './metricsReader';
 
 export interface LayerQualityMetrics {
 	layer: string;
@@ -19,6 +21,9 @@ export interface MetadataQualityReport {
 	generatedAt: string;
 	layers: LayerQualityMetrics[];
 	methodology: string;
+	/** Path file metrik (jika dimuat dari metrics/). */
+	sourcePath?: string;
+	runId?: string;
 }
 
 const EVAL_LAYERS = [
@@ -241,6 +246,69 @@ function aggregateLayer(
 		accuracyScore15: pctToScore15(accuracy),
 		timelinessScore15: pctToScore15(timeliness),
 		consistencyScore15: pctToScore15(consistency),
+	};
+}
+
+function num(val: unknown, fallback = 0): number {
+	const n = Number(val);
+	return Number.isFinite(n) ? n : fallback;
+}
+
+function normalizeLayer(raw: Record<string, unknown>): LayerQualityMetrics {
+	const layer = String(raw.layer ?? '');
+	const label = String(raw.label ?? layer);
+	const completeness = num(raw.completeness);
+	const accuracy = num(raw.accuracy);
+	const timeliness = num(raw.timeliness);
+	const consistency = num(raw.consistency);
+	return {
+		layer,
+		label,
+		entityCount: num(raw.entity_count ?? raw.entityCount),
+		completeness,
+		accuracy,
+		timeliness,
+		consistency,
+		completenessScore15: num(
+			raw.completeness_score_1_5 ?? raw.completenessScore15,
+			Math.min(5, Math.max(1, Math.round(completeness / 20) || 1)),
+		),
+		accuracyScore15: num(
+			raw.accuracy_score_1_5 ?? raw.accuracyScore15,
+			Math.min(5, Math.max(1, Math.round(accuracy / 20) || 1)),
+		),
+		timelinessScore15: num(
+			raw.timeliness_score_1_5 ?? raw.timelinessScore15,
+			Math.min(5, Math.max(1, Math.round(timeliness / 20) || 1)),
+		),
+		consistencyScore15: num(
+			raw.consistency_score_1_5 ?? raw.consistencyScore15,
+			Math.min(5, Math.max(1, Math.round(consistency / 20) || 1)),
+		),
+	};
+}
+
+/** Muat laporan dari metrics/latest/metadata/metadata_quality.json (atau fallback legacy). */
+export async function loadMetadataQualityFromMetrics(): Promise<MetadataQualityReport | null> {
+	const filePath = await resolveMetadataQualityPath();
+	if (!filePath) return null;
+
+	const raw = await readJsonFile<Record<string, unknown>>(filePath);
+	const layersRaw = raw.layers;
+	if (!Array.isArray(layersRaw) || layersRaw.length === 0) return null;
+
+	const runMatch = filePath.match(/runs\/(metadata_[^/]+)\//);
+	return {
+		generatedAt: String(raw.generated_at ?? raw.generatedAt ?? new Date().toISOString()),
+		layers: layersRaw.map((l) => normalizeLayer(l as Record<string, unknown>)),
+		methodology: String(
+			raw.methodology ??
+				'Skor dari artefak pipeline metadata (atlas_quality.py), disimpan di metrics/latest/metadata/.',
+		),
+		sourcePath: filePath.startsWith(metricsRoot())
+			? path.posix.join('metrics', path.relative(metricsRoot(), filePath))
+			: filePath,
+		runId: runMatch?.[1],
 	};
 }
 

@@ -117,13 +117,24 @@ const MetadataQualityPage: NextPage = () => {
 						<Card shadow='sm'>
 							<CardBody>
 								<p className='mb-2'>
-									Tabel berikut diisi dari <strong>pengamatan lingkungan nyata</strong>{' '}
-									(entitas <code>lakehouse_dataset</code> di Apache Atlas), bukan nilai
-									contoh statis. Metrik dirata-rata per layer Medallion (Bronze, Silver,
-									Gold).
+									Tabel diisi dari artefak pipeline{' '}
+									<code>metrics/latest/metadata/metadata_quality.json</code> (hasil{' '}
+									<code>metadata_full_experiment</code>), bukan nilai contoh statis.
+									Metrik dirata-rata per layer Medallion (Bronze, Silver, Gold).
 								</p>
 								{report?.methodology && (
 									<p className='text-muted small mb-0'>{report.methodology}</p>
+								)}
+								{report?.sourcePath && (
+									<p className='text-muted small mb-0 mt-1'>
+										Sumber: <code>{report.sourcePath}</code>
+										{report.runId ? (
+											<>
+												{' '}
+												· run <code>{report.runId}</code>
+											</>
+										) : null}
+									</p>
 								)}
 								{report?.generatedAt && (
 									<p className='text-muted small mb-0 mt-1'>
@@ -154,8 +165,10 @@ const MetadataQualityPage: NextPage = () => {
 							<p className='text-danger mb-0'>{error}</p>
 						) : !report || report.layers.every((l) => l.entityCount === 0) ? (
 							<p className='text-muted mb-0'>
-								Belum ada entitas terdaftar di Atlas untuk layer Bronze/Silver/Gold.
-								Jalankan pipeline metadata terlebih dahulu, lalu refresh halaman ini.
+								Belum ada file{' '}
+								<code>metrics/latest/metadata/metadata_quality.json</code>. Jalankan{' '}
+								<code>metadata_full_experiment</code> di Airflow, pastikan folder{' '}
+								<code>metrics/</code> ter-mount ke portal, lalu refresh.
 							</p>
 						) : (
 							<div className='table-responsive'>
