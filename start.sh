@@ -212,6 +212,11 @@ docker compose up -d airflow-scheduler
 sleep 5
 echo -e "  ${GREEN}✅ Airflow ready (UI :18681 — airflow / airflow)${NC}"
 
+step "Starting MLflow (wajib untuk mlops_pipeline train_models)"
+docker compose up -d mlflow 2>/dev/null || true
+sleep 5
+echo -e "  ${GREEN}✅ MLflow UI :15500 (tracking URI di Airflow: http://mlflow:5000)${NC}"
+
 # ── 10. insightera Portal (Next.js) ─────────────────────
 step "Starting insightera Portal (portal-main)"
 docker compose up -d portal 2>/dev/null || echo -e "  ${YELLOW}portal service not configured (optional)${NC}"
@@ -250,6 +255,7 @@ echo -e "  ${YELLOW}Hive Metastore${NC}         ${GREEN}thrift://localhost:19083
 echo -e "  ${YELLOW}Iceberg REST Catalog${NC}   ${GREEN}http://localhost:18181${NC}"
 echo -e "  ${YELLOW}Jupyter Notebook${NC}       ${GREEN}http://localhost:18888${NC}    (token: lakehouse)"
 echo -e "  ${YELLOW}insightera Portal${NC}      ${GREEN}http://localhost:13000${NC}  ${YELLOW}(/catalog · /dashboards)${NC}"
+echo -e "  ${YELLOW}MLflow${NC}                 ${GREEN}http://localhost:15500${NC}    (model registry MLOps)"
 echo ""
 echo -e "${CYAN}══════════════════════════════════════════════════════${NC}"
 echo ""

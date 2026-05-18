@@ -16,14 +16,24 @@ logger = logging.getLogger("mlops.train")
 MLFLOW_URI = os.environ.get("MLFLOW_TRACKING_URI", "http://mlflow:5000")
 
 
+def _mlflow_reachable(uri: str | None = None, timeout_sec: float = 3.0) -> bool:
+    """Cek cepat — hindari retry panjang MLflow client jika container mati."""
+    target = (uri or MLFLOW_URI).rstrip("/")
+    try:
+        import urllib.error
+        import urllib.request
+
+        req = urllib.request.Request(f"{target}/health", method="GET")
+        with urllib.request.urlopen(req, timeout=timeout_sec) as resp:
+            return resp.status < 500
+    except Exception:
+        return False
+
+
 def _train_risk_score() -> dict:
-    import mlflow
     import pandas as pd
     from sklearn.ensemble import RandomForestClassifier
     from sklearn.model_selection import train_test_split
-
-    mlflow.set_tracking_uri(MLFLOW_URI)
-    mlflow.set_experiment("risk_score_prodi")
 
     df = pd.DataFrame({
         "ipk": [3.2, 2.8, 3.5, 2.1, 3.0],
@@ -34,15 +44,36 @@ def _train_risk_score() -> dict:
     y = df["label"]
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
+    model = RandomForestClassifier(n_estimators=50, random_state=42)
+    model.fit(X_train, y_train)
+    acc = float(model.score(X_test, y_test))
+
+    result: dict = {"model": "risk_score_prodi", "run_id": None, "accuracy": acc}
+
+    if not _mlflow_reachable():
+        logger.warning(
+            "MLflow tidak terjangkau di %s — latih model lokal tanpa registry. "
+            "Jalankan: docker compose up -d mlflow",
+            MLFLOW_URI,
+        )
+        result["mlflow"] = "skipped_unreachable"
+        return result
+
+    os.environ.setdefault("MLFLOW_HTTP_REQUEST_MAX_RETRIES", "2")
+    os.environ.setdefault("MLFLOW_HTTP_REQUEST_TIMEOUT", "10")
+
+    import mlflow
+
+    mlflow.set_tracking_uri(MLFLOW_URI)
+    mlflow.set_experiment("risk_score_prodi")
+
     with mlflow.start_run(run_name="risk_score_prodi"):
-        model = RandomForestClassifier(n_estimators=50, random_state=42)
-        model.fit(X_train, y_train)
-        acc = float(model.score(X_test, y_test))
         mlflow.log_param("n_estimators", 50)
         mlflow.log_metric("accuracy", acc)
         mlflow.sklearn.log_model(model, "model")
-        run_id = mlflow.active_run().info.run_id
-    return {"model": "risk_score_prodi", "run_id": run_id, "accuracy": acc}
+        result["run_id"] = mlflow.active_run().info.run_id
+        result["mlflow"] = "logged"
+    return result
 
 
 def run_training() -> dict:

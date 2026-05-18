@@ -13,7 +13,9 @@ Panduan menyajikan **Gold Layer** (star schema IKU ITERA) ke lapisan konsumsi me
 | **Dashboard embed** | http://localhost:13000/dashboards | Superset + Grafana |
 | **KPI (portal)** | http://localhost:13000/kpi | Atlas-backed KPI view |
 
-**Template dashboard:** [`templates/`](templates/)
+**Mulai di sini (langkah buat 3 dashboard Superset):** [`panduan-lengkap-dashboard-superset.md`](panduan-lengkap-dashboard-superset.md)
+
+**Template dashboard (checklist isian):** [`templates/`](templates/)
 
 **Panduan koneksi Trino → Superset:** [`koneksi-trino-superset.md`](koneksi-trino-superset.md)
 

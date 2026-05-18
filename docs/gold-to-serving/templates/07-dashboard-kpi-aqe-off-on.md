@@ -1,5 +1,7 @@
 # Template — Dashboard KPI AQE OFF & AQE ON (Superset)
 
+> **Panduan langkah demi langkah:** [../panduan-lengkap-dashboard-superset.md](../panduan-lengkap-dashboard-superset.md) (§ Langkah D & E)
+
 Duplikasi **Dashboard Executive IKU** ([01-dashboard-executive-iku.md](01-dashboard-executive-iku.md)) untuk membandingkan **salinan Gold** hasil pipeline AQE, bukan untuk mengukur speedup (speedup → Grafana Monitoring AQE).
 
 ---

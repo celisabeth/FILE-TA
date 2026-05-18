@@ -1,5 +1,7 @@
 # Template — Virtual Dataset SQL (Trino → Superset)
 
+> **Cara pakai di Superset:** [../panduan-lengkap-dashboard-superset.md](../panduan-lengkap-dashboard-superset.md) § Langkah B.2
+
 Salin ke **SQL Lab** Superset, sesuaikan schema (`gold` / `gold_aqe_off` / `gold_aqe_on`), simpan sebagai dataset virtual.
 
 **Ganti prefix tabel:**
