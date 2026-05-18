@@ -59,3 +59,24 @@ def write_json(path: Path, payload: dict[str, Any], *, artifact_role: str | None
 
 def load_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def speedup_pct(baseline_sec: float, comparison_sec: float) -> float | None:
+    """Persen perbaikan durasi baseline (AQE OFF) vs comparison (AQE ON). Positif = ON lebih cepat."""
+    if baseline_sec is None or comparison_sec is None:
+        return None
+    base = float(baseline_sec)
+    comp = float(comparison_sec)
+    if base <= 0:
+        return None
+    return round((base - comp) / base * 100, 2)
+
+
+def throughput_rows_per_sec(rows: int, duration_sec: float) -> float | None:
+    """Throughput baris per detik; None jika durasi tidak valid."""
+    if duration_sec is None:
+        return None
+    dur = float(duration_sec)
+    if dur <= 0:
+        return None
+    return round(int(rows) / dur, 2)
