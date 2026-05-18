@@ -540,6 +540,20 @@ docker compose exec spark-master bash
 docker compose exec hive-metastore bash
 ```
 
+**Hive Metastore — `timeout after 60s` di `start.sh` padahal log sudah `Starting Hive Metastore Server`**  
+Penyebab umum: healthcheck lama memakai `nc` (tidak ada di image `apache/hive:4.0.0`) sehingga status Docker tetap `starting`. Init schema PostgreSQL juga butuh 1–2 menit pada first run.
+
+```bash
+# Terapkan healthcheck baru (bash /dev/tcp) lalu recreate
+docker compose up -d hive-metastore --force-recreate
+docker inspect --format='{{.State.Health.Status}}' lhmeta-hive-metastore
+# Harus: healthy (tunggu hingga start_period 120s selesai)
+
+# Uji Thrift dari host
+bash -c 'echo > /dev/tcp/127.0.0.1/19083' && echo OK
+# atau: docker exec lhmeta-hive-metastore bash -c 'echo > /dev/tcp/127.0.0.1/9083'
+```
+
 **Kafka — `InconsistentClusterIdException` (cluster ID tidak cocok dengan `meta.properties`)**  
 Terjadi jika volume **`kafka-data`** berisi broker lama sementara **ZooKeeper** sudah cluster baru (atau sebaliknya). Data topic Kafka untuk dev ini boleh dihapus.
 

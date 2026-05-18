@@ -52,6 +52,34 @@ wait_running() {
   echo -e "  ${YELLOW}⚠️  $name not running after ${max}s${NC}"
 }
 
+# Hive Metastore: init schema + Thrift bind bisa >60s pada first run / VM lambat
+wait_hive_metastore() {
+  local max="${1:-150}" i=0
+  local port="${LHMETA_HIVE_METASTORE_PORT:-19083}"
+  echo -e "  ${YELLOW}Hive Metastore: init schema + Thrift (bisa 1–2 menit pertama kali)${NC}"
+  while [ $i -lt $max ]; do
+    status=$(docker inspect --format='{{.State.Health.Status}}' lhmeta-hive-metastore 2>/dev/null || echo "missing")
+    if [ "$status" = "healthy" ]; then
+      echo -e "  ${GREEN}✅ lhmeta-hive-metastore healthy (Docker healthcheck)${NC}"
+      return 0
+    fi
+    if docker exec lhmeta-hive-metastore bash -c 'echo > /dev/tcp/127.0.0.1/9083' 2>/dev/null; then
+      echo -e "  ${GREEN}✅ lhmeta-hive-metastore Thrift :9083 OK (probe)${NC}"
+      return 0
+    fi
+    if bash -c "echo > /dev/tcp/127.0.0.1/${port}" 2>/dev/null; then
+      echo -e "  ${GREEN}✅ lhmeta-hive-metastore reachable on host :${port}${NC}"
+      return 0
+    fi
+    sleep 5
+    i=$((i + 5))
+    echo -ne "  ⏳ Hive Metastore... (${i}s/${max}s, status=${status})\r"
+  done
+  echo ""
+  echo -e "  ${YELLOW}⚠️  Hive Metastore belum terdeteksi setelah ${max}s — cek: docker logs lhmeta-hive-metastore${NC}"
+  echo -e "  ${YELLOW}   Jika log sudah 'Starting Hive Metastore Server', lanjutkan manual atau tunggu lalu: nc -zv localhost ${port}${NC}"
+}
+
 print_banner() {
   echo -e "${CYAN}"
   cat << 'EOF'
@@ -141,13 +169,14 @@ echo -e "  ${GREEN}✅ Storage + catalog backends ready${NC}"
 # ── 7. Metastore + Iceberg + Atlas ────────────────────────
 step "Starting Hive Metastore, Iceberg REST, Atlas"
 docker compose up -d hive-metastore
+wait_hive_metastore 150
+
 docker compose up -d iceberg-rest
-sleep 10
-wait_healthy lhmeta-iceberg-rest 30
+sleep 5
+wait_healthy lhmeta-iceberg-rest 45
 
 docker compose up -d atlas
 echo -e "  ${YELLOW}Atlas needs several minutes to warm up (HBase + Solr + JanusGraph)${NC}"
-wait_healthy lhmeta-hive-metastore 60
 
 # ── 8. Compute layer ─────────────────────────────────────
 step "Starting Spark cluster + Jupyter"

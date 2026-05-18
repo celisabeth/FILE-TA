@@ -324,6 +324,7 @@ services:
       DB_DRIVER: postgres
       SKIP_SCHEMA_INIT: "false"
       SERVICE_OPTS: >-
+        -Xmx1G
         -Djavax.jdo.option.ConnectionDriverName=org.postgresql.Driver
         -Djavax.jdo.option.ConnectionURL=jdbc:postgresql://postgres:5432/metastore_db
         -Djavax.jdo.option.ConnectionUserName=admin
@@ -338,10 +339,12 @@ services:
     ports:
       - "${LHMETA_HIVE_METASTORE_PORT:-19083}:9083"   # Thrift Metastore (host)
     healthcheck:
-      test: ["CMD-SHELL", "nc -z localhost 9083 || exit 1"]
-      interval: 20s
+      # apache/hive:4.0.0 tidak menyertakan nc — gunakan bash /dev/tcp
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/127.0.0.1/9083' || exit 1"]
+      interval: 15s
       timeout: 10s
-      retries: 10
+      retries: 12
+      start_period: 120s
 
   # ─────────────────────────────────────────────
   # APACHE ATLAS
