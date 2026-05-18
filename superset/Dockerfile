@@ -14,4 +14,7 @@ RUN python3 /tmp/patch_trino_iceberg.py && rm /tmp/patch_trino_iceberg.py
 USER superset
 
 COPY superset_config.py /app/pythonpath/superset_config.py
+# Gagalkan build jika config lama (import Trino saat load) ikut ter-copy
+RUN ! grep -q '_patch_trino_iceberg_partition_indexes' /app/pythonpath/superset_config.py \
+    && grep -q '_iceberg_meta' /app/superset/db_engine_specs/trino.py
 ENV SUPERSET_CONFIG_PATH=/app/pythonpath/superset_config.py
