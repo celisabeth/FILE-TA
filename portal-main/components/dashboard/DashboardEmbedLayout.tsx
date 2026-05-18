@@ -1,24 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Head from 'next/head';
-import { GetStaticProps } from 'next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import PageWrapper from '../../layout/PageWrapper/PageWrapper';
 import SubHeader, { SubHeaderLeft, SubHeaderRight } from '../../layout/SubHeader/SubHeader';
 import Page from '../../layout/Page/Page';
 import Button from '../bootstrap/Button';
 import Icon from '../icon/Icon';
+import Spinner from '../bootstrap/Spinner';
 import EmbeddedServiceFrame from './EmbeddedServiceFrame';
-import type { DashboardPortalLink } from '../../helpers/dashboardPortal';
+import DashboardEmbedSettingsModal from './DashboardEmbedSettingsModal';
+import { useDashboardEmbed } from '../../context/dashboardEmbedContext';
+import type { DashboardPortalKey } from '../../helpers/dashboardPortal';
 
 interface DashboardEmbedLayoutProps {
-	link: DashboardPortalLink;
+	linkKey: DashboardPortalKey;
 }
 
-const DashboardEmbedLayout: React.FC<DashboardEmbedLayoutProps> = ({ link }) => {
+const DashboardEmbedLayout: React.FC<DashboardEmbedLayoutProps> = ({ linkKey }) => {
+	const { getLink, loading } = useDashboardEmbed();
+	const [settingsOpen, setSettingsOpen] = useState(false);
+	const link = getLink(linkKey);
+
 	return (
 		<PageWrapper>
 			<Head>
-				<title>{link.title} — insightera Portal</title>
+				<title>{link.title} — Insightera</title>
 			</Head>
 			<SubHeader>
 				<SubHeaderLeft>
@@ -30,7 +35,16 @@ const DashboardEmbedLayout: React.FC<DashboardEmbedLayoutProps> = ({ link }) => 
 				</SubHeaderLeft>
 				<SubHeaderRight>
 					<Button
+						color='light'
+						isLight
+						icon='Settings'
+						onClick={() => setSettingsOpen(true)}>
+						URL Embed
+					</Button>
+					<Button
 						color={link.color}
+						isLight
+						className='ms-2'
 						icon='OpenInNew'
 						tag='a'
 						href={link.externalUrl}
@@ -41,16 +55,17 @@ const DashboardEmbedLayout: React.FC<DashboardEmbedLayoutProps> = ({ link }) => 
 				</SubHeaderRight>
 			</SubHeader>
 			<Page container='fluid'>
-				<EmbeddedServiceFrame link={link} />
+				{loading ? (
+					<div className='text-center py-5'>
+						<Spinner color='primary' size='3rem' />
+					</div>
+				) : (
+					<EmbeddedServiceFrame link={link} />
+				)}
 			</Page>
+			<DashboardEmbedSettingsModal isOpen={settingsOpen} setIsOpen={setSettingsOpen} />
 		</PageWrapper>
 	);
 };
 
 export default DashboardEmbedLayout;
-
-export const dashboardEmbedStaticProps: GetStaticProps = async ({ locale }) => ({
-	props: {
-		...(await serverSideTranslations(locale || 'en', ['common', 'menu'])),
-	},
-});

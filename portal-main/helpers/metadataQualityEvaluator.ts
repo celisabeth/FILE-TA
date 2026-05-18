@@ -1,7 +1,11 @@
 import path from 'path';
 import type { AtlasEntity } from './atlasApi';
 import { getEntity, layerFromQualifiedName, searchEntities } from './atlasApi';
-import { metricsRoot, readJsonFile, resolveMetadataQualityPath } from './metricsReader';
+import {
+	metricsRoot,
+	readJsonFile,
+	resolveMetadataQualityPath,
+} from './metricsReader.server';
 
 export interface LayerQualityMetrics {
 	layer: string;

@@ -1,5 +1,5 @@
 import type { UmtRow } from './umtBuilder';
-import type { DatasetSummaryTable } from './metricsReader';
+import type { DatasetSummaryTable } from './metricsReader.types';
 
 const DEFAULT_DOMAIN = 'ITERA Data Lakehouse';
 

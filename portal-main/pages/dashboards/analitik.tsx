@@ -1,11 +1,9 @@
 import React from 'react';
 import type { NextPage } from 'next';
-import DashboardEmbedLayout, {
-	dashboardEmbedStaticProps,
-} from '../../components/dashboard/DashboardEmbedLayout';
-import { ANALITIK_LINK } from '../../helpers/dashboardPortal';
+import DashboardEmbedLayout from '../../components/dashboard/DashboardEmbedLayout';
+import { dashboardEmbedStaticProps } from '../../helpers/dashboardEmbedStaticProps';
 
-const DashboardAnalitikPage: NextPage = () => <DashboardEmbedLayout link={ANALITIK_LINK} />;
+const DashboardAnalitikPage: NextPage = () => <DashboardEmbedLayout linkKey='superset' />;
 
 export default DashboardAnalitikPage;
 export const getStaticProps = dashboardEmbedStaticProps;

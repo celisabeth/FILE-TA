@@ -1,13 +1,9 @@
 import React from 'react';
 import type { NextPage } from 'next';
-import DashboardEmbedLayout, {
-	dashboardEmbedStaticProps,
-} from '../../components/dashboard/DashboardEmbedLayout';
-import { MONITORING_MLOPS_LINK } from '../../helpers/dashboardPortal';
+import DashboardEmbedLayout from '../../components/dashboard/DashboardEmbedLayout';
+import { dashboardEmbedStaticProps } from '../../helpers/dashboardEmbedStaticProps';
 
-const MonitoringMlopsPage: NextPage = () => (
-	<DashboardEmbedLayout link={MONITORING_MLOPS_LINK} />
-);
+const MonitoringMlopsPage: NextPage = () => <DashboardEmbedLayout linkKey='grafanaMlops' />;
 
 export default MonitoringMlopsPage;
 export const getStaticProps = dashboardEmbedStaticProps;

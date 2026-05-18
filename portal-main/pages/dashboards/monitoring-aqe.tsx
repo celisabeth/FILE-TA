@@ -1,11 +1,9 @@
 import React from 'react';
 import type { NextPage } from 'next';
-import DashboardEmbedLayout, {
-	dashboardEmbedStaticProps,
-} from '../../components/dashboard/DashboardEmbedLayout';
-import { MONITORING_AQE_LINK } from '../../helpers/dashboardPortal';
+import DashboardEmbedLayout from '../../components/dashboard/DashboardEmbedLayout';
+import { dashboardEmbedStaticProps } from '../../helpers/dashboardEmbedStaticProps';
 
-const MonitoringAqePage: NextPage = () => <DashboardEmbedLayout link={MONITORING_AQE_LINK} />;
+const MonitoringAqePage: NextPage = () => <DashboardEmbedLayout linkKey='grafanaAqe' />;
 
 export default MonitoringAqePage;
 export const getStaticProps = dashboardEmbedStaticProps;

@@ -5,7 +5,6 @@ import {
 	normalizeDatasetAttributes,
 	searchEntities,
 } from './atlasApi';
-import { loadDatasetSummaryIndex } from './metricsReader';
 import { enrichUmtRows } from './umtEnrichment';
 
 export interface UmtRow {
@@ -123,6 +122,7 @@ export async function buildUmtFromAtlas(limit = 500): Promise<{
 }> {
 	const result = await searchEntities('lakehouse_dataset', undefined, undefined, limit, 0);
 	const entities = await hydrateAtlasEntities(result.entities || []);
+	const { loadDatasetSummaryIndex } = await import('./metricsReader.server');
 	const datasetSummary = await loadDatasetSummaryIndex();
 	const rows = sortUmtRows(
 		enrichUmtRows(entities.map(entityToUmtRow), datasetSummary),

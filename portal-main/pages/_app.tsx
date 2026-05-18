@@ -7,6 +7,7 @@ import { TourProvider } from '@reactour/tour';
 import { ReactNotifications } from 'react-notifications-component';
 import { appWithTranslation } from 'next-i18next';
 import { AuthContextProvider } from '../context/authContext';
+import { DashboardEmbedProvider } from '../context/dashboardEmbedContext';
 import { ThemeContextProvider } from '../context/themeContext';
 import useDarkMode from '../hooks/useDarkMode';
 import COLORS from '../common/data/enumColors';
@@ -39,6 +40,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 
 	return (
 		<AuthContextProvider>
+			<DashboardEmbedProvider>
 			<ThemeContextProvider>
 				<ThemeProvider theme={theme}>
 					<TourProvider
@@ -63,6 +65,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 					</TourProvider>
 				</ThemeProvider>
 			</ThemeContextProvider>
+			</DashboardEmbedProvider>
 		</AuthContextProvider>
 	);
 };

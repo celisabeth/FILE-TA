@@ -51,7 +51,14 @@ const nextConfig = withInterceptStdout(
 		NEXT_PUBLIC_ASIDE_MINIMIZE_BREAKPOINT_SIZE:
 			process.env.NEXT_PUBLIC_ASIDE_MINIMIZE_BREAKPOINT_SIZE || '992',
 	},
-	webpack(config, options) {
+	webpack(config, { isServer }) {
+		if (!isServer) {
+			config.resolve.fallback = {
+				...config.resolve.fallback,
+				fs: false,
+				path: false,
+			};
+		}
 		return config;
 	},
 	}),
