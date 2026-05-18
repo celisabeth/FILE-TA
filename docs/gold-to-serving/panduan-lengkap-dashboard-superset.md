@@ -371,13 +371,16 @@ line 3:7 (atau line 5:7)
 
 **Penyebab utama (bukan salah SQL Anda):** bug Superset saat membaca tabel **Iceberg** lewat Trino. Di panel kiri SQL Lab, teks `Latest partition: .../record_count=72/file_count=2/...` adalah **metadata file Iceberg**. Superset salah menganggapnya kolom dan **menyuntikkan** `record_count`, `file_count`, `total_size`, `data` ke query — padahal query Anda di editor sudah benar.
 
-**Perbaikan permanen (repo Insight):** patch di `superset/superset_config.py` — rebuild image:
+**Perbaikan permanen (repo Insight):** patch saat **build** image Superset (`superset/patch_trino_iceberg.py`) — rebuild:
 
 ```bash
 cd ~/Bigdata-insightera
-docker compose build superset superset-init
+docker compose build --no-cache superset superset-init
+docker compose run --rm superset-init
 docker compose up -d superset
 ```
+
+Log build harus memuat `patched /app/superset/db_engine_specs/trino.py`. Jika `patch anchor not found`, laporkan versi image Superset.
 
 **Workaround cepat (tanpa rebuild):**
 
