@@ -526,19 +526,16 @@ services:
         condition: service_healthy
     environment:
       <<: *airflow-common-env
+      PGHOST: postgres
+      PGUSER: admin
+      PGPASSWORD: admin123
     volumes:
       - ./scripts/dags:/opt/airflow/dags
       - ./scripts:/opt/airflow/scripts:ro
       - ./data/staging:/opt/airflow/data/staging:ro
       - ./metrics:/opt/airflow/metrics
-    entrypoint: >
-      /bin/bash -c "
-        mkdir -p /opt/airflow/metrics &&
-        chmod 1777 /opt/airflow/metrics &&
-        airflow db init &&
-        airflow users create --username airflow --password airflow --firstname Air --lastname Flow --role Admin --email airflow@lakehouse.local;
-        echo '✅ Airflow DB initialized';
-      "
+    entrypoint: ["/docker-init.sh"]
+    restart: "no"
 
   airflow-webserver:
     build: ./airflow

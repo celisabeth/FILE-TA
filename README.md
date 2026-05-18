@@ -540,6 +540,24 @@ docker compose exec spark-master bash
 docker compose exec hive-metastore bash
 ```
 
+**Airflow — `You need to initialize the database` / webserver exit (1)**  
+Airflow **2.9** membutuhkan `airflow db migrate` (bukan hanya `db init`). Jika volume Postgres lama tanpa `airflow_db`, atau container `airflow-init` sudah pernah selesai tanpa migrate, webserver gagal.
+
+```bash
+# Pastikan database ada
+docker exec lhmeta-postgres psql -U admin -d postgres -c "CREATE DATABASE airflow_db;"
+
+# Rebuild image (script init baru) + jalankan ulang migrate
+docker compose build airflow-init airflow-webserver airflow-scheduler
+docker compose rm -f airflow-init airflow-webserver airflow-scheduler
+docker compose run --rm airflow-init
+docker compose logs airflow-init --tail 50
+
+docker compose up -d airflow-webserver airflow-scheduler
+```
+
+Login UI: http://localhost:18681 — `airflow` / `airflow`
+
 **Hive Metastore — `timeout after 60s` di `start.sh` padahal log sudah `Starting Hive Metastore Server`**  
 Penyebab umum: healthcheck lama memakai `nc` (tidak ada di image `apache/hive:4.0.0`) sehingga status Docker tetap `starting`. Init schema PostgreSQL juga butuh 1–2 menit pada first run.
 

@@ -189,13 +189,24 @@ echo -e "  ${GREEN}✅ Spark cluster + Jupyter ready${NC}"
 
 # ── 9. Orchestration ─────────────────────────────────────
 step "Starting Airflow (init + webserver + scheduler)"
-docker compose up -d airflow-init
-sleep 20
+for db in airflow_db iceberg_catalog superset_db mlflow_db; do
+  docker exec lhmeta-postgres psql -U admin -d postgres -tc \
+    "SELECT 1 FROM pg_database WHERE datname='${db}'" 2>/dev/null | grep -q 1 \
+    || docker exec lhmeta-postgres psql -U admin -d postgres -c "CREATE DATABASE ${db};" 2>/dev/null \
+    || true
+done
+docker compose rm -f airflow-init 2>/dev/null || true
+if ! docker compose run --rm airflow-init; then
+  echo -e "  ${RED}❌ airflow-init failed — see: docker compose logs airflow-init${NC}"
+  docker compose logs --tail 80 airflow-init 2>/dev/null || true
+else
+  echo -e "  ${GREEN}✅ Airflow DB migrated${NC}"
+fi
 docker compose up -d airflow-webserver
-wait_healthy lhmeta-airflow-webserver 60
+wait_healthy lhmeta-airflow-webserver 90
 docker compose up -d airflow-scheduler
 sleep 5
-echo -e "  ${GREEN}✅ Airflow ready${NC}"
+echo -e "  ${GREEN}✅ Airflow ready (UI :18681 — airflow / airflow)${NC}"
 
 # ── 10. InsightERA Portal (Next.js) ─────────────────────
 step "Starting InsightERA Portal (portal-main)"

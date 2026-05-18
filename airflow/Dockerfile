@@ -17,6 +17,11 @@ RUN mkdir -p /opt/spark-jars \
     && chmod 644 /opt/spark-jars/*.jar
 
 USER airflow
-RUN pip install --no-cache-dir pyspark==3.5.1 boto3 mlflow scikit-learn pandas
+RUN pip install --no-cache-dir pyspark==3.5.1 boto3 mlflow scikit-learn pandas psycopg2-binary
+
+COPY docker-init.sh /docker-init.sh
+USER root
+RUN chmod +x /docker-init.sh
+USER airflow
 
 ENV SPARK_JARS_DIR="/opt/spark-jars"
