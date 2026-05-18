@@ -44,7 +44,7 @@ Silver (Enriched)
 | `fact_iku7_metode_pembelajaran` | IKU-7 | raw_prodi (simulasi) | % MK case method / team-based |
 | `fact_iku8_akreditasi_intl` | IKU-8 | silver_akreditasi_aktif + raw_prodi | % prodi akreditasi internasional |
 | `fact_tata_kelola` | SAKIP | raw_keuangan | Predikat SAKIP, kinerja anggaran |
-| `fact_rekap_iku_institusi` | All | Semua IKU | Executive summary per tahun |
+| `fact_rekap_iku_institusi` | All | Agregat dari fakta IKU 1–8 yang berhasil ditulis | Executive summary per tahun |
 
 ## Gold Metadata (5 Kategori)
 

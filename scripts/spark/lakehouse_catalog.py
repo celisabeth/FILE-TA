@@ -4,7 +4,10 @@ Penamaan katalog Iceberg / Hive & path MinIO untuk eksperimen AQE.
 Bronze (satu salinan, input bersama):
   lakehouse.bronze.*  →  s3a://warehouse/
 
-Silver & Gold per skenario (dua salinan untuk audit SQL):
+Silver & Gold metadata (pipeline utama / metadata_full_experiment):
+  lakehouse.silver.* / lakehouse.gold.*  →  s3a://warehouse/
+
+Silver & Gold per skenario AQE (dua salinan untuk audit SQL):
   lakehouse.silver_aqe_off.* / lakehouse.gold_aqe_off.*  →  s3a://warehouse-aqe-off/
   lakehouse.silver_aqe_on.*  / lakehouse.gold_aqe_on.*   →  s3a://warehouse-aqe-on/
 
@@ -25,6 +28,9 @@ if TYPE_CHECKING:
 
 SHARED_CATALOG = "lakehouse"
 BRONZE_SCHEMA = "bronze"
+# Pipeline metadata (bronze_to_silver → silver_to_gold): schema Hive/Iceberg bersama
+METADATA_SILVER_SCHEMA = "silver"
+METADATA_GOLD_SCHEMA = "gold"
 
 WAREHOUSE_BRONZE = os.environ.get("LAKEHOUSE_WAREHOUSE", "s3a://warehouse/")
 WAREHOUSE_AQE_OFF = os.environ.get("LAKEHOUSE_WAREHOUSE_AQE_OFF", "s3a://warehouse-aqe-off/")
@@ -58,6 +64,27 @@ def gold_schema(scenario: str | None) -> str:
 
 def bronze_table(table: str) -> str:
     return f"{SHARED_CATALOG}.{BRONZE_SCHEMA}.{table}"
+
+
+def metadata_silver_table(table: str) -> str:
+    return f"{SHARED_CATALOG}.{METADATA_SILVER_SCHEMA}.{table}"
+
+
+def metadata_gold_table(table: str) -> str:
+    return f"{SHARED_CATALOG}.{METADATA_GOLD_SCHEMA}.{table}"
+
+
+def ensure_metadata_namespace(spark: SparkSession, layer: str) -> None:
+    schema = METADATA_SILVER_SCHEMA if layer == "silver" else METADATA_GOLD_SCHEMA
+    spark.sql(f"CREATE NAMESPACE IF NOT EXISTS {SHARED_CATALOG}.{schema}")
+
+
+def write_metadata_iceberg_table(df: DataFrame, layer: str, table: str) -> str:
+    """Tulis/replace tabel Iceberg metadata (lakehouse.silver.* / lakehouse.gold.*)."""
+    ensure_metadata_namespace(df.sparkSession, layer)
+    fqn = metadata_silver_table(table) if layer == "silver" else metadata_gold_table(table)
+    df.writeTo(fqn).using("iceberg").createOrReplace()
+    return fqn
 
 
 def silver_table(scenario: str | None, table: str) -> str:
