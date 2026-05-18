@@ -1,9 +1,18 @@
-# Data Lakehouse Insight — Metadata · AQE · MLOps
+# Data Lakehouse Insight
 
-Repositori gabungan penelitian big data: **Metode Metadata** (Apache Atlas + Medallion + Data Catalog), **Metode AQE** (Adaptive Query Execution OFF/ON + Trino/Superset/Grafana), dan **Metode MLOps** (MLflow + empat use case prediktif). Kode disalin dan dilebur dari [`Data-Lakehouse-Metadata`](../Data-Lakehouse-Metadata/) dan [`Data-Lakehouse-AQE`](../Data-Lakehouse-AQE/).
+## Implementasi Pipeline Big Data Berbasis Arsitektur Data Lakehouse dan MLOps untuk Integrasi Data Perguruan Tinggi
 
-> **Diagram acuan (letakkan berkas gambar di root repo):**  
-> `MLOps-pipeline.png` · `Bigdata-pipeline-Metadata.jpg` · `pipeline-aqe.png` · `data-catalog-lifecycle.jpeg`
+Repositori ini berisi implementasi pipeline big data terintegrasi untuk lingkungan perguruan tinggi, menggabungkan arsitektur **Data Lakehouse** (Medallion Bronze–Silver–Gold, Apache Iceberg, governance metadata), **Adaptive Query Execution (AQE)**, **analitik & serving** (Trino, Superset, Grafana), serta **MLOps** (MLflow, empat use case prediktif: Forecast, Risk Score, Opportunity, Anomalies) melalui portal **Insightera** (`portal-main`).
+
+### Tujuan penelitian
+
+1. **Merancang** arsitektur dan pipeline big data berbasis Data Lakehouse dan MLOps untuk integrasi data perguruan tinggi serta **mengukur kinerja** pipeline berdasarkan metrik performa dan kualitas data.
+2. **Mengimplementasikan** pipeline big data berbasis Data Lakehouse dan MLOps untuk mendukung integrasi, pengolahan, dan analitik data perguruan tinggi.
+3. **Melakukan evaluasi komparatif** terhadap implementasi pipeline berdasarkan aspek performa, kualitas data, skalabilitas, dan efektivitas integrasi data.
+
+**Tiga metode dalam satu stack:** Metadata (Atlas + katalog) · AQE (OFF/ON) · MLOps — kode dilebur dari [`Data-Lakehouse-Metadata`](../Data-Lakehouse-Metadata/) dan [`Data-Lakehouse-AQE`](../Data-Lakehouse-AQE/).
+
+---
 
 ## Tech Stack (ringkas)
 
@@ -18,7 +27,7 @@ Repositori gabungan penelitian big data: **Metode Metadata** (Apache Atlas + Med
 
 ---
 
-## 1. Rancangan penelitian — tiga pipeline (diagram terpisah)
+## 1. Rancangan penelitian — tiga pipeline
 
 ### 1.1 Pipeline gabungan — Metadata + AQE + MLOps
 
@@ -71,7 +80,7 @@ Diagram khusus metadata (sumber: `Bigdata-pipeline-Metadata.jpg`):
 | **S** (Silver) | Clean, quality, transformation lineage, business, compliance | `register_silver_metadata.py` |
 | **G** (Gold) | Business, KPI, AI readiness, consumption, advanced lineage | `register_gold_metadata.py` |
 | **Atlas API** | Pencarian Solr, graph JanusGraph/HBase | http://localhost:22100 |
-| **InsightERA Portal** | Data Catalog + dashboard analitik + monitoring (embed) | http://localhost:13000 |
+| **Insightera Portal** | Data Catalog + dashboard analitik + monitoring (embed) | http://localhost:13000 |
 
 **UMT:** `scripts/atlas/build_umt.py` — agregasi `technical_json`, `business_json`, `operational_json` per `asset_qualified_name`.
 
@@ -137,7 +146,7 @@ Implementasi katalog: `scripts/spark/lakehouse_catalog.py` · DAG: `scripts/dags
 
 ---
 
-## 2. Metodologi penelitian (langkah demi langkah)
+## 2. Metodologi penelitian
 
 Metodologi mengikuti **tiga fase** (Metadata → AQE → MLOps) dan tiga diagram di §1. Kerangka BAB IV mengikuti template di §4.
 
@@ -164,7 +173,7 @@ Metodologi mengikuti **tiga fase** (Metadata → AQE → MLOps) dan tiga diagram
 
 ---
 
-## 3. Ringkas teknologi (stack)
+## 3. Ringkasan teknologi (stack)
 
 | Komponen | Fungsi dalam penelitian |
 |----------|-------------------------|
@@ -183,18 +192,9 @@ Metodologi mengikuti **tiga fase** (Metadata → AQE → MLOps) dan tiga diagram
 
 Detail image, port, dan cara menjalankan: lihat **§8** di bawah.
 
-### Asal kode (merge)
-
-| Folder / file | Sumber |
-|---------------|--------|
-| `scripts/atlas/`, `portal-main/`, Atlas stack | Data-Lakehouse-Metadata |
-| `scripts/spark/*_aqe.py`, `lakehouse_catalog.py`, `trino/`, `monitoring/` | Data-Lakehouse-AQE |
-| `scripts/mlops/`, service `mlflow` | Baru (MLOps-pipeline.png) |
-| `scripts/benchmark/` | Gabungan metadata + AQE |
-
 ---
 
-## 4. Kerangka BAB IV — Hasil dan Pembahasan (untuk rancangan penulisan laporan penelitian)
+## 4. Kerangka Hasil dan Pembahasan
 
 Bagian ini adalah **template** isi BAB IV. Paragraf narasi dan screenshot Anda sisipkan pada bagian yang ditandai. Angka subbab mengikuti kerangka yang Anda berikan.
 
@@ -390,7 +390,7 @@ Port **di mesin host** memakai rentang 15xxx–22xxx agar tidak bentrok dengan M
 | Service | Image | Port host (default) | Akses UI / klien dari host |
 |---------|-------|---------------------|----------------------------|
 | Apache Spark Master + Workers | `apache/spark:3.5.1-scala2.12-java17-python3-ubuntu` | **18080** (UI), **17077** (RPC) | http://localhost:18080 |
-| **InsightERA Portal** | **node:20-alpine (Next.js)** | **13000** | **http://localhost:13000** |
+| **Insightera Portal** | **node:20-alpine (Next.js)** | **13000** | **http://localhost:13000** |
 | Apache Airflow | apache/airflow:2.9.1 | **18681** | http://localhost:18681 |
 | MinIO | minio/minio:latest | **19000** (S3 API), **19001** (console) | http://localhost:19001 |
 | Apache Solr | solr:8.11.2 | **18984** | http://localhost:18984/solr/ — core **vertex_index**, **edge_index**, **fulltext_index** (JanusGraph) dibuat oleh `solr-atlas-init` |
@@ -685,7 +685,7 @@ Image **sburn/apache-atlas** juga memuat **`/apache-atlas/hbase/conf/hbase-site.
 
 ---
 
-### 9.4 InsightERA Portal (Next.js — `portal-main/`)
+### 9.4 Insightera Portal (Next.js — `portal-main/`)
 
 **Folder:** `portal-main/` — **portal terpadu**: modul **Data Catalog** (Atlas), **Dashboard Analitik** (Superset embed), **Monitoring** (Grafana: Insight, AQE, MLOps). Panduan: [`docs/portal/README.md`](docs/portal/README.md).
 
@@ -836,7 +836,7 @@ Artefak: `metrics/experiment_summary_latest.json`, `metrics/aqe_comparison_*.jso
 | `docs/aqe/README.md` | Ringkasan pipeline AQE |
 | `docs/mlops/README.md` | Ringkasan pipeline MLOps |
 | `docs/gold-to-serving/README.md` | Star schema, OLAP, granularitas, template dashboard KPI IKU |
-| `docs/portal/README.md` | InsightERA Portal — katalog + dashboard + monitoring |
+| `docs/portal/README.md` | Insightera Portal — katalog + dashboard + monitoring |
 | `portal-main/` | Kode Next.js portal |
 | `docs/monitoring-grafana/README.md` | Dashboard Grafana Insight + MLOps + AQE |
 | `monitoring/grafana/provisioning/dashboards/json/` | Template dashboard (provisioned) |
