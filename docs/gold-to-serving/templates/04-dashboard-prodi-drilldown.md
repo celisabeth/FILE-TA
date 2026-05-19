@@ -10,27 +10,36 @@
 
 SQL: [06-virtual-dataset-sql.md](06-virtual-dataset-sql.md) → **Save dataset** `v_iku4_per_prodi`.
 
-### A2. Chart — IKU-4 per prodi
+### A2. Chart — IKU-4 per prodi (`chart_iku4_per_prodi`)
 
-| Wizard | Isi |
-|--------|-----|
-| Dataset | `v_iku4_per_prodi` |
-| Chart type | **Bar Chart** |
-| Dimension | `nama_prodi` |
-| Metric | **AVG** `persen_iku4` |
-| Filter | `tahun` (tambah kolom tahun di SQL jika belum ada) |
-| Save | `chart_iku4_per_prodi` |
+Dataset `v_iku4_per_prodi` → **Bar Chart**.
+
+| Medan Superset | Pilih |
+|----------------|-------|
+| **X-Axis** | `nama_prodi` |
+| **Y-Axis (Metrics)** | **AVG** → `persen_iku4` |
+| **Dimensions** | *(kosong)* |
+| **Filters** | `tahun` = `2024` *(tambah `w.tahun` di SQL dataset jika kolom belum ada)* |
+| **Customize → Orientation** | **Horizontal** (nama prodi di sumbu Y) |
+| **Sort** | Metric descending (prodi tertinggi di atas) |
+| **Save** | `chart_iku4_per_prodi` |
 
 ### A3. Dataset `v_capaian_roll_up_jurusan`
 
 SQL di [06](06-virtual-dataset-sql.md) → **Save dataset** `v_capaian_roll_up_jurusan`.
 
-### A4. Chart — Roll-up jurusan
+### A4. Chart — Roll-up jurusan (`chart_iku4_per_jurusan`)
 
-| Dimension | `nama_jurusan` |
-| Metric | **AVG** `avg_iku4` |
-| Filter | `tahun` = 2024 |
-| Save | `chart_iku4_per_jurusan` |
+Dataset `v_capaian_roll_up_jurusan` → **Bar Chart**.
+
+| Medan Superset | Pilih |
+|----------------|-------|
+| **X-Axis** | `nama_jurusan` |
+| **Y-Axis (Metrics)** | **AVG** → `avg_iku4` |
+| **Dimensions** | *(kosong)* |
+| **Filters** | `tahun` **=** `2024` |
+| **Customize → Orientation** | **Vertical** (default) |
+| **Save** | `chart_iku4_per_jurusan` |
 
 ### A5. Dashboard
 

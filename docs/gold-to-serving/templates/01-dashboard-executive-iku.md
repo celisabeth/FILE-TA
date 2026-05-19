@@ -34,31 +34,53 @@ Jika **0 baris** → [06-virtual-dataset-sql.md](06-virtual-dataset-sql.md) bagi
 | Nama dataset | `v_tata_kelola_tahun` |
 | SQL | lihat [03-dashboard-tata-kelola-sakip.md](03-dashboard-tata-kelola-sakip.md) |
 
-### A3. Chart — Bar 8 IKU
+### A3. Chart — Bar 8 IKU (`chart_executive_iku_bar`)
 
-| Wizard | Isi |
-|--------|-----|
-| **Charts** → **+ Chart** | |
-| Dataset | `v_rekap_iku_tahun` |
-| Chart type | **Bar Chart** |
-| Dimension | `iku_kode` |
-| Metric | **AVG** `nilai_capaian` |
-| Filter | `tahun` = `2024` (sesuaikan) |
-| Save chart | `chart_executive_iku_bar` |
+**Charts** → **+ Chart** → dataset `v_rekap_iku_tahun` → **Bar Chart**.
 
-### A4. Chart — Heatmap / tabel status (opsional)
+#### Konfigurasi Explore (tab **Data**)
 
-| Dataset | `v_rekap_iku_tahun` |
-| Chart type | **Pivot table** atau **Table** |
-| Rows | `iku_kode` |
-| Columns | `status_capaian` atau banding `nilai_capaian` vs `nilai_target` |
+| Medan Superset | Pilih |
+|----------------|-------|
+| **X-Axis** | `iku_kode` (IKU-1 … IKU-8 di sumbu bawah) |
+| **Y-Axis (Metrics)** | **+ Metric** → **AVG** → `nilai_capaian` |
+| **Dimensions** | *(kosong)* |
+| **Filters** | `tahun` **Equal to** `2024` (sesuaikan tahun di data) |
+| **Sort by** | `iku_kode` ascending |
+| **Row limit** | 100 (default) |
 
-### A5. Chart — Anggaran / SAKIP (opsional)
+#### Customize (opsional)
 
-| Dataset | `v_tata_kelola_tahun` |
-| Chart type | **Line Chart** |
-| Dimension | `tahun` |
-| Metric | **AVG** `persen_realisasi` |
+| Medan | Nilai |
+|-------|-------|
+| Chart title | Capaian IKU Institusi |
+| Chart orientation | **Vertical** |
+| Show value on chart | Aktif (angka di atas batang) |
+
+**Save** → `chart_executive_iku_bar`.
+
+### A4. Chart — Tabel status (opsional, `chart_executive_iku_table`)
+
+Dataset `v_rekap_iku_tahun` → **Table**.
+
+| Medan Superset | Pilih |
+|----------------|-------|
+| **Columns** | `tahun`, `iku_kode`, `iku_nama`, `nilai_capaian`, `nilai_target`, `status_capaian` |
+| **Filters** | `tahun` = `2024` |
+| **Sort** | `iku_kode` ascending |
+
+**Pivot table** (alternatif): **Rows** `iku_kode` · **Columns** `status_capaian` · **Metrics** `COUNT(*)` atau **AVG** `nilai_capaian`.
+
+### A5. Chart — SAKIP realisasi (opsional, `chart_executive_sakip_line`)
+
+Dataset `v_tata_kelola_tahun` → **Line Chart**.
+
+| Medan Superset | Pilih |
+|----------------|-------|
+| **X-Axis** | `tahun` |
+| **Y-Axis (Metrics)** | **AVG** → `persen_realisasi` |
+| **Dimensions** | *(kosong)* |
+| **Filters** | *(kosong, atau batasi rentang tahun)* |
 
 ### A6. Dashboard
 

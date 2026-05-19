@@ -152,18 +152,19 @@ Ulangi untuk tabel lain jika perlu (lihat [templates/01-dashboard-executive-iku.
 
 ## Langkah 3 — Chart batang 8 IKU
 
-**Menu:** **Charts** → **+ Chart**
+**Menu:** **Charts** → **+ Chart** → dataset `v_rekap_iku_tahun` → **Bar Chart** → tab **Data**:
 
-| Langkah di wizard | Pilih |
-|-------------------|--------|
-| Choose a dataset | `v_rekap_iku_tahun` |
-| Chart type | **Bar Chart** |
-| Dimension | `iku_kode` |
-| Metric | **AVG** `nilai_capaian` (jangan SUM untuk %) |
-| Filter (opsional) | `tahun` = `2024` |
-| Save chart | nama: `iku_executive_bar` |
+| Medan Superset (tab Data) | Pilih |
+|---------------------------|--------|
+| **X-Axis** | `iku_kode` |
+| **Y-Axis (Metrics)** | **+ Metric** → **AVG** → `nilai_capaian` (jangan SUM untuk %) |
+| **Dimensions** | *(kosong)* |
+| **Filters** | `tahun` **Equal to** `2024` |
+| **Customize → Orientation** | **Vertical** |
 
-Checklist panel: [templates/01-dashboard-executive-iku.md](templates/01-dashboard-executive-iku.md).
+**Save chart** → `chart_executive_iku_bar`.
+
+Peta medan UI: [templates/00-alur-superset-dataset-chart.md](templates/00-alur-superset-dataset-chart.md). Detail + chart lain: [templates/01-dashboard-executive-iku.md](templates/01-dashboard-executive-iku.md).
 
 ---
 
@@ -214,8 +215,9 @@ JOIN gold_aqe_off.dim_waktu w ON r.waktu_id = w.waktu_id;
 
 **ON** (database = Lakehouse AQE ON): ganti `gold_aqe_off` → `gold_aqe_on`.
 
-3. Chart + dashboard (judul beri suffix **AQE OFF** / **AQE ON**)
-4. Embed: `/dashboards/kpi-aqe-off` dan `/dashboards/kpi-aqe-on`
+3. Chart: **X-Axis** `iku_kode` · **Metrics** AVG `nilai_capaian` · Filter `tahun` (sama template 01)
+4. Dashboard (judul beri suffix **AQE OFF** / **AQE ON**)
+5. Embed: `/dashboards/kpi-aqe-off` dan `/dashboards/kpi-aqe-on`
 
 Checklist: [templates/07-dashboard-kpi-aqe-off-on.md](templates/07-dashboard-kpi-aqe-off-on.md).
 
@@ -223,18 +225,18 @@ Checklist: [templates/07-dashboard-kpi-aqe-off-on.md](templates/07-dashboard-kpi
 
 ## Folder `templates/` — Dataset → Chart di setiap file
 
-Setiap template punya bagian **A. Dataset → Chart** (langkah Superset) + **B. Checklist laporan**.
+Setiap template punya **Konfigurasi Explore** (**X-Axis**, **Y-Axis/Metrics**, Filters) + checklist laporan.
 
-| File | Dataset (contoh) | Chart |
-|------|------------------|-------|
-| [00-alur-superset-dataset-chart.md](templates/00-alur-superset-dataset-chart.md) | Pola umum semua template | |
-| [06-virtual-dataset-sql.md](templates/06-virtual-dataset-sql.md) | Semua query + diagnosa **0 baris** | |
-| [01-dashboard-executive-iku.md](templates/01-dashboard-executive-iku.md) | `v_rekap_iku_tahun` | Bar 8 IKU |
-| [02-dashboard-iku-per-indikator.md](templates/02-dashboard-iku-per-indikator.md) | `ds_iku1_...` … `ds_iku8_...` | Bar per IKU |
-| [03-dashboard-tata-kelola-sakip.md](templates/03-dashboard-tata-kelola-sakip.md) | `v_tata_kelola_tahun` | Line / Table |
-| [04-dashboard-prodi-drilldown.md](templates/04-dashboard-prodi-drilldown.md) | `v_iku4_per_prodi` | Bar prodi |
-| [07-dashboard-kpi-aqe-off-on.md](templates/07-dashboard-kpi-aqe-off-on.md) | OFF/ON seperti 01 | Bar |
-| [05-dashboard-mlops-prediktif.md](templates/05-dashboard-mlops-prediktif.md) | — (**Grafana**) | |
+| File | Dataset | X-Axis | Y-Axis (Metrics) |
+|------|---------|--------|------------------|
+| [00](templates/00-alur-superset-dataset-chart.md) | Peta UI Superset | — | — |
+| [06](templates/06-virtual-dataset-sql.md) | SQL + diagnosa | (lihat tabel di 06) | |
+| [01](templates/01-dashboard-executive-iku.md) | `v_rekap_iku_tahun` | `iku_kode` | AVG `nilai_capaian` |
+| [02](templates/02-dashboard-iku-per-indikator.md) | `ds_ikuN_*` | `nama_prodi` | AVG `persen_ikuN` |
+| [03](templates/03-dashboard-tata-kelola-sakip.md) | `v_tata_kelola_tahun` | `tahun` | AVG `persen_realisasi` |
+| [04](templates/04-dashboard-prodi-drilldown.md) | `v_iku4_per_prodi` | `nama_prodi` | AVG `persen_iku4` |
+| [07](templates/07-dashboard-kpi-aqe-off-on.md) | OFF/ON = 01 | `iku_kode` | AVG `nilai_capaian` |
+| [05](templates/05-dashboard-mlops-prediktif.md) | — | **Grafana** | |
 
 Indeks lengkap: [templates/README.md](templates/README.md)
 

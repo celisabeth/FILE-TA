@@ -172,6 +172,8 @@ ORDER BY w.tahun, r.iku_kode;
 
 **Superset:** SQL Lab → Run (>0 baris) → Save dataset → `v_rekap_iku_tahun`.
 
+**Chart:** X-Axis `iku_kode` · Y-Axis **AVG** `nilai_capaian` · Filter `tahun` → [01](01-dashboard-executive-iku.md).
+
 ---
 
 ## v_iku4_per_prodi → dataset `v_iku4_per_prodi`
@@ -187,7 +189,7 @@ JOIN lakehouse.gold.dim_prodi p ON f.prodi_id = p.prodi_id
 ORDER BY f.persen_iku4 DESC;
 ```
 
-**Chart:** Bar horizontal · Dimension `nama_prodi` · Metric **AVG** `persen_iku4`.
+**Chart:** X-Axis `nama_prodi` · Y-Axis **AVG** `persen_iku4` · Orientation horizontal → [04](04-dashboard-prodi-drilldown.md).
 
 ---
 
@@ -204,7 +206,7 @@ JOIN lakehouse.gold.dim_waktu w ON f.waktu_id = w.waktu_id
 ORDER BY w.tahun;
 ```
 
-**Chart:** Line · Dimension `tahun` · Metric **AVG** `persen_realisasi`.
+**Chart:** X-Axis `tahun` · Y-Axis **AVG** `persen_realisasi` → [03](03-dashboard-tata-kelola-sakip.md).
 
 ---
 
@@ -225,6 +227,8 @@ GROUP BY w.tahun
 ORDER BY tahun, iku_kode;
 ```
 
+**Chart (fallback):** X-Axis `iku_kode` · Y-Axis **AVG** `nilai_capaian` · Filter `tahun`.
+
 ---
 
 ## v_capaian_roll_up_jurusan → dataset `v_capaian_roll_up_jurusan`
@@ -239,6 +243,8 @@ JOIN lakehouse.gold.dim_waktu w ON f.waktu_id = w.waktu_id
 GROUP BY p.nama_jurusan, w.tahun
 ORDER BY w.tahun, p.nama_jurusan;
 ```
+
+**Chart:** X-Axis `nama_jurusan` · Y-Axis **AVG** `avg_iku4` · Filter `tahun` → [04](04-dashboard-prodi-drilldown.md).
 
 ---
 
@@ -255,13 +261,17 @@ Lihat [07-dashboard-kpi-aqe-off-on.md](07-dashboard-kpi-aqe-off-on.md).
 
 ## Tabel: Query → Dataset → Chart → Template
 
-| Query / dataset | Template | Chart type |
-|-----------------|----------|------------|
-| `v_rekap_iku_tahun` | 01 Executive | Bar |
-| `v_tata_kelola_tahun` | 03 SAKIP | Line |
-| `v_iku4_per_prodi` | 04 Prodi | Bar horizontal |
-| `v_iku_subset_tahun` | 01 (fallback) | Bar |
-| Per `fact_ikuN_*` | 02 per IKU | Bar (satu chart per IKU) |
+| Query / dataset | Template | Chart type | X-Axis | Y-Axis (Metrics) |
+|-----------------|----------|------------|--------|------------------|
+| `v_rekap_iku_tahun` | 01 Executive | Bar vertikal | `iku_kode` | AVG `nilai_capaian` |
+| `v_tata_kelola_tahun` | 03 SAKIP | Line | `tahun` | AVG `persen_realisasi` |
+| `v_tata_kelola_tahun` | 03 SAKIP | Bar grouped | `tahun` | SUM `pagu_total`, SUM `realisasi_total` |
+| `v_iku4_per_prodi` | 04 Prodi | Bar horizontal | `nama_prodi` | AVG `persen_iku4` |
+| `v_capaian_roll_up_jurusan` | 04 Prodi | Bar vertikal | `nama_jurusan` | AVG `avg_iku4` |
+| `v_iku_subset_tahun` | 01 (fallback) | Bar vertikal | `iku_kode` | AVG `nilai_capaian` |
+| Per `fact_ikuN_*` | 02 per IKU | Bar horizontal | `nama_prodi` / `nama_jurusan` | AVG kolom % IKU |
+
+Detail langkah Explore: file template masing-masing + [00-alur-superset-dataset-chart.md](00-alur-superset-dataset-chart.md).
 
 ---
 

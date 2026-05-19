@@ -1,6 +1,6 @@
 # Template Dashboard KPI (Superset)
 
-Setiap file berisi: **Dataset → Chart → Dashboard** (langkah Superset) + **checklist laporan**.
+Setiap file berisi: **Dataset → Chart** (termasuk **X-Axis** & **Y-Axis/Metrics** di tab Data Explore) → **Dashboard** + checklist laporan.
 
 ---
 
@@ -20,17 +20,19 @@ Panduan ringkas: [../panduan-lengkap-dashboard-superset.md](../panduan-lengkap-d
 
 ---
 
-## Ringkas: Dataset → Chart per template
+## Ringkas: X-Axis & Y-Axis per template
 
-| Template | Nama dataset (contoh) | Chart type | Dashboard |
-|----------|----------------------|------------|-----------|
-| **01** Executive | `v_rekap_iku_tahun` | Bar (`iku_kode` × AVG capaian) | Executive IKU |
-| **02** Per IKU | `ds_iku1_lulusan`, … | Bar per prodi | Detail IKU 1-8 |
-| **03** SAKIP | `v_tata_kelola_tahun` | Line realisasi, Table predikat | Tata Kelola |
-| **04** Prodi | `v_iku4_per_prodi`, `v_capaian_roll_up_jurusan` | Bar prodi / jurusan | Drill-down |
-| **06** SQL | (semua query di atas) | — | — |
-| **07** AQE | `v_rekap_iku_tahun_off/on` | Sama seperti 01 | OFF + ON |
-| **05** MLOps | — | Grafana panels | Insight prediktif |
+| Template | Dataset | Chart | **X-Axis** | **Y-Axis (Metrics)** |
+|----------|---------|-------|------------|----------------------|
+| **01** | `v_rekap_iku_tahun` | Bar vertikal | `iku_kode` | AVG `nilai_capaian` |
+| **02** | `ds_ikuN_*` | Bar horizontal | `nama_prodi` | AVG `persen_ikuN` |
+| **03** | `v_tata_kelola_tahun` | Line | `tahun` | AVG `persen_realisasi` |
+| **03** | sama | Bar grouped | `tahun` | SUM `pagu_total`, SUM `realisasi_total` |
+| **04** | `v_iku4_per_prodi` | Bar horizontal | `nama_prodi` | AVG `persen_iku4` |
+| **04** | `v_capaian_roll_up_jurusan` | Bar vertikal | `nama_jurusan` | AVG `avg_iku4` |
+| **07** | `v_rekap_iku_tahun_off/on` | = template 01 | `iku_kode` | AVG `nilai_capaian` |
+
+Peta UI Superset: [00 — Step 3](00-alur-superset-dataset-chart.md#step-3--buat-chart).
 
 ---
 

@@ -51,15 +51,18 @@ JOIN gold_aqe_off.dim_waktu w
 
 Save dataset → `v_rekap_iku_tahun_off`.
 
-### Chart
+### Chart (`chart_executive_iku_off`)
 
-| Field | Nilai |
-|-------|-------|
-| Dataset | `v_rekap_iku_tahun_off` |
-| Type | Bar Chart |
-| Dimension | `iku_kode` |
-| Metric | AVG `nilai_capaian` |
-| Save | `chart_executive_iku_off` |
+Dataset `v_rekap_iku_tahun_off` → **Bar Chart** (sama [template 01](01-dashboard-executive-iku.md) bagian A3).
+
+| Medan Superset | Pilih |
+|----------------|-------|
+| **X-Axis** | `iku_kode` |
+| **Y-Axis (Metrics)** | **AVG** → `nilai_capaian` |
+| **Dimensions** | *(kosong)* |
+| **Filters** | `tahun` = `2024` |
+| **Customize → Orientation** | **Vertical** |
+| **Save** | `chart_executive_iku_off` |
 
 ### Dashboard
 

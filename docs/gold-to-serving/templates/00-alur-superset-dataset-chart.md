@@ -72,11 +72,35 @@ Untuk chart yang butuh join tahun, pakai **Cara A** atau buat beberapa dataset f
 | **Charts** → **+ Chart** | |
 | Choose a dataset | Pilih dataset Step 2 |
 | Chart type | Sesuai template (Bar, Line, Table, …) |
-| Data tab | **Dimensions** = sumbu X / kelompok |
-| | **Metrics** = nilai (AVG untuk %, COUNT untuk jumlah) |
-| | **Filters** = opsional (`tahun`, `prodi_id`, …) |
-| Customize | Judul chart |
-| | **Save** → nama chart, mis. `iku_executive_bar` |
+| Tab **Data** | Isi **X-Axis**, **Metrics**, **Filters** persis seperti tabel di template (01–07) |
+| Tab **Customize** | Judul, orientasi batang (horizontal/vertikal) |
+| | **Save** → nama chart, mis. `chart_executive_iku_bar` |
+
+### Peta medan Superset (tab **Data**)
+
+Di Apache Superset 3.x/4.x:
+
+| Label di UI Superset | Fungsi | Di template |
+|----------------------|--------|-------------|
+| **X-Axis** | Kategori / sumbu horizontal (batang vertikal) | **X-Axis** |
+| **Metrics** | Nilai numerik (tinggi garis/batang) = **Y-Axis** visual | **Y-Axis (Metrics)** |
+| **Dimensions** | Pemecah seri (batang berkelompok) | **Dimensions** |
+| **Filters** | Filter tahun/prodi | **Filters** |
+| **Rows / Columns** | Pivot table | **Rows** / **Columns** |
+
+**Bar vertikal (default):**
+
+```text
+        ↑ Y ← Metrics (AVG nilai_capaian)
+  ████  │
+  ████  └────────────→ X-Axis (iku_kode)
+```
+
+**Bar horizontal:** isi **X-Axis** = `nama_prodi` → **Customize** → **Chart orientation** = **Horizontal** (label prodi di sumbu Y kiri).
+
+**Line:** **X-Axis** = `tahun` · **Metrics** = nilai garis.
+
+Setiap chart di template 01–07 punya tabel **Konfigurasi Explore**.
 
 ---
 

@@ -23,29 +23,41 @@ ORDER BY w.tahun;
 
 **Save dataset** → `v_tata_kelola_tahun`.
 
-### A2. Chart 1 — Trend realisasi anggaran
+### A2. Chart 1 — Trend realisasi (`chart_sakip_realisasi_line`)
 
-| Wizard | Isi |
-|--------|-----|
-| Dataset | `v_tata_kelola_tahun` |
-| Chart type | **Line Chart** |
-| Dimension | `tahun` |
-| Metric | **AVG** `persen_realisasi` |
-| Save | `chart_sakip_realisasi_line` |
+Dataset `v_tata_kelola_tahun` → **Line Chart**.
 
-### A3. Chart 2 — Predikat SAKIP
+| Medan Superset | Pilih |
+|----------------|-------|
+| **X-Axis** | `tahun` (tahun di sumbu horizontal) |
+| **Y-Axis (Metrics)** | **AVG** → `persen_realisasi` |
+| **Dimensions** | *(kosong)* |
+| **Filters** | *(kosong)* |
+| **Save** | `chart_sakip_realisasi_line` |
 
-| Chart type | **Table** atau **Big Number** |
-| Dimension | `tahun` |
-| Columns / Metric | `predikat_sakip`, `nilai_sakip` |
-| Save | `chart_sakip_predikat` |
+### A3. Chart 2 — Predikat SAKIP (`chart_sakip_predikat`)
 
-### A4. Chart 3 — Pagu vs realisasi
+Dataset `v_tata_kelola_tahun` → **Table**.
 
-| Chart type | **Bar Chart** (grouped) |
-| Dimension | `tahun` |
-| Metrics | **SUM** `pagu_total`, **SUM** `realisasi_total` |
-| Save | `chart_sakip_pagu_realisasi` |
+| Medan Superset | Pilih |
+|----------------|-------|
+| **Columns** | `tahun`, `predikat_sakip`, `nilai_sakip`, `persen_realisasi` |
+| **Filters** | `tahun` **=** tahun terbaru (mis. `2024`) |
+| **Sort** | `tahun` descending |
+
+**Big Number** (alternatif): **Metric** = **MAX** `nilai_sakip` · **Filters** `tahun` = `2024` · subtitle manual = `predikat_sakip`.
+
+### A4. Chart 3 — Pagu vs realisasi (`chart_sakip_pagu_realisasi`)
+
+Dataset `v_tata_kelola_tahun` → **Bar Chart** (grouped).
+
+| Medan Superset | Pilih |
+|----------------|-------|
+| **X-Axis** | `tahun` |
+| **Y-Axis (Metrics)** | **SUM** → `pagu_total` **dan** **SUM** → `realisasi_total` (dua metric) |
+| **Dimensions** | *(kosong)* — Superset otomatis legenda per metric |
+| **Customize** | Chart orientation **Vertical** |
+| **Save** | `chart_sakip_pagu_realisasi` |
 
 ### A5. Dashboard
 

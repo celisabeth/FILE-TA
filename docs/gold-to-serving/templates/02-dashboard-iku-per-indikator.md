@@ -1,22 +1,24 @@
 # Template 02 — Dashboard per Indikator IKU (IKU-1 … IKU-8)
 
-**Alur umum:** [00-alur-superset-dataset-chart.md](00-alur-superset-dataset-chart.md)  
-Satu **dataset + satu chart** per indikator (atau satu dashboard dengan banyak tab/chart).
+**Alur umum:** [00-alur-superset-dataset-chart.md](00-alur-superset-dataset-chart.md) · **Peta X/Y:** [Step 3 di 00](00-alur-superset-dataset-chart.md#step-3--buat-chart)  
+Satu **dataset + satu chart** per indikator (atau satu dashboard dengan banyak chart).
+
+**Pola chart (semua IKU per prodi):** Bar horizontal — **X-Axis** = `nama_prodi` · **Metrics** = AVG kolom % IKU · **Filter** `tahun`.
 
 ---
 
-## Pola berulang (setiap IKU)
+## Pola berulang
 
 | Step | Superset | Isi |
 |------|----------|-----|
-| 1 | **SQL Lab** | Query ke `fact_ikuN_*` + join `dim_waktu` / `dim_prodi` |
-| 2 | **Save dataset** | Nama `ds_ikuN_...` |
-| 3 | **Charts** → **+ Chart** | Bar chart |
-| 4 | **Dashboards** | Gabung semua chart IKU |
+| 1 | **SQL Lab** | Query + **Save dataset** `ds_ikuN_...` |
+| 2 | **Charts** → **+ Chart** | Tabel **Konfigurasi Explore** di bawah |
+| 3 | **Customize** | Orientation **Horizontal** |
+| 4 | **Dashboards** | Gabung `chart_iku1` … `chart_iku8` |
 
 ---
 
-## IKU-1 — `fact_iku1_lulusan`
+## IKU-1 — `chart_iku1_lulusan`
 
 ### Dataset `ds_iku1_lulusan`
 
@@ -28,20 +30,21 @@ JOIN lakehouse.gold.dim_waktu w ON f.waktu_id = w.waktu_id
 JOIN lakehouse.gold.dim_prodi p ON f.prodi_id = p.prodi_id;
 ```
 
-### Chart
+### Konfigurasi Explore — Bar Chart (horizontal)
 
-| Field | Nilai |
-|-------|-------|
-| Dataset | `ds_iku1_lulusan` |
-| Type | **Bar Chart** (horizontal) |
-| Dimension | `nama_prodi` |
-| Metric | **AVG** `persen_terserap` |
-| Filter | `tahun` = 2024 |
-| Save as | `chart_iku1_lulusan` |
+| Medan Superset | Pilih |
+|----------------|-------|
+| **Chart type** | Bar Chart |
+| **X-Axis** | `nama_prodi` |
+| **Y-Axis (Metrics)** | **AVG** → `persen_terserap` |
+| **Dimensions** | *(kosong)* |
+| **Filters** | `tahun` **=** `2024` |
+| **Customize → Orientation** | **Horizontal** |
+| **Save** | `chart_iku1_lulusan` |
 
 ---
 
-## IKU-2 — `fact_iku2_mbkm`
+## IKU-2 — `chart_iku2_mbkm`
 
 ### Dataset `ds_iku2_mbkm`
 
@@ -52,15 +55,15 @@ JOIN lakehouse.gold.dim_waktu w ON f.waktu_id = w.waktu_id
 JOIN lakehouse.gold.dim_prodi p ON f.prodi_id = p.prodi_id;
 ```
 
-### Chart
-
-| Dimension | `nama_prodi` |
-| Metric | **AVG** `persen_iku2` |
-| Save as | `chart_iku2_mbkm` |
+| **X-Axis** | `nama_prodi` |
+| **Y-Axis (Metrics)** | **AVG** → `persen_iku2` |
+| **Filters** | `tahun` = `2024` |
+| **Orientation** | Horizontal |
+| **Save** | `chart_iku2_mbkm` |
 
 ---
 
-## IKU-3 — `fact_iku3_dosen_tridarma`
+## IKU-3 — `chart_iku3_tridarma`
 
 ### Dataset `ds_iku3_dosen`
 
@@ -71,23 +74,27 @@ JOIN lakehouse.gold.dim_waktu w ON f.waktu_id = w.waktu_id
 JOIN lakehouse.gold.dim_prodi p ON f.prodi_id = p.prodi_id;
 ```
 
-### Chart
-
-| Metric | **AVG** `persen_iku3` |
-| Save as | `chart_iku3_tridarma` |
-
----
-
-## IKU-4 — `fact_iku4_kualifikasi_dosen`
-
-Gunakan query lengkap di [06-virtual-dataset-sql.md](06-virtual-dataset-sql.md) → dataset `v_iku4_per_prodi`.
-
-| Metric | **AVG** `persen_iku4` |
-| Save as | `chart_iku4_dosen` |
+| **X-Axis** | `nama_prodi` |
+| **Y-Axis (Metrics)** | **AVG** → `persen_iku3` |
+| **Filters** | `tahun` = `2024` |
+| **Orientation** | Horizontal |
+| **Save** | `chart_iku3_tridarma` |
 
 ---
 
-## IKU-5 — `fact_iku5_penelitian_pkm`
+## IKU-4 — `chart_iku4_dosen`
+
+Dataset: [06](06-virtual-dataset-sql.md) → `v_iku4_per_prodi` (tambah `w.tahun` di SQL jika perlu filter tahun).
+
+| **X-Axis** | `nama_prodi` |
+| **Y-Axis (Metrics)** | **AVG** → `persen_iku4` |
+| **Filters** | `tahun` = `2024` *(jika kolom ada di dataset)* |
+| **Orientation** | Horizontal |
+| **Save** | `chart_iku4_dosen` |
+
+---
+
+## IKU-5 — `chart_iku5_penelitian`
 
 > Join via `jurusan_id`, bukan `prodi_id`.
 
@@ -101,16 +108,17 @@ JOIN lakehouse.gold.dim_prodi p ON f.jurusan_id = p.nama_jurusan
    OR f.jurusan_id = p.prodi_id;
 ```
 
-*(Sesuaikan join dengan kolom aktual di Gold Anda.)*
+*(Sesuaikan join dengan kolom aktual di Gold.)*
 
-### Chart
-
-| Dimension | `nama_jurusan` |
-| Metric | **AVG** `rasio_per_dosen` |
+| **X-Axis** | `nama_jurusan` |
+| **Y-Axis (Metrics)** | **AVG** → `rasio_per_dosen` |
+| **Filters** | `tahun` = `2024` |
+| **Orientation** | Horizontal |
+| **Save** | `chart_iku5_penelitian` |
 
 ---
 
-## IKU-6 — `fact_iku6_kerjasama_prodi`
+## IKU-6 — `chart_iku6_kerjasama`
 
 ### Dataset `ds_iku6_kerjasama`
 
@@ -121,13 +129,15 @@ JOIN lakehouse.gold.dim_waktu w ON f.waktu_id = w.waktu_id
 JOIN lakehouse.gold.dim_prodi p ON f.prodi_id = p.prodi_id;
 ```
 
-### Chart
-
-| Metric | **AVG** `persen_iku6` |
+| **X-Axis** | `nama_prodi` |
+| **Y-Axis (Metrics)** | **AVG** → `persen_iku6` |
+| **Filters** | `tahun` = `2024` |
+| **Orientation** | Horizontal |
+| **Save** | `chart_iku6_kerjasama` |
 
 ---
 
-## IKU-7 — `fact_iku7_metode_pembelajaran`
+## IKU-7 — `chart_iku7_mb`
 
 ### Dataset `ds_iku7_mb`
 
@@ -138,9 +148,15 @@ JOIN lakehouse.gold.dim_waktu w ON f.waktu_id = w.waktu_id
 JOIN lakehouse.gold.dim_prodi p ON f.prodi_id = p.prodi_id;
 ```
 
+| **X-Axis** | `nama_prodi` |
+| **Y-Axis (Metrics)** | **AVG** → `persen_iku7` |
+| **Filters** | `tahun` = `2024` |
+| **Orientation** | Horizontal |
+| **Save** | `chart_iku7_mb` |
+
 ---
 
-## IKU-8 — `fact_iku8_akreditasi_internasional`
+## IKU-8 — `chart_iku8_akreditasi`
 
 ### Dataset `ds_iku8_akreditasi`
 
@@ -151,6 +167,12 @@ JOIN lakehouse.gold.dim_waktu w ON f.waktu_id = w.waktu_id
 JOIN lakehouse.gold.dim_prodi p ON f.prodi_id = p.prodi_id;
 ```
 
+| **X-Axis** | `nama_prodi` |
+| **Y-Axis (Metrics)** | **AVG** → `persen_iku8` |
+| **Filters** | `tahun` = `2024` |
+| **Orientation** | Horizontal |
+| **Save** | `chart_iku8_akreditasi` |
+
 ---
 
 ## Dashboard gabungan
@@ -159,14 +181,14 @@ JOIN lakehouse.gold.dim_prodi p ON f.prodi_id = p.prodi_id;
 |------|-------|
 | **Dashboards** → **+ Dashboard** | `Dashboard Detail IKU 1-8` |
 | Edit | Tambah `chart_iku1` … `chart_iku8` |
-| Filter global | `tahun` |
+| **Filter dashboard** | Kolom `tahun` (scope semua chart) |
 
 ---
 
 ## Checklist isian laporan
 
-| IKU | Dataset | Chart | Screenshot |
-|-----|---------|-------|------------|
-| IKU-1 | ds_iku1_lulusan | chart_iku1_lulusan | |
-| IKU-2 | | | |
-| … | | | |
+| IKU | Dataset | Chart | X-Axis | Y-Axis (Metric) |
+|-----|---------|-------|--------|-----------------|
+| IKU-1 | ds_iku1_lulusan | chart_iku1_lulusan | nama_prodi | AVG persen_terserap |
+| IKU-2 | ds_iku2_mbkm | chart_iku2_mbkm | nama_prodi | AVG persen_iku2 |
+| … | | | | |
