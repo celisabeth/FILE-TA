@@ -194,6 +194,7 @@ Template laporan:
 | Forecast/Anomali hanya garis titik di kanan; Risk “merah” | Metrik insight = snapshot (bukan deret waktu); threshold Risk | Pull dashboard v2; `docker compose restart grafana`; Forecast/Anomali pakai bar chart |
 | Workload AQE hanya titik di kanan chart | Panel time series untuk metrik snapshot scrape | Dashboard `lakehouse-aqe-experiment` v2: workload → bar chart + `instant: true` |
 | MLOps: time series task kosong; Model Training *No data* | Duplikat panel time series; `training.models` tanpa angka | Dashboard `lakehouse-mlops-pipeline` v2; jalankan `mlops_pipeline` atau `mlops_metrics.py --demo` lalu restart exporter |
+| Model Training bar chart aneh (sumbu 2026, nilai 0) | Bar chart mencampur metrik beda skala (accuracy 0–1 vs MAE) | Dashboard v3: panel **tabel** Model \| Metric \| Nilai |
 | Dashboard tidak muncul | Path provisioning salah | Pastikan volume `./monitoring/grafana/provisioning` di `docker-compose.yml` |
 | Nilai masih demo | Inference belum mengisi payload | Cek return `inference_batch` dan field `risk_score_rows`, `forecast_series`, dll. |
 | Task duration 0 | DAG belum selesai / inst.duration null | Jalankan ulang DAG; duration terisi setelah task **success** |

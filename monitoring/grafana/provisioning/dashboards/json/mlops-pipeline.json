@@ -37,23 +37,49 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "description": "Metrik numerik training (accuracy, MAE, dll.). Kosong jika DAG belum train atau hanya model placeholder — jalankan mlops_pipeline task train_models.",
-      "fieldConfig": { "defaults": { "unit": "short", "decimals": 3 }, "overrides": [] },
+      "description": "Tabel metrik per model (accuracy 0–1, MAE/RMSE angka absolut). Jangan pakai bar chart — skala metrik berbeda. Kosong → jalankan mlops_pipeline task train_models lalu restart metrics-exporter.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "align": "auto", "displayMode": "auto", "inspect": false },
+          "decimals": 4
+        },
+        "overrides": []
+      },
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
       "id": 21,
       "title": "Model Training Metrics",
-      "type": "barchart",
+      "type": "table",
       "options": {
-        "orientation": "horizontal",
-        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
-        "tooltip": { "mode": "single", "sort": "none" },
-        "showValue": "always"
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": { "show": false },
+        "sortBy": [{ "desc": false, "displayName": "Model" }]
       },
       "targets": [
         {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
           "expr": "lakehouse_mlops_model_metric",
           "instant": true,
-          "legendFormat": "{{model}} — {{metric}}"
+          "format": "table",
+          "refId": "A"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": { "mode": "columns", "keepLabels": ["model", "metric"] }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": { "Time": true, "__name__": true },
+            "renameByName": {
+              "model": "Model",
+              "metric": "Metric",
+              "Value": "Nilai"
+            },
+            "indexByName": { "Model": 0, "Metric": 1, "Nilai": 2 }
+          }
         }
       ]
     },
@@ -138,5 +164,5 @@
   "timezone": "browser",
   "title": "MLOps Pipeline Monitoring",
   "uid": "lakehouse-mlops-pipeline",
-  "version": 2
+  "version": 3
 }
