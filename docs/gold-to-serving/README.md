@@ -401,7 +401,7 @@ Template: [`templates/04-dashboard-prodi-drilldown.md`](templates/04-dashboard-p
 
 ### Dashboard D — Prediktif (Grafana)
 
-Melengkapi OLAP deskriptif: Forecast, Risk, Opportunity, Anomalies — [`templates/05-dashboard-mlops-prediktif.md`](templates/05-dashboard-mlops-prediktif.md), panduan [`../monitoring-grafana/README.md`](../monitoring-grafana/README.md).
+Melengkapi OLAP deskriptif: Forecast, Risk, Opportunity, Anomalies — Superset [`templates/08-mlops-superset-sql.md`](templates/08-mlops-superset-sql.md), panduan model [`../mlops/panduan-model-metrik-dan-superset.md`](../mlops/panduan-model-metrik-dan-superset.md), Grafana [`../monitoring-grafana/README.md`](../monitoring-grafana/README.md).
 
 ### Dashboard E — Evaluasi AQE (penelitian)
 

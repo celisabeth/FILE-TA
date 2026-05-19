@@ -16,7 +16,8 @@ Setiap file berisi: **Dataset → Chart** (termasuk **X-Axis** & **Y-Axis/Metric
 | 3 | [03](03-dashboard-tata-kelola-sakip.md), [04](04-dashboard-prodi-drilldown.md) | Opsional |
 | 4 | [02-dashboard-iku-per-indikator.md](02-dashboard-iku-per-indikator.md) | Opsional — satu chart per IKU |
 | 5 | [07-dashboard-kpi-aqe-off-on.md](07-dashboard-kpi-aqe-off-on.md) | Opsional penelitian AQE |
-| — | [05-dashboard-mlops-prediktif.md](05-dashboard-mlops-prediktif.md) | **Grafana** (bukan Superset) |
+| 6 | [05-dashboard-mlops-prediktif.md](05-dashboard-mlops-prediktif.md) | **MLOps** — Superset + Grafana |
+| 6b | [08-mlops-superset-sql.md](08-mlops-superset-sql.md) | SQL virtual dataset Forecast / Risk / Opportunity / Anomaly |
 
 Panduan ringkas: [../panduan-lengkap-dashboard-superset.md](../panduan-lengkap-dashboard-superset.md)
 
