@@ -37,9 +37,9 @@ def _demo_insight_payload() -> dict[str, Any]:
         "risk_score": {
             "unit": "score_0_100",
             "by_prodi": [
-                {"prodi_id": "IF", "nama_prodi": "Informatika", "risk_score": 72.5},
+                {"prodi_id": "IF", "nama_prodi": "Teknik Informatika", "risk_score": 72.5},
                 {"prodi_id": "SD", "nama_prodi": "Sains Data", "risk_score": 65.0},
-                {"prodi_id": "TE", "nama_prodi": "Teknik Elektro", "risk_score": 81.2},
+                {"prodi_id": "EL", "nama_prodi": "Teknik Elektro", "risk_score": 81.2},
             ],
         },
         "opportunity": {

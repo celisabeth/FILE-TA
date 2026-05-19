@@ -112,7 +112,8 @@ Semua sumber data disimpan sebagai **CSV** (simulasi batch dari sistem informasi
 | mahasiswa_id | STRING | NIM mahasiswa |
 | nama | STRING | Nama lengkap |
 | prodi_id | STRING | Kode program studi |
-| jurusan_id | STRING | Kode jurusan |
+| fakultas_id | STRING | Kode fakultas (FS / FTI / FTIK) |
+| jurusan_id | STRING | Sama dengan fakultas_id (legacy) |
 | angkatan | INT | Tahun masuk |
 | jalur_masuk | STRING | SNBP / SNBT / Mandiri |
 | jenis_kelamin | STRING | L / P |
@@ -146,7 +147,9 @@ Semua sumber data disimpan sebagai **CSV** (simulasi batch dari sistem informasi
 | dosen_id | STRING | NIDN / NIDK |
 | nama | STRING | Nama dosen |
 | prodi_id | STRING | Prodi home base |
-| jurusan_id | STRING | Jurusan |
+| fakultas_id | STRING | Fakultas induk |
+| jurusan_id | STRING | Sama dengan fakultas_id |
+| unit_organisasi_id | STRING | Unit kerja (LPPM, Dekan, UPA, …) |
 | jenis_kelamin | STRING | L / P |
 | status_asn | STRING | PNS / PPPK / Non-ASN |
 | pendidikan_terakhir | STRING | S2 / S3 |
@@ -241,13 +244,34 @@ Semua sumber data disimpan sebagai **CSV** (simulasi batch dari sistem informasi
 | tahun | INT | Tahun akreditasi |
 | ingested_at | TIMESTAMP | Waktu data masuk |
 
+#### `raw_fakultas`
+| Atribut | Tipe | Keterangan |
+|---------|------|------------|
+| fakultas_id | STRING | FS / FTI / FTIK |
+| nama_fakultas | STRING | Nama lengkap fakultas |
+| status | STRING | Aktif |
+| ingested_at | TIMESTAMP | Waktu data masuk |
+
+#### `raw_organisasi_itera`
+| Atribut | Tipe | Keterangan |
+|---------|------|------------|
+| org_id | STRING | Kode unit (mis. REKTOR, LPPM, UPA_TIK) |
+| nama_organisasi | STRING | Nama unit |
+| tipe | STRING | Pimpinan / Fakultas / Lembaga / UPA / … |
+| parent_org_id | STRING | Induk hierarki |
+| tingkat | INT | Level organisasi |
+| fakultas_id | STRING | Opsional — jika unit di bawah fakultas |
+| ingested_at | TIMESTAMP | Waktu data masuk |
+
 #### `raw_prodi`
 | Atribut | Tipe | Keterangan |
 |---------|------|------------|
-| prodi_id | STRING | Kode prodi |
+| prodi_id | STRING | Kode prodi (FI, IF, SD, …) |
 | nama_prodi | STRING | Nama program studi |
-| jenjang | STRING | S1 / S2 / D3 |
-| jurusan_id | STRING | FK jurusan |
+| jenjang | STRING | S1 / S2 |
+| fakultas_id | STRING | FS / FTI / FTIK |
+| jurusan_id | STRING | Sama dengan fakultas_id (legacy) |
+| nama_fakultas | STRING | Nama fakultas |
 | tahun_berdiri | INT | Tahun SK pendirian |
 | status | STRING | Aktif / Proses |
 | ingested_at | TIMESTAMP | Waktu data masuk |

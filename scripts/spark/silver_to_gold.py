@@ -77,13 +77,7 @@ BULAN = [
     "Juli", "Agustus", "September", "Oktober", "November", "Desember",
 ]
 
-JURUSAN_MAP = {
-    "JTK": "Teknik dan Komputer",
-    "JSA": "Sains",
-    "JTI": "Teknologi Infrastruktur dan Kewilayahan",
-    "JTP": "Teknologi Produksi dan Industri",
-    "JMB": "Matematika dan Bisnis",
-}
+from itera_reference import FAKULTAS_MAP as JURUSAN_MAP
 
 TOPIK = [
     (1, "Sustainable Energy", "Energi terbarukan dan berkelanjutan"),
@@ -158,10 +152,11 @@ def build_dim_waktu(spark: SparkSession) -> DataFrame:
 def build_dim_prodi(spark: SparkSession) -> DataFrame:
     prodi = _bronze(spark, "raw_prodi")
     jurusan_map = F.create_map(*[item for k, v in JURUSAN_MAP.items() for item in (F.lit(k), F.lit(v))])
+    fak_key = F.coalesce(F.col("fakultas_id"), F.col("jurusan_id"))
     return (
         prodi
-        .withColumn("nama_jurusan", jurusan_map[F.col("jurusan_id")])
-        .withColumn("nama_fakultas", F.lit("ITERA"))
+        .withColumn("nama_fakultas", F.coalesce(F.col("nama_fakultas"), jurusan_map[fak_key]))
+        .withColumn("nama_jurusan", F.col("nama_fakultas"))
         .select("prodi_id", "nama_prodi", "jenjang", "nama_jurusan", "nama_fakultas", "tahun_berdiri", "status")
         .dropDuplicates(["prodi_id"])
     )

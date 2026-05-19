@@ -22,9 +22,10 @@ from pyspark.sql import functions as F
 logger = logging.getLogger("staging_to_bronze")
 
 TABLES = [
+    "raw_fakultas", "raw_organisasi_itera", "raw_prodi",
     "raw_mahasiswa", "raw_lulusan", "raw_dosen", "raw_kegiatan_dosen",
     "raw_penelitian", "raw_pengabdian", "raw_kerjasama", "raw_mbkm",
-    "raw_akreditasi", "raw_prodi", "raw_keuangan", "raw_prestasi_mahasiswa",
+    "raw_akreditasi", "raw_keuangan", "raw_prestasi_mahasiswa",
 ]
 
 PII_COLUMNS = {
@@ -37,6 +38,8 @@ PII_COLUMNS = {
     "raw_kerjasama": [],
     "raw_mbkm": ["mahasiswa_id"],
     "raw_akreditasi": [],
+    "raw_fakultas": [],
+    "raw_organisasi_itera": [],
     "raw_prodi": [],
     "raw_keuangan": [],
     "raw_prestasi_mahasiswa": ["mahasiswa_id"],

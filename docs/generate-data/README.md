@@ -1,12 +1,23 @@
 # Panduan Generate Data Staging (CSV ITERA)
 
-Membuat **12 file CSV** di `data/staging/` sebelum pipeline Medallion (Staging → Bronze → Silver → Gold). Skrip menggabungkan kapabilitas dari **Data-Lakehouse-Metadata** (volume ringan) dan **Data-Lakehouse-AQE** (volume besar + **skew join** ke prodi Sains Data).
+Membuat **14 file CSV** di `data/staging/` sebelum pipeline Medallion (Staging → Bronze → Silver → Gold). Master data mengikuti struktur **ITERA**: 3 fakultas, **42 program studi**, dan **organisasi** kampus (Rektorat, UPA, LPPM, dll.). Skew join AQE default ke **Sains Data (SD)**.
 
 | Skrip | Fungsi |
 |-------|--------|
 | [`../../scripts/generate_bronze_data.py`](../../scripts/generate_bronze_data.py) | Generator utama |
 | [`../../scripts/generate_data.sh`](../../scripts/generate_data.sh) | Wrapper perintah singkat |
 | [`../../scripts/count_staging_rows.py`](../../scripts/count_staging_rows.py) | Hitung baris per CSV |
+| [`../../scripts/itera_reference.py`](../../scripts/itera_reference.py) | Master fakultas, prodi, organisasi |
+
+### Struktur akademik ITERA (master)
+
+| Fakultas | Kode | Contoh prodi |
+|----------|------|----------------|
+| Fakultas Sains | `FS` | Fisika (FI), Sains Data (SD), Farmasi (FA), … (10 prodi) |
+| Fakultas Teknologi Industri | `FTI` | Teknik Informatika (IF), Teknik Elektro (EL), … (21 prodi) |
+| Fakultas Teknologi Infrastruktur dan Kewilayahan | `FTIK` | Arsitektur (AR), Teknik Sipil (SI), PWK, … (11 prodi) |
+
+Kolom `jurusan_id` di CSV = **kode fakultas** (kompatibilitas pipeline lama). Kolom `fakultas_id` disertakan eksplisit.
 
 ---
 
@@ -99,8 +110,10 @@ python3 scripts/count_staging_rows.py
 
 ```
 data/staging/
-├── raw_prodi.csv
-├── raw_mahasiswa.csv      # volume utama
+├── raw_fakultas.csv           # 3 baris (FS, FTI, FTIK)
+├── raw_organisasi_itera.csv   # struktur organisasi kampus
+├── raw_prodi.csv              # 42 program studi
+├── raw_mahasiswa.csv          # volume utama
 ├── raw_dosen.csv
 ├── raw_lulusan.csv
 ├── raw_mbkm.csv

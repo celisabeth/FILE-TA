@@ -46,6 +46,8 @@ from spark.spark_python import apply_cluster_resource_configs, apply_pyspark_pyt
 from pyspark.sql import functions as F
 from pyspark.sql.window import Window
 
+from itera_reference import FAKULTAS_MAP as JURUSAN_MAP
+
 logger = logging.getLogger("bronze_to_silver")
 
 
@@ -70,15 +72,6 @@ def _select_unique_columns(df: DataFrame, columns: list[str] | None = None) -> D
         existing = [c for c in columns if c in order]
         return deduped.select(*existing)
     return deduped
-
-
-JURUSAN_MAP = {
-    "JTK": "Teknik dan Komputer",
-    "JSA": "Sains",
-    "JTI": "Teknologi Infrastruktur dan Kewilayahan",
-    "JTP": "Teknologi Produksi dan Industri",
-    "JMB": "Matematika dan Bisnis",
-}
 
 
 def _resolve_jars() -> str:
@@ -231,11 +224,20 @@ def transform_silver_mahasiswa(spark: SparkSession) -> tuple[DataFrame, dict]:
     df = (
         mhs
         .join(
-            prodi.select("prodi_id", "nama_prodi", "jenjang"),
+            prodi.select(
+                "prodi_id",
+                "nama_prodi",
+                "jenjang",
+                F.coalesce(F.col("fakultas_id"), F.col("jurusan_id")).alias("fakultas_id"),
+                F.col("nama_fakultas"),
+            ),
             on="prodi_id",
             how="left",
         )
-        .withColumn("nama_jurusan", jurusan_mapping[F.col("jurusan_id")])
+        .withColumn(
+            "nama_jurusan",
+            F.coalesce(F.col("nama_fakultas"), jurusan_mapping[F.col("jurusan_id")]),
+        )
         .withColumn("is_mbkm", F.col("sks_luar_kampus") >= 20)
         .dropDuplicates(["mahasiswa_id"])
     )

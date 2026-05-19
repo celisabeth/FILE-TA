@@ -2,7 +2,7 @@
 """
 Bronze Data Generator — ITERA Data Lakehouse Insight
 ====================================================
-Data sintetis domain perguruan tinggi (12 CSV staging) untuk:
+Data sintetis domain perguruan tinggi (14 CSV staging) untuk:
   • Metode Metadata (Medallion + Atlas + portal)
   • Metode AQE (shuffle, skew join prodi SD)
   • Metode MLOps (Gold → feature → model)
@@ -37,52 +37,26 @@ from datetime import date, datetime, timedelta
 from pathlib import Path
 
 # ---------------------------------------------------------------------------
-# Reference / Master Data  (ITERA-specific)
+# Reference / Master Data  (ITERA — lihat scripts/itera_reference.py)
 # ---------------------------------------------------------------------------
 
-JURUSAN = {
-    "JTK": "Teknik dan Komputer",
-    "JSA": "Sains",
-    "JTI": "Teknologi Infrastruktur dan Kewilayahan",
-    "JTP": "Teknologi Produksi dan Industri",
-    "JMB": "Matematika dan Bisnis",
-}
+from itera_reference import (
+    DEFAULT_SKEW_PRODI,
+    FAKULTAS,
+    FAKULTAS_IDS,
+    ITERA_ORGANISASI,
+    PRODI_IDS,
+    PRODI_MASTER,
+    PRODI_S1_IDS,
+    pick_unit_for_fakultas,
+)
 
-# Hot key default eksperimen AQE (skew join) — Sains Data
-DEFAULT_SKEW_PRODI = "SD"
+JURUSAN = FAKULTAS
+JURUSAN_IDS = FAKULTAS_IDS
 
-PRODI_MASTER: list[dict] = [
-    {"prodi_id": "IF", "nama_prodi": "Informatika", "jenjang": "S1", "jurusan_id": "JTK", "tahun_berdiri": 2014},
-    {"prodi_id": "SD", "nama_prodi": "Sains Data", "jenjang": "S1", "jurusan_id": "JTK", "tahun_berdiri": 2020},
-    {"prodi_id": "TI", "nama_prodi": "Teknik Informatika", "jenjang": "S1", "jurusan_id": "JTK", "tahun_berdiri": 2017},
-    {"prodi_id": "SI", "nama_prodi": "Sistem Informasi", "jenjang": "S1", "jurusan_id": "JTK", "tahun_berdiri": 2018},
-    {"prodi_id": "TE", "nama_prodi": "Teknik Elektro", "jenjang": "S1", "jurusan_id": "JTK", "tahun_berdiri": 2014},
-    {"prodi_id": "TL", "nama_prodi": "Teknik Telekomunikasi", "jenjang": "S1", "jurusan_id": "JTK", "tahun_berdiri": 2020},
-    {"prodi_id": "BIO", "nama_prodi": "Biologi", "jenjang": "S1", "jurusan_id": "JSA", "tahun_berdiri": 2017},
-    {"prodi_id": "KIM", "nama_prodi": "Kimia", "jenjang": "S1", "jurusan_id": "JSA", "tahun_berdiri": 2017},
-    {"prodi_id": "FIS", "nama_prodi": "Fisika", "jenjang": "S1", "jurusan_id": "JSA", "tahun_berdiri": 2014},
-    {"prodi_id": "FT", "nama_prodi": "Farmasi", "jenjang": "S1", "jurusan_id": "JSA", "tahun_berdiri": 2019},
-    {"prodi_id": "SK", "nama_prodi": "Sains Komunikasi", "jenjang": "S1", "jurusan_id": "JSA", "tahun_berdiri": 2021},
-    {"prodi_id": "TK", "nama_prodi": "Teknik Kimia", "jenjang": "S1", "jurusan_id": "JTP", "tahun_berdiri": 2019},
-    {"prodi_id": "AG", "nama_prodi": "Teknik Pertanian", "jenjang": "S1", "jurusan_id": "JTP", "tahun_berdiri": 2017},
-    {"prodi_id": "TP", "nama_prodi": "Teknologi Pangan", "jenjang": "S1", "jurusan_id": "JTP", "tahun_berdiri": 2019},
-    {"prodi_id": "TM", "nama_prodi": "Teknik Mesin", "jenjang": "S1", "jurusan_id": "JTP", "tahun_berdiri": 2014},
-    {"prodi_id": "TS", "nama_prodi": "Teknik Sipil", "jenjang": "S1", "jurusan_id": "JTI", "tahun_berdiri": 2014},
-    {"prodi_id": "AR", "nama_prodi": "Arsitektur", "jenjang": "S1", "jurusan_id": "JTI", "tahun_berdiri": 2017},
-    {"prodi_id": "PWK", "nama_prodi": "Perencanaan Wilayah dan Kota", "jenjang": "S1", "jurusan_id": "JTI", "tahun_berdiri": 2014},
-    {"prodi_id": "GL", "nama_prodi": "Teknik Geologi", "jenjang": "S1", "jurusan_id": "JTI", "tahun_berdiri": 2017},
-    {"prodi_id": "GD", "nama_prodi": "Teknik Geodesi", "jenjang": "S1", "jurusan_id": "JTI", "tahun_berdiri": 2019},
-    {"prodi_id": "TG", "nama_prodi": "Teknik Geofisika", "jenjang": "S1", "jurusan_id": "JTI", "tahun_berdiri": 2018},
-    {"prodi_id": "TLK", "nama_prodi": "Teknik Lingkungan", "jenjang": "S1", "jurusan_id": "JTI", "tahun_berdiri": 2019},
-    {"prodi_id": "MTK", "nama_prodi": "Matematika", "jenjang": "S1", "jurusan_id": "JMB", "tahun_berdiri": 2017},
-    {"prodi_id": "MB", "nama_prodi": "Manajemen Bisnis", "jenjang": "S1", "jurusan_id": "JMB", "tahun_berdiri": 2019},
-    {"prodi_id": "TIF_S2", "nama_prodi": "Teknik Informatika", "jenjang": "S2", "jurusan_id": "JTK", "tahun_berdiri": 2022},
-    {"prodi_id": "TS_S2", "nama_prodi": "Teknik Sipil", "jenjang": "S2", "jurusan_id": "JTI", "tahun_berdiri": 2021},
-]
 
-PRODI_IDS = [p["prodi_id"] for p in PRODI_MASTER]
-PRODI_S1_IDS = [p["prodi_id"] for p in PRODI_MASTER if p["jenjang"] == "S1"]
-JURUSAN_IDS = list(JURUSAN.keys())
+def _prodi_meta(prodi_id: str) -> dict:
+    return next(p for p in PRODI_MASTER if p["prodi_id"] == prodi_id)
 PROVINSI = [
     "Lampung", "DKI Jakarta", "Jawa Barat", "Jawa Tengah", "Jawa Timur",
     "Banten", "Sumatera Selatan", "Sumatera Utara", "Sumatera Barat",
@@ -297,6 +271,35 @@ def _resolve_volume(profile: str, scale: float) -> dict[str, float]:
 # Generators (setiap fungsi mengembalikan list[dict])
 # ---------------------------------------------------------------------------
 
+def gen_fakultas() -> list[dict]:
+    ts = _now_ts()
+    return [
+        {
+            "fakultas_id": fid,
+            "nama_fakultas": nama,
+            "status": "Aktif",
+            "ingested_at": ts,
+        }
+        for fid, nama in FAKULTAS.items()
+    ]
+
+
+def gen_organisasi_itera() -> list[dict]:
+    ts = _now_ts()
+    rows = []
+    for o in ITERA_ORGANISASI:
+        rows.append({
+            "org_id": o["org_id"],
+            "nama_organisasi": o["nama_organisasi"],
+            "tipe": o["tipe"],
+            "parent_org_id": o.get("parent_org_id", ""),
+            "tingkat": o.get("tingkat", ""),
+            "fakultas_id": o.get("fakultas_id", ""),
+            "ingested_at": ts,
+        })
+    return rows
+
+
 def gen_prodi(scale: float) -> list[dict]:
     ts = _now_ts()
     return [
@@ -316,13 +319,14 @@ def gen_mahasiswa(
     for i in range(n):
         angkatan = random.randint(*angkatan_range)
         prodi = _pick_prodi(skew_prodi, skew_fraction)
-        jurusan = next(p["jurusan_id"] for p in PRODI_MASTER if p["prodi_id"] == prodi)
+        meta = _prodi_meta(prodi)
         sks_total = random.randint(0, 144) if angkatan < 2024 else random.randint(0, 48)
         rows.append({
             "mahasiswa_id": f"{angkatan}{prodi}{i:05d}",
             "nama": _rand_name(),
             "prodi_id": prodi,
-            "jurusan_id": jurusan,
+            "fakultas_id": meta["fakultas_id"],
+            "jurusan_id": meta["jurusan_id"],
             "angkatan": angkatan,
             "jalur_masuk": random.choice(JALUR_MASUK),
             "jenis_kelamin": random.choice(JENIS_KELAMIN),
@@ -370,13 +374,15 @@ def gen_dosen(
     rows = []
     for i in range(n):
         prodi = _pick_prodi(skew_prodi, skew_fraction * 0.6)
-        jurusan = next(p["jurusan_id"] for p in PRODI_MASTER if p["prodi_id"] == prodi)
+        meta = _prodi_meta(prodi)
         pend = random.choices(PENDIDIKAN, weights=[60, 40], k=1)[0]
         rows.append({
             "dosen_id": f"0{random.randint(100000, 999999)}{i:03d}",
             "nama": _rand_name(),
             "prodi_id": prodi,
-            "jurusan_id": jurusan,
+            "fakultas_id": meta["fakultas_id"],
+            "jurusan_id": meta["jurusan_id"],
+            "unit_organisasi_id": pick_unit_for_fakultas(meta["fakultas_id"]),
             "jenis_kelamin": random.choice(JENIS_KELAMIN),
             "status_asn": random.choices(STATUS_ASN, weights=[40, 20, 40], k=1)[0],
             "pendidikan_terakhir": pend,
@@ -640,7 +646,9 @@ def main():
     print(f"  Output: {out}")
     print(f"{'='*60}\n")
 
-    # --- raw_prodi (master, selalu overwrite) ---
+    # --- master: fakultas, organisasi, prodi (selalu overwrite) ---
+    fakultas_rows = gen_fakultas()
+    organisasi_rows = gen_organisasi_itera()
     prodi_rows = gen_prodi(args.scale)
 
     if args.mode == "full":
@@ -687,6 +695,8 @@ def main():
         print("  (--dry-run: tidak menulis file)\n")
         return
 
+    _write_csv(out / "raw_fakultas.csv", fakultas_rows, append=False)
+    _write_csv(out / "raw_organisasi_itera.csv", organisasi_rows, append=False)
     _write_csv(out / "raw_prodi.csv", prodi_rows, append=False)
 
     # --- raw_mahasiswa ---
@@ -734,6 +744,8 @@ def main():
     _write_csv(out / "raw_prestasi_mahasiswa.csv", prestasi, append=append)
 
     counts = {
+        "raw_fakultas.csv": len(fakultas_rows),
+        "raw_organisasi_itera.csv": len(organisasi_rows),
         "raw_prodi.csv": len(prodi_rows),
         "raw_mahasiswa.csv": len(mhs),
         "raw_lulusan.csv": len(lulusan),

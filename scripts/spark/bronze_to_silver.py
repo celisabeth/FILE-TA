@@ -34,13 +34,7 @@ from pyspark.sql.window import Window
 
 logger = logging.getLogger("bronze_to_silver")
 
-JURUSAN_MAP = {
-    "JTK": "Teknik dan Komputer",
-    "JSA": "Sains",
-    "JTI": "Teknologi Infrastruktur dan Kewilayahan",
-    "JTP": "Teknologi Produksi dan Industri",
-    "JMB": "Matematika dan Bisnis",
-}
+from itera_reference import FAKULTAS_MAP as JURUSAN_MAP
 
 
 def _resolve_jars() -> str:
@@ -209,11 +203,20 @@ def transform_silver_mahasiswa(spark: SparkSession) -> tuple[DataFrame, dict]:
     df = (
         mhs
         .join(
-            prodi.select("prodi_id", "nama_prodi", "jenjang"),
+            prodi.select(
+                "prodi_id",
+                "nama_prodi",
+                "jenjang",
+                F.coalesce(F.col("fakultas_id"), F.col("jurusan_id")).alias("fakultas_id"),
+                F.col("nama_fakultas"),
+            ),
             on="prodi_id",
             how="left",
         )
-        .withColumn("nama_jurusan", jurusan_mapping[F.col("jurusan_id")])
+        .withColumn(
+            "nama_jurusan",
+            F.coalesce(F.col("nama_fakultas"), jurusan_mapping[F.col("jurusan_id")]),
+        )
         .withColumn("is_mbkm", F.col("sks_luar_kampus") >= 20)
         .dropDuplicates(["mahasiswa_id"])
     )
