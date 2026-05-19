@@ -74,10 +74,16 @@ def _demo_training_models() -> list[dict[str, Any]]:
 
 
 def _models_with_numeric_metrics(models: list[dict]) -> bool:
+    """Ada metrik numerik bermakna (bukan accuracy=0 dari sampel uji terlalu kecil)."""
     skip = frozenset({"model", "run_id", "status", "note", "error"})
-    return any(
-        isinstance(v, (int, float)) for m in models for k, v in m.items() if k not in skip
-    )
+    for m in models:
+        for k, v in m.items():
+            if k in skip or not isinstance(v, (int, float)):
+                continue
+            if k == "accuracy" and float(v) <= 0.0:
+                continue
+            return True
+    return False
 
 
 def merge_insight_from_inference(inference: dict | None, base: dict[str, Any]) -> dict[str, Any]:
@@ -138,8 +144,15 @@ def export_mlops_metrics(
     ts = utc_now().strftime("%Y%m%d_%H%M%S")
     out = mdir / f"mlops_metrics_{ts}.json"
     write_json(out, payload)
-    if write_latest:
-        write_json(mdir / "mlops_metrics_latest.json", payload)
+    try:
+        from benchmark.experiment_run import root_metrics_dir, mirror_to_latest_slot
+
+        root_latest = root_metrics_dir() / "mlops_metrics_latest.json"
+        write_json(root_latest, payload)
+        mirror_to_latest_slot("mlops", out.name, "mlops_metrics.json")
+    except Exception:
+        if write_latest:
+            write_json(mdir / "mlops_metrics_latest.json", payload)
     logger.info("MLOps metrics → %s", out)
     return out
 
