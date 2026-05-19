@@ -13,9 +13,9 @@ usage() {
   cat <<'EOF'
 Insight — generate data staging (CSV)
 
-  ./scripts/generate_data.sh full              # --mode full --profile metadata (default)
-  ./scripts/generate_data.sh full aqe          # profil AQE ~1M mahasiswa + skew SD
-  ./scripts/generate_data.sh full insight      # E2E ringan ~200k baris + skew
+  ./scripts/generate_data.sh full              # populasi real ITERA (~22.6k mhs)
+  ./scripts/generate_data.sh full aqe          # real + skew 75% ke SD (eksperimen AQE)
+  ./scripts/generate_data.sh full insight      # sama aqe (alias E2E)
   ./scripts/generate_data.sh append 5000       # tambah 5000 mahasiswa (+ turunan)
   ./scripts/generate_data.sh dry-run aqe       # rencana volume tanpa tulis file
   ./scripts/generate_data.sh count             # hitung baris CSV saat ini
@@ -49,7 +49,7 @@ case "$cmd" in
     "$PYTHON" "$GEN" --dry-run --profile "$profile" "${@:2}"
     ;;
   full)
-    profile="${1:-metadata}"
+    profile="${1:-real}"
     echo "==> Generate full profile=$profile"
     "$PYTHON" "$GEN" --mode full --profile "$profile" "${@:2}"
     echo "==> Ringkasan baris:"

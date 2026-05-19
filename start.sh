@@ -228,7 +228,7 @@ if [ ! -f data/staging/raw_mahasiswa.csv ]; then
   echo ""
   echo -e "${YELLOW}No staging data found. Generating synthetic data...${NC}"
   ./scripts/generate_data.sh full 2>/dev/null || \
-    python3 scripts/generate_bronze_data.py --mode full --profile metadata 2>/dev/null || \
+    python3 scripts/generate_bronze_data.py --mode full --profile real 2>/dev/null || \
     echo -e "${YELLOW}  Skipped — run: ./scripts/generate_data.sh full  (see docs/generate-data/)${NC}"
 fi
 

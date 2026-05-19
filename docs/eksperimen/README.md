@@ -37,7 +37,7 @@ Panduan operasional menjalankan **tiga metode penelitian** dalam satu stack Dock
 cd /path/to/Data-Lakehouse-Insight
 cp .env.example .env          # opsional
 # Generate CSV staging — panduan: docs/generate-data/README.md
-./scripts/generate_data.sh full              # profil metadata (~80k baris)
+./scripts/generate_data.sh full              # populasi real ITERA (~37k baris total)
 # ./scripts/generate_data.sh full insight    # E2E ringan + skew
 # ./scripts/generate_data.sh full aqe          # eksperimen AQE penuh (~1M mhs)
 ./start.sh
@@ -179,7 +179,7 @@ Panduan lengkap: [`../generate-data/README.md`](../generate-data/README.md)
 # Rencana volume
 ./scripts/generate_data.sh dry-run aqe
 
-# Default penelitian Insight (metadata, ~80k baris)
+# Populasi real ITERA (22.621 mhs, 705 dosen, 320 tendik)
 ./scripts/generate_data.sh full
 
 # E2E + skew sedang

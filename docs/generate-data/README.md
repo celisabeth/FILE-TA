@@ -1,6 +1,6 @@
 # Panduan Generate Data Staging (CSV ITERA)
 
-Membuat **14 file CSV** di `data/staging/` sebelum pipeline Medallion (Staging → Bronze → Silver → Gold). Master data mengikuti struktur **ITERA**: 3 fakultas, **42 program studi**, dan **organisasi** kampus (Rektorat, UPA, LPPM, dll.). Skew join AQE default ke **Sains Data (SD)**.
+Membuat **15 file CSV** di `data/staging/` sebelum pipeline Medallion. Volume mengacu **populasi real ITERA** (~**22.621** mahasiswa, **705** dosen, **320** tendik). Profil **`aqe`** memakai skala operasional + skew 75% ke **Sains Data (SD)** agar eksperimen AQE realistis (bukan 1 juta baris sintetis).
 
 | Skrip | Fungsi |
 |-------|--------|
@@ -25,10 +25,10 @@ Kolom `jurusan_id` di CSV = **kode fakultas** (kompatibilitas pipeline lama). Ko
 
 | Fase penelitian | Profil disarankan | Perintah |
 |-----------------|-------------------|----------|
-| Uji Metadata + portal + MLOps | `metadata` | `./scripts/generate_data.sh full` |
-| E2E ringan (tiga DAG, skew sedang) | `insight` | `./scripts/generate_data.sh full insight` |
-| Eksperimen AQE OFF vs ON penuh | `aqe` | `./scripts/generate_data.sh full aqe` |
-| Stress test cluster | `aqe-large` | `python3 scripts/generate_bronze_data.py --profile aqe-large` |
+| Uji Metadata + portal + MLOps | `real` | `./scripts/generate_data.sh full` |
+| Eksperimen AQE OFF vs ON (populasi kampus) | **`aqe`** | `./scripts/generate_data.sh full aqe` |
+| E2E + skew (sama AQE) | `insight` | `./scripts/generate_data.sh full insight` |
+| Stress test cluster | `aqe-stress` | `./scripts/generate_data.sh full aqe-stress` |
 | **Tambah baris** lalu uji ulang | `append` | `./scripts/generate_data.sh append 5000` |
 
 Setelah generate → jalankan pipeline Airflow dari [`../eksperimen/README.md`](../eksperimen/README.md).
@@ -37,15 +37,16 @@ Setelah generate → jalankan pipeline Airflow dari [`../eksperimen/README.md`](
 
 ## 2. Profil volume (`--profile`)
 
-| Profil | Mahasiswa | Perkiraan total baris | Skew ke `SD` | Dipakai untuk |
-|--------|-----------|------------------------|--------------|---------------|
-| **`metadata`** (default) | 50.000 | ~80 ribu | tidak | Metadata, katalog, MLOps cepat |
-| `dev` | 50.000 | ~80 ribu | tidak | Alias `metadata` |
-| `insight` | 100.000 | ~200 ribu | 75% | E2E Insight tanpa 1M baris |
-| **`aqe`** | 1.000.000 | ~1,5–2,5 juta | 75% | Hipotesis AQE shuffle/skew |
-| `aqe-large` | 2.000.000 | ~3 juta+ | 80% | Stress test |
+| Profil | Mahasiswa | Dosen | Tendik | Skew `SD` | Dipakai untuk |
+|--------|-----------|-------|--------|-----------|---------------|
+| **`real`** / `metadata` / `dev` | 22.621 | 705 | 320 | tidak | Metadata, katalog, laporan realistis |
+| **`insight`** / **`aqe`** | 22.621 | 705 | 320 | 75% | E2E + eksperimen AQE (skala kampus) |
+| `aqe-stress` | ~67.863 (3×) | ~2.115 | ~960 | 80% | Stress test opsional |
+| `aqe-large` | ~113.105 (5×) | ~3.525 | ~1.600 | 80% | Stress test berat |
 
-Pengali tambahan: `--scale 2.0` mengalikan target mahasiswa/dosen/dll. (contoh: `aqe` + `scale 2` ≈ 2M mahasiswa).
+Pengali `--scale N` mengalikan semua entitas utama (mis. `aqe` + `--scale 1.5`).
+
+**AQE pada skala real:** dengan 22.621 mahasiswa dan skew 75%, prodi SD ≈ **17.000 baris** — cukup memicu shuffle partition coalescing & skew join di Spark.
 
 **Hot key skew:** `prodi_id=SD` (Sains Data) — selaras eksperimen join di Silver/Gold dan panel prodi SD di Superset.
 
@@ -56,13 +57,12 @@ Pengali tambahan: `--scale 2.0` mengalikan target mahasiswa/dosen/dll. (contoh: 
 ```bash
 cd Data-Lakehouse-Insight
 
-# Default — metadata (~80k baris)
+# Populasi real ITERA (~22.6k mhs) — default
 ./scripts/generate_data.sh full
+# atau eksplisit:
+./scripts/generate_data.sh full real
 
-# E2E ringan + skew
-./scripts/generate_data.sh full insight
-
-# AQE penuh (~1M mahasiswa) — butuh waktu & disk lebih besar
+# Eksperimen AQE (populasi real + skew 75% ke SD)
 ./scripts/generate_data.sh full aqe
 
 # Lihat rencana tanpa menulis file
@@ -94,7 +94,7 @@ python3 scripts/count_staging_rows.py
 |------|------------|
 | `--mode full` | Overwrite semua CSV (kecuali struktur master `raw_prodi` di-refresh) |
 | `--mode append` | Tambah batch ke file yang sudah ada |
-| `--profile` | `metadata`, `dev`, `insight`, `aqe`, `aqe-large` |
+| `--profile` | `real`, `metadata`, `dev`, `insight`, `aqe`, `aqe-stress`, `aqe-large` |
 | `--scale N` | Pengali volume di atas profil |
 | `--batch-size N` | Mahasiswa baru per batch (`append`) |
 | `--skew-prodi SD` | Hot key (default: Sains Data) |
@@ -113,7 +113,8 @@ data/staging/
 ├── raw_fakultas.csv           # 3 baris (FS, FTI, FTIK)
 ├── raw_organisasi_itera.csv   # struktur organisasi kampus
 ├── raw_prodi.csv              # 42 program studi
-├── raw_mahasiswa.csv          # volume utama
+├── raw_mahasiswa.csv          # ~22.621 (profil real/aqe)
+├── raw_tendik.csv             # 320 tenaga kependidikan
 ├── raw_dosen.csv
 ├── raw_lulusan.csv
 ├── raw_mbkm.csv
@@ -156,10 +157,9 @@ docker exec lhmeta-airflow-scheduler airflow dags trigger mlops_pipeline
 
 | Profil | Waktu generate | Disk CSV (perkiraan) | RAM Docker |
 |--------|----------------|----------------------|------------|
-| `metadata` | < 1 menit | ~10–20 MB | 8 GB |
-| `insight` | 1–3 menit | ~30–60 MB | 12 GB |
-| `aqe` | beberapa menit | ~150–400 MB | 16 GB+ |
-| `aqe-large` | 10+ menit | ~500 MB+ | 24 GB+ |
+| `real` / `aqe` | 1–3 menit | ~25–45 MB | 8–12 GB |
+| `aqe-stress` | 3–8 menit | ~80–120 MB | 12–16 GB |
+| `aqe-large` | 5–15 menit | ~150–250 MB | 16 GB+ |
 
 ---
 

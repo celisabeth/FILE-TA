@@ -23,7 +23,7 @@ logger = logging.getLogger("staging_to_bronze")
 
 TABLES = [
     "raw_fakultas", "raw_organisasi_itera", "raw_prodi",
-    "raw_mahasiswa", "raw_lulusan", "raw_dosen", "raw_kegiatan_dosen",
+    "raw_mahasiswa", "raw_lulusan", "raw_dosen", "raw_tendik", "raw_kegiatan_dosen",
     "raw_penelitian", "raw_pengabdian", "raw_kerjasama", "raw_mbkm",
     "raw_akreditasi", "raw_keuangan", "raw_prestasi_mahasiswa",
 ]
@@ -32,6 +32,7 @@ PII_COLUMNS = {
     "raw_mahasiswa": ["nama", "mahasiswa_id", "asal_provinsi"],
     "raw_lulusan": ["mahasiswa_id", "nama_perusahaan"],
     "raw_dosen": ["nama", "dosen_id"],
+    "raw_tendik": ["nama", "tendik_id"],
     "raw_kegiatan_dosen": ["dosen_id"],
     "raw_penelitian": ["dosen_id"],
     "raw_pengabdian": ["dosen_id"],

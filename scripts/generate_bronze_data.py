@@ -2,7 +2,7 @@
 """
 Bronze Data Generator — ITERA Data Lakehouse Insight
 ====================================================
-Data sintetis domain perguruan tinggi (14 CSV staging) untuk:
+Data sintetis domain perguruan tinggi (15 CSV staging) untuk:
   • Metode Metadata (Medallion + Atlas + portal)
   • Metode AQE (shuffle, skew join prodi SD)
   • Metode MLOps (Gold → feature → model)
@@ -11,12 +11,11 @@ Mode:
   --mode full    : overwrite semua CSV di data/staging/
   --mode append  : tambah batch baru (uji ulang setelah menambah baris)
 
-Profil (--profile):
-  metadata     : ~80 ribu baris — uji Metadata + MLOps cepat (default Insight)
-  insight      : ~200 ribu baris — E2E ringan dengan skew sedang
-  dev          : sama metadata (alias)
-  aqe          : ~1,5–2,5 juta baris — eksperimen AQE penuh
-  aqe-large    : ~3 juta+ baris — stress test
+Profil (--profile) — basis populasi ITERA real (~22.621 mhs, 705 dosen, 320 tendik):
+  metadata / real : populasi kampus, tanpa skew
+  insight / aqe   : populasi real + skew 75% ke SD (uji AQE pada skala operasional)
+  aqe-stress      : ~3× mahasiswa (stress test opsional)
+  aqe-large       : ~5× mahasiswa (alias stress test berat)
 
 Panduan: docs/generate-data/README.md
 
@@ -45,10 +44,14 @@ from itera_reference import (
     FAKULTAS,
     FAKULTAS_IDS,
     ITERA_ORGANISASI,
+    ITERA_POPULATION,
     PRODI_IDS,
     PRODI_MASTER,
     PRODI_S1_IDS,
+    TENDIK_JABATAN,
+    build_volume_profile,
     pick_unit_for_fakultas,
+    pick_unit_for_tendik,
 )
 
 JURUSAN = FAKULTAS
@@ -146,68 +149,18 @@ KOMPETISI = [
     "National Bridge Competition", "Geospatial Hackathon",
 ]
 
-# Base row counts per profile (dikalikan --scale). Mahasiswa = pemicu volume utama.
+# Profil volume — basis populasi ITERA real (lihat itera_reference.ITERA_POPULATION).
+# aqe / insight memakai ~22.621 mhs + skew 75% ke SD (~17k baris) — cukup untuk uji AQE shuffle/skew.
+# aqe-stress: opsi stress test (3× mahasiswa) via --profile aqe-stress atau --scale pada aqe.
 VOLUME_PROFILES: dict[str, dict[str, int | float]] = {
-    "metadata": {
-        "mahasiswa": 50_000,
-        "dosen": 800,
-        "kerjasama": 400,
-        "prestasi": 5_000,
-        "kegiatan_avg": 3.0,
-        "penelitian_avg": 2.5,
-        "pengabdian_avg": 1.5,
-        "lulusan_pct": 0.35,
-        "mbkm_pct": 0.25,
-        "default_skew_fraction": 0.0,
-    },
-    "dev": {
-        "mahasiswa": 50_000,
-        "dosen": 800,
-        "kerjasama": 400,
-        "prestasi": 5_000,
-        "kegiatan_avg": 3.0,
-        "penelitian_avg": 2.5,
-        "pengabdian_avg": 1.5,
-        "lulusan_pct": 0.35,
-        "mbkm_pct": 0.25,
-        "default_skew_fraction": 0.0,
-    },
-    "insight": {
-        "mahasiswa": 100_000,
-        "dosen": 1_600,
-        "kerjasama": 800,
-        "prestasi": 12_000,
-        "kegiatan_avg": 3.5,
-        "penelitian_avg": 2.8,
-        "pengabdian_avg": 1.8,
-        "lulusan_pct": 0.35,
-        "mbkm_pct": 0.26,
-        "default_skew_fraction": 0.75,
-    },
-    "aqe": {
-        "mahasiswa": 1_000_000,
-        "dosen": 8_000,
-        "kerjasama": 4_000,
-        "prestasi": 100_000,
-        "kegiatan_avg": 4.0,
-        "penelitian_avg": 3.0,
-        "pengabdian_avg": 2.0,
-        "lulusan_pct": 0.35,
-        "mbkm_pct": 0.28,
-        "default_skew_fraction": 0.75,
-    },
-    "aqe-large": {
-        "mahasiswa": 2_000_000,
-        "dosen": 12_000,
-        "kerjasama": 8_000,
-        "prestasi": 200_000,
-        "kegiatan_avg": 5.0,
-        "penelitian_avg": 3.5,
-        "pengabdian_avg": 2.5,
-        "lulusan_pct": 0.35,
-        "mbkm_pct": 0.30,
-        "default_skew_fraction": 0.80,
-    },
+    "metadata": build_volume_profile(skew_fraction=0.0),
+    "dev": build_volume_profile(skew_fraction=0.0),
+    "real": build_volume_profile(skew_fraction=0.0),
+    "insight": build_volume_profile(skew_fraction=0.75),
+    "aqe": build_volume_profile(skew_fraction=0.75),
+    "aqe-stress": build_volume_profile(scale=3.0, skew_fraction=0.80, derived_scale=2.0),
+    # Alias lama: stress test ~5× populasi kampus
+    "aqe-large": build_volume_profile(scale=5.0, skew_fraction=0.80, derived_scale=3.0),
 }
 
 # ---------------------------------------------------------------------------
@@ -263,9 +216,19 @@ def _pick_prodi(
 
 
 def _resolve_volume(profile: str, scale: float) -> dict[str, float]:
-    """Hitung target baris dari profil × scale."""
-    base = VOLUME_PROFILES[profile]
-    return {k: (v * scale if k != "default_skew_fraction" else v) for k, v in base.items()}
+    """Hitung target baris: profil dasar × --scale (kecuali skew_fraction)."""
+    base = dict(VOLUME_PROFILES[profile])
+    if scale == 1.0:
+        return base
+    out: dict[str, float] = {}
+    for k, v in base.items():
+        if k == "default_skew_fraction":
+            out[k] = v
+        elif k in ("kegiatan_avg", "penelitian_avg", "pengabdian_avg", "lulusan_pct", "mbkm_pct"):
+            out[k] = v
+        else:
+            out[k] = int(v * scale) if isinstance(v, int) else float(v) * scale
+    return out
 
 # ---------------------------------------------------------------------------
 # Generators (setiap fungsi mengembalikan list[dict])
@@ -360,6 +323,32 @@ def gen_lulusan(mahasiswa_rows: list[dict], pct: float = 0.35) -> list[dict]:
             "bidang_kerja": random.choice(["Sesuai", "Tidak Sesuai"]),
             "masa_tunggu_bulan": random.randint(0, 18),
             "sumber_data": random.choice(["Tracer Study", "Laporan Wisuda"]),
+            "ingested_at": ts,
+        })
+    return rows
+
+
+def gen_tendik(n: int) -> list[dict]:
+    """Tenaga kependidikan (non-dosen) — unit administrasi / UPA / biro."""
+    ts = _now_ts()
+    rows = []
+    org_by_id = {o["org_id"]: o for o in ITERA_ORGANISASI}
+    for i in range(n):
+        unit_id = pick_unit_for_tendik()
+        org = org_by_id.get(unit_id, {})
+        rows.append({
+            "tendik_id": f"T{random.randint(10000, 99999)}{i:04d}",
+            "nama": _rand_name(),
+            "unit_organisasi_id": unit_id,
+            "fakultas_id": org.get("fakultas_id", ""),
+            "jabatan": random.choice(TENDIK_JABATAN),
+            "jenis_kelamin": random.choice(JENIS_KELAMIN),
+            "status_kepegawaian": random.choices(
+                ["PNS", "PPPK", "Kontrak", "Honorer"],
+                weights=[35, 25, 30, 10],
+                k=1,
+            )[0],
+            "tahun_bergabung": random.randint(2012, 2025),
             "ingested_at": ts,
         })
     return rows
@@ -584,12 +573,12 @@ def main():
         help="full = overwrite semua CSV; append = tambah batch baru",
     )
     parser.add_argument(
-        "--profile", choices=list(VOLUME_PROFILES), default="metadata",
-        help=f"Preset volume ({profile_names}); default: metadata (uji cepat)",
+        "--profile", choices=list(VOLUME_PROFILES), default="real",
+        help=f"Preset volume ({profile_names}); default: real (populasi ITERA)",
     )
     parser.add_argument(
         "--scale", type=float, default=1.0,
-        help="Pengali tambahan di atas --profile (mis. profile aqe + scale 2 = ~1M mahasiswa)",
+        help="Pengali tambahan di atas --profile (mis. aqe + scale 2 ≈ 45k mahasiswa)",
     )
     parser.add_argument(
         "--batch-size", type=int, default=5_000,
@@ -654,6 +643,7 @@ def main():
     if args.mode == "full":
         n_mhs = int(vol["mahasiswa"])
         n_dosen = int(vol["dosen"])
+        n_tendik = int(vol.get("tendik", ITERA_POPULATION["tendik"]))
         n_kerjasama = int(vol["kerjasama"])
         n_prestasi = int(vol["prestasi"])
         kegiatan_avg = float(vol["kegiatan_avg"])
@@ -665,7 +655,8 @@ def main():
         tahun_keuangan = (2018, 2025)
     else:
         n_mhs = args.batch_size
-        n_dosen = max(50, args.batch_size // 40)
+        n_dosen = max(50, args.batch_size // 32)
+        n_tendik = max(10, args.batch_size // 71)
         n_kerjasama = max(10, args.batch_size // 80)
         n_prestasi = max(100, args.batch_size // 10)
         kegiatan_avg = 3.0
@@ -678,12 +669,15 @@ def main():
 
     est_derived = int(n_dosen * kegiatan_avg) + int(n_dosen * penelitian_avg) + int(n_dosen * pengabdian_avg)
     est_total = (
-        len(prodi_rows) + n_mhs + int(n_mhs * lulusan_pct * 0.5) + n_dosen + est_derived
+        len(prodi_rows) + n_mhs + int(n_mhs * lulusan_pct * 0.5) + n_dosen + n_tendik + est_derived
         + n_kerjasama + int(n_mhs * mbkm_pct * 0.4) + n_prestasi + 500
     )
-    print("  Rencana volume (perkiraan):")
+    print("  Rencana volume (perkiraan) — acuan ITERA real:")
+    print(f"    populasi kampus   : {ITERA_POPULATION['mahasiswa']:,} mhs | "
+          f"{ITERA_POPULATION['dosen']:,} dosen | {ITERA_POPULATION['tendik']:,} tendik")
     print(f"    raw_mahasiswa      : {n_mhs:>10,}")
     print(f"    raw_dosen          : {n_dosen:>10,}")
+    print(f"    raw_tendik         : {n_tendik:>10,}")
     print(f"    raw_prestasi       : {n_prestasi:>10,}")
     print(f"    derived (dosen×avg): {est_derived:>10,}  (kegiatan+penelitian+pengabdian)")
     print(f"    total perkiraan    : {est_total:>10,} baris")
@@ -710,6 +704,10 @@ def main():
     # --- raw_dosen ---
     dosen = gen_dosen(n_dosen, skew_prodi=skew_prodi, skew_fraction=skew_fraction)
     _write_csv(out / "raw_dosen.csv", dosen, append=append)
+
+    # --- raw_tendik ---
+    tendik = gen_tendik(n_tendik)
+    _write_csv(out / "raw_tendik.csv", tendik, append=append)
 
     # --- raw_kegiatan_dosen ---
     kegiatan = gen_kegiatan_dosen(dosen, avg_per_dosen=kegiatan_avg)
@@ -750,6 +748,7 @@ def main():
         "raw_mahasiswa.csv": len(mhs),
         "raw_lulusan.csv": len(lulusan),
         "raw_dosen.csv": len(dosen),
+        "raw_tendik.csv": len(tendik),
         "raw_kegiatan_dosen.csv": len(kegiatan),
         "raw_penelitian.csv": len(penelitian),
         "raw_pengabdian.csv": len(pengabdian),

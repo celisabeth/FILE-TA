@@ -115,6 +115,94 @@ PRODI_S1_IDS = [p["prodi_id"] for p in PRODI_MASTER if p["jenjang"] == "S1"]
 
 DEFAULT_SKEW_PRODI = "SD"
 
+# Populasi kampus (referensi operasional ITERA, ~2024/2025)
+ITERA_POPULATION = {
+    "mahasiswa": 22_621,
+    "dosen": 705,
+    "tendik": 320,
+}
+
+# Rasio turunan dari populasi real (kerjasama/prestasi mengikuti skala mahasiswa)
+_DERIVED_AT_REAL_SCALE = {
+    "kerjasama": 380,
+    "prestasi": 2_300,
+    "kegiatan_avg": 2.8,
+    "penelitian_avg": 2.2,
+    "pengabdian_avg": 1.3,
+    "lulusan_pct": 0.35,
+    "mbkm_pct": 0.24,
+}
+
+# Unit kerja tendik (bukan home-base prodi)
+TENDIK_UNIT_IDS = [
+    "REKTOR",
+    "WR_AKADEMIK",
+    "WR_KEUANGAN",
+    "SPI",
+    "BAPU",
+    "BAG_UM_AKAD",
+    "LPPM",
+    "LP3M",
+    "UPA_PERPUSTAKAAN",
+    "UPA_TIK",
+    "UPA_BAHASA",
+    "UPA_LABTERPADU",
+]
+
+TENDIK_JABATAN = [
+    "Staf Administrasi",
+    "Staf Akademik",
+    "Pranata Komputer",
+    "Staf Keuangan",
+    "Staf Humas",
+    "Laboran",
+    "Staf Perpustakaan",
+    "Staf Kemahasiswaan",
+]
+
+
+def build_volume_profile(
+    *,
+    mahasiswa: int | None = None,
+    dosen: int | None = None,
+    tendik: int | None = None,
+    scale: float = 1.0,
+    skew_fraction: float = 0.0,
+    derived_scale: float | None = None,
+) -> dict[str, int | float]:
+    """
+    Hitung target baris profil dari populasi ITERA × scale.
+
+    derived_scale: pengali kerjasama/prestasi (default = scale). Untuk stress test
+    bisa set scale=3 pada mahasiswa saja lewat profil aqe-stress.
+    """
+    m = int((mahasiswa if mahasiswa is not None else ITERA_POPULATION["mahasiswa"]) * scale)
+    d = int((dosen if dosen is not None else ITERA_POPULATION["dosen"]) * scale)
+    t = int((tendik if tendik is not None else ITERA_POPULATION["tendik"]) * scale)
+    ds = derived_scale if derived_scale is not None else scale
+    base_m = ITERA_POPULATION["mahasiswa"]
+    ratio = max(0.25, m / base_m)
+
+    return {
+        "mahasiswa": m,
+        "dosen": d,
+        "tendik": t,
+        "kerjasama": max(80, int(_DERIVED_AT_REAL_SCALE["kerjasama"] * ratio * ds / max(scale, 0.01))),
+        "prestasi": max(400, int(_DERIVED_AT_REAL_SCALE["prestasi"] * ratio * ds / max(scale, 0.01))),
+        "kegiatan_avg": _DERIVED_AT_REAL_SCALE["kegiatan_avg"],
+        "penelitian_avg": _DERIVED_AT_REAL_SCALE["penelitian_avg"],
+        "pengabdian_avg": _DERIVED_AT_REAL_SCALE["pengabdian_avg"],
+        "lulusan_pct": _DERIVED_AT_REAL_SCALE["lulusan_pct"],
+        "mbkm_pct": _DERIVED_AT_REAL_SCALE["mbkm_pct"],
+        "default_skew_fraction": skew_fraction,
+    }
+
+
+def pick_unit_for_tendik() -> str:
+    import random
+
+    return random.choice(TENDIK_UNIT_IDS)
+
 # ---------------------------------------------------------------------------
 # Organisasi ITERA (metadata / stewardship / unit kerja)
 # ---------------------------------------------------------------------------

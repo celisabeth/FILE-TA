@@ -141,6 +141,19 @@ Semua sumber data disimpan sebagai **CSV** (simulasi batch dari sistem informasi
 | sumber_data | STRING | Tracer Study / Laporan Wisuda |
 | ingested_at | TIMESTAMP | Waktu data masuk |
 
+#### `raw_tendik`
+| Atribut | Tipe | Keterangan |
+|---------|------|------------|
+| tendik_id | STRING | ID tenaga kependidikan |
+| nama | STRING | Nama lengkap |
+| unit_organisasi_id | STRING | Unit kerja (UPA, Biro, WR, …) |
+| fakultas_id | STRING | Opsional — jika unit di bawah fakultas |
+| jabatan | STRING | Staf Administrasi, Pranata Komputer, … |
+| jenis_kelamin | STRING | L / P |
+| status_kepegawaian | STRING | PNS / PPPK / Kontrak / Honorer |
+| tahun_bergabung | INT | Tahun mulai bekerja |
+| ingested_at | TIMESTAMP | Waktu data masuk |
+
 #### `raw_dosen`
 | Atribut | Tipe | Keterangan |
 |---------|------|------------|
