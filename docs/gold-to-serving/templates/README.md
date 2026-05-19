@@ -2,6 +2,8 @@
 
 Setiap file berisi: **Dataset → Chart** (termasuk **X-Axis** & **Y-Axis/Metrics** di tab Data Explore) → **Dashboard** + checklist laporan.
 
+**Data:** **15 CSV staging** (Bronze) → star schema **15 tabel Gold** (5 dim + 10 fact). Hierarki organisasi ITERA: **42 prodi** / **3 fakultas** (FS, FTI, FTIK) — lihat [`../README.md`](../README.md) §1.0.
+
 ---
 
 ## Urutan baca
@@ -29,7 +31,7 @@ Panduan ringkas: [../panduan-lengkap-dashboard-superset.md](../panduan-lengkap-d
 | **03** | `v_tata_kelola_tahun` | Line | `tahun` | AVG `persen_realisasi` |
 | **03** | sama | Bar grouped | `tahun` | SUM `pagu_total`, SUM `realisasi_total` |
 | **04** | `v_iku4_per_prodi` | Bar horizontal | `nama_prodi` | AVG `persen_iku4` |
-| **04** | `v_capaian_roll_up_jurusan` | Bar vertikal | `nama_jurusan` | AVG `avg_iku4` |
+| **04** | `v_roll_up_fakultas` | Bar vertikal | `nama_fakultas` | AVG `avg_iku4` |
 | **07** | `v_rekap_iku_tahun_off/on` | = template 01 | `iku_kode` | AVG `nilai_capaian` |
 
 Peta UI Superset: [00 — Step 3](00-alur-superset-dataset-chart.md#step-3--buat-chart).

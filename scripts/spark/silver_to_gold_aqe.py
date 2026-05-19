@@ -162,9 +162,13 @@ def build_dim_prodi(spark: SparkSession) -> DataFrame:
     fak_key = F.coalesce(F.col("fakultas_id"), F.col("jurusan_id"))
     return (
         prodi
+        .withColumn("fakultas_id", fak_key)
         .withColumn("nama_fakultas", F.coalesce(F.col("nama_fakultas"), jurusan_map[fak_key]))
         .withColumn("nama_jurusan", F.col("nama_fakultas"))
-        .select("prodi_id", "nama_prodi", "jenjang", "nama_jurusan", "nama_fakultas", "tahun_berdiri", "status")
+        .select(
+            "prodi_id", "nama_prodi", "jenjang", "fakultas_id",
+            "nama_jurusan", "nama_fakultas", "tahun_berdiri", "status",
+        )
         .dropDuplicates(["prodi_id"])
     )
 

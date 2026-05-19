@@ -2,7 +2,7 @@
 
 Salin pola ini ke setiap template (01–07). Bagian **khusus template** ada di file masing-masing.
 
-**Prasyarat:** Superset jalan · DAG `metadata_full_experiment` sukses · Trino bisa query Gold.
+**Prasyarat:** Superset jalan · **15 CSV staging** ter-generate (profil `real` / `aqe`) · DAG `metadata_full_experiment` sukses · Trino bisa query Gold (`dim_prodi` ≈ **42** baris).
 
 ---
 

@@ -20,6 +20,15 @@ SELECT COUNT(*) AS n_rekap FROM lakehouse.gold.fact_rekap_iku_institusi;
 SELECT COUNT(*) AS n_waktu FROM lakehouse.gold.dim_waktu;
 ```
 
+```sql
+SELECT COUNT(*) AS n_prodi FROM lakehouse.gold.dim_prodi;
+```
+
+| `n_prodi` | Arti |
+|-----------|------|
+| **42** | Master prodi ITERA OK |
+| `< 42` | Regenerate staging + jalankan ulang DAG Gold |
+
 | `n_rekap` | Arti |
 |-----------|------|
 | `0` | Rekap belum ditulis — tunggu DAG / cek task `silver_to_gold` di Airflow |
@@ -181,7 +190,7 @@ ORDER BY w.tahun, r.iku_kode;
 **Dipakai di:** [04-dashboard-prodi-drilldown.md](04-dashboard-prodi-drilldown.md).
 
 ```sql
-SELECT p.prodi_id, p.nama_prodi, p.nama_jurusan,
+SELECT p.prodi_id, p.nama_prodi, p.fakultas_id, p.nama_fakultas,
        f.total_dosen_tetap, f.dosen_s3, f.dosen_sertifikat_industri,
        f.persen_iku4, f.target_iku, f.capaian_iku
 FROM lakehouse.gold.fact_iku4_kualifikasi_dosen f
@@ -231,20 +240,36 @@ ORDER BY tahun, iku_kode;
 
 ---
 
-## v_capaian_roll_up_jurusan → dataset `v_capaian_roll_up_jurusan`
+## v_roll_up_fakultas → dataset `v_roll_up_fakultas`
 
-**Dipakai di:** [04-dashboard-prodi-drilldown.md](04-dashboard-prodi-drilldown.md) roll-up jurusan.
+**Dipakai di:** [04-dashboard-prodi-drilldown.md](04-dashboard-prodi-drilldown.md) roll-up prodi → fakultas (3 fakultas ITERA).
 
 ```sql
-SELECT p.nama_jurusan, w.tahun, AVG(f.persen_iku4) AS avg_iku4
+SELECT p.fakultas_id, p.nama_fakultas, w.tahun, AVG(f.persen_iku4) AS avg_iku4
 FROM lakehouse.gold.fact_iku4_kualifikasi_dosen f
 JOIN lakehouse.gold.dim_prodi p ON f.prodi_id = p.prodi_id
 JOIN lakehouse.gold.dim_waktu w ON f.waktu_id = w.waktu_id
-GROUP BY p.nama_jurusan, w.tahun
-ORDER BY w.tahun, p.nama_jurusan;
+GROUP BY p.fakultas_id, p.nama_fakultas, w.tahun
+ORDER BY w.tahun, p.fakultas_id;
 ```
 
-**Chart:** X-Axis `nama_jurusan` · Y-Axis **AVG** `avg_iku4` · Filter `tahun` → [04](04-dashboard-prodi-drilldown.md).
+**Chart:** X-Axis `nama_fakultas` · Y-Axis **AVG** `avg_iku4` · Filter `tahun` → [04](04-dashboard-prodi-drilldown.md).
+
+> **Legacy:** dataset lama `v_capaian_roll_up_jurusan` diganti nama ini — `nama_jurusan` di `dim_prodi` sekarang = nama fakultas, bukan jurusan JTK/JSA lama.
+
+---
+
+## v_bronze_sdm_itera → dataset opsional (governance)
+
+**Bukan bagian star schema Gold** — ringkasan populasi dari Bronze setelah generate profil `real` (~22.621 mhs, 705 dosen, 320 tendik).
+
+```sql
+SELECT 'mahasiswa' AS entitas, COUNT(*) AS jumlah FROM lakehouse.bronze.raw_mahasiswa
+UNION ALL SELECT 'dosen', COUNT(*) FROM lakehouse.bronze.raw_dosen
+UNION ALL SELECT 'tendik', COUNT(*) FROM lakehouse.bronze.raw_tendik
+UNION ALL SELECT 'prodi', COUNT(*) FROM lakehouse.bronze.raw_prodi
+UNION ALL SELECT 'fakultas', COUNT(*) FROM lakehouse.bronze.raw_fakultas;
+```
 
 ---
 
@@ -267,9 +292,10 @@ Lihat [07-dashboard-kpi-aqe-off-on.md](07-dashboard-kpi-aqe-off-on.md).
 | `v_tata_kelola_tahun` | 03 SAKIP | Line | `tahun` | AVG `persen_realisasi` |
 | `v_tata_kelola_tahun` | 03 SAKIP | Bar grouped | `tahun` | SUM `pagu_total`, SUM `realisasi_total` |
 | `v_iku4_per_prodi` | 04 Prodi | Bar horizontal | `nama_prodi` | AVG `persen_iku4` |
-| `v_capaian_roll_up_jurusan` | 04 Prodi | Bar vertikal | `nama_jurusan` | AVG `avg_iku4` |
+| `v_roll_up_fakultas` | 04 Prodi | Bar vertikal | `nama_fakultas` | AVG `avg_iku4` |
+| `v_bronze_sdm_itera` | Opsional | Bar / tabel | `entitas` | `jumlah` |
 | `v_iku_subset_tahun` | 01 (fallback) | Bar vertikal | `iku_kode` | AVG `nilai_capaian` |
-| Per `fact_ikuN_*` | 02 per IKU | Bar horizontal | `nama_prodi` / `nama_jurusan` | AVG kolom % IKU |
+| Per `fact_ikuN_*` | 02 per IKU | Bar horizontal | `nama_prodi` / `nama_fakultas` | AVG kolom % IKU |
 
 Detail langkah Explore: file template masing-masing + [00-alur-superset-dataset-chart.md](00-alur-superset-dataset-chart.md).
 

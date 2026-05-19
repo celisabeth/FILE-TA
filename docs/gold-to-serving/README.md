@@ -2,7 +2,7 @@
 
 Panduan menyajikan **Gold Layer** (star schema IKU ITERA) ke lapisan konsumsi melalui **Trino** (query SQL), **Apache Superset** (dashboard analitik deskriptif), dan **Grafana** (monitoring MLOps / prediktif). Selaras dengan §1–§3 [`../../README.md`](../../README.md) dan pipeline [`../silver-to-gold/README.md`](../silver-to-gold/README.md).
 
-**Prasyarat:** `./start.sh`, pipeline **Silver → Gold** selesai (`metadata_full_experiment` atau `silver_gold_pipeline`).
+**Prasyarat:** `./start.sh`, **15 CSV staging** (populasi real ITERA, lihat [`../generate-data/README.md`](../generate-data/README.md)), pipeline **Staging → Bronze → Silver → Gold** selesai (`metadata_full_experiment` atau `silver_gold_pipeline`).
 
 | Service | URL | Login |
 |---------|-----|-------|
@@ -26,10 +26,25 @@ Panduan menyajikan **Gold Layer** (star schema IKU ITERA) ke lapisan konsumsi me
 
 ## 1. Arsitektur Gold → Serving
 
+### 1.0 Dua lapisan “15 tabel”
+
+| Lapisan | Jumlah | Isi (ITERA) |
+|---------|--------|-------------|
+| **Staging / Bronze** | **15 CSV → 15 tabel** | Master: `raw_fakultas`, `raw_organisasi_itera`, `raw_prodi`; SDM: `raw_mahasiswa`, `raw_dosen`, `raw_tendik`, `raw_lulusan`; aktivitas: kegiatan, penelitian, pengabdian, kerjasama, MBKM, prestasi, akreditasi, keuangan |
+| **Gold (star schema)** | **15 tabel Iceberg** | **5 dimensi** + **10 fakta** IKU/SAKIP (bukan 15 dimensi) |
+
+Master fakultas & organisasi **mengalir ke `dim_prodi`** (42 prodi, 3 fakultas: FS / FTI / FTIK). `raw_tendik` & `raw_organisasi_itera` tetap di **Bronze** untuk metadata/Atlas; belum ada `dim_tendik` di Gold.
+
 ```
 ┌──────────────────────────────────────────────────────────────────┐
+│  BRONZE — 15 tabel (CSV staging) — lakehouse.bronze.*            │
+│  + master ITERA: fakultas, organisasi, prodi (42), tendik (320)  │
+└────────────────────────────┬─────────────────────────────────────┘
+                             │ bronze_to_silver.py
+                             ▼
+┌──────────────────────────────────────────────────────────────────┐
 │  SILVER (enriched) — lakehouse.silver.*                          │
-│  mahasiswa, lulusan, dosen, penelitian_pkm, kerjasama, …         │
+│  silver_mahasiswa (+ fakultas_id), dosen, lulusan, …             │
 └────────────────────────────┬─────────────────────────────────────┘
                              │ PySpark silver_to_gold.py
                              ▼
@@ -135,7 +150,7 @@ flowchart TB
 | Tabel | Natural key | Deskripsi |
 |-------|-------------|-----------|
 | `dim_waktu` | `waktu_id` (surrogate) | Kalender 2020–2025, per bulan |
-| `dim_prodi` | `prodi_id` | Program studi, jurusan, fakultas |
+| `dim_prodi` | `prodi_id` | **42** program studi; `fakultas_id` (FS/FTI/FTIK), `nama_fakultas` |
 | `dim_dosen` | `dosen_id` | Profil & flag kualifikasi dosen |
 | `dim_mahasiswa` | `mahasiswa_id` | Profil mahasiswa (NIM) |
 | `dim_topik_penelitian` | `topik_id` | 4 topik riset strategis ITERA |
@@ -148,14 +163,14 @@ flowchart TB
 | `fact_iku2_mbkm` | IKU-2 | `waktu_id`, `prodi_id` | `persen_iku2` |
 | `fact_iku3_dosen_tridarma` | IKU-3 | `waktu_id`, `prodi_id` | `persen_iku3` |
 | `fact_iku4_kualifikasi_dosen` | IKU-4 | `waktu_id`, `prodi_id` | `persen_iku4` |
-| `fact_iku5_penelitian_pkm` | IKU-5 | `waktu_id`, `jurusan_id`* | `rasio_per_dosen` |
+| `fact_iku5_penelitian_pkm` | IKU-5 | `waktu_id`, `jurusan_id`* | `rasio_per_dosen` (per **fakultas**) |
 | `fact_iku6_kerjasama_prodi` | IKU-6 | `waktu_id` | `persen_iku6` |
 | `fact_iku7_metode_pembelajaran` | IKU-7 | `waktu_id`, `prodi_id` | `persen_iku7` |
 | `fact_iku8_akreditasi_internasional` | IKU-8 | `waktu_id` | `persen_iku8` |
 | `fact_tata_kelola` | SAKIP & anggaran | `waktu_id` | `persen_realisasi`, `predikat_sakip` |
 | `fact_rekap_iku_institusi` | Ringkasan 8 IKU | `waktu_id` | `nilai_capaian`, `status_capaian` |
 
-\* `fact_iku5` memakai **`jurusan_id`** (bukan `prodi_id`) — grain berbeda dari IKU-1/2/3/4/7.
+\* Kolom **`jurusan_id`** di fakta IKU-5 = **kode fakultas** (`FS`, `FTI`, `FTIK`) — join ke `dim_prodi.fakultas_id`, bukan `prodi_id`.
 
 **ETL:** [`../../scripts/spark/silver_to_gold.py`](../../scripts/spark/silver_to_gold.py) · Metadata: [`../../scripts/atlas/register_gold_metadata.py`](../../scripts/atlas/register_gold_metadata.py)
 
@@ -178,21 +193,21 @@ flowchart TB
 | Operasi | Definisi | Implementasi di stack ini |
 |---------|----------|---------------------------|
 | **Slice** | Potong satu dimensi | `WHERE dim_waktu.tahun = 2024` |
-| **Dice** | Potong banyak dimensi | `WHERE tahun = 2024 AND nama_jurusan = 'JTK'` |
-| **Roll-up** | Agregasi ke level lebih tinggi | `GROUP BY nama_jurusan` (naik dari prodi) |
+| **Dice** | Potong banyak dimensi | `WHERE tahun = 2024 AND p.fakultas_id = 'FTI'` |
+| **Roll-up** | Agregasi ke level lebih tinggi | `GROUP BY p.nama_fakultas` (naik dari prodi) |
 | **Drill-down** | Detail ke level lebih rendah | Dari rekap institusi → `fact_iku4` per prodi |
 | **Pivot** | Matriks 2 dimensi | Superset heatmap / pivot table |
 
-Contoh roll-up IKU-4 jurusan → institusi:
+Contoh roll-up IKU-4 (institusi → fakultas):
 
 ```sql
 SELECT AVG(f.persen_iku4) AS rata_institusi
 FROM lakehouse.gold.fact_iku4_kualifikasi_dosen f;
 
-SELECT p.nama_jurusan, AVG(f.persen_iku4) AS rata_jurusan
+SELECT p.fakultas_id, p.nama_fakultas, AVG(f.persen_iku4) AS rata_fakultas
 FROM lakehouse.gold.fact_iku4_kualifikasi_dosen f
 JOIN lakehouse.gold.dim_prodi p ON f.prodi_id = p.prodi_id
-GROUP BY p.nama_jurusan;
+GROUP BY p.fakultas_id, p.nama_fakultas;
 ```
 
 ---
@@ -209,7 +224,7 @@ GROUP BY p.nama_jurusan;
 | `fact_iku2_mbkm` | **1 prodi × 1 periode tahun** | Mahasiswa aktif periode tersebut |
 | `fact_iku3_dosen_tridarma` | **1 prodi × 1 periode tahun** | Dosen tetap per prodi |
 | `fact_iku4_kualifikasi_dosen` | **1 prodi × 1 periode tahun** | Snapshot kualifikasi dosen |
-| `fact_iku5_penelitian_pkm` | **1 jurusan × 1 periode tahun** | `jurusan_id`, bukan `prodi_id` |
+| `fact_iku5_penelitian_pkm` | **1 fakultas × 1 periode tahun** | `jurusan_id` = kode FS/FTI/FTIK |
 | `fact_iku6_kerjasama_prodi` | **1 institusi × 1 periode tahun** | Tanpa `prodi_id`; hitung % prodi S1 bermitra |
 | `fact_iku7_metode_pembelajaran` | **1 prodi × 1 periode tahun** | MK per prodi |
 | `fact_iku8_akreditasi_internasional` | **1 institusi × 1 periode tahun** | % prodi berakreditasi internasional |
@@ -259,26 +274,25 @@ Level 0 ── Bulan          (bulan, nama_bulan, waktu_id)  ← grain dimensi
 
 **Catatan:** Fakta IKU umumnya hanya terikat ke **Level 0 akhir tahun** (`bulan=12`). Drill-down bulan dalam tahun yang sama memerlukan ETL tambahan jika ingin snapshot bulanan per IKU.
 
-### 5.2 `dim_prodi` — hierarki organisasi
+### 5.2 `dim_prodi` — hierarki organisasi ITERA
 
 ```
-Level 3 ── Institusi       (nama_fakultas = ITERA)
+Level 2 ── Institusi       (ITERA — satu kampus)
     │
-Level 2 ── Fakultas        (nama_fakultas)
+Level 1 ── Fakultas        (fakultas_id, nama_fakultas)   FS | FTI | FTIK
     │
-Level 1 ── Jurusan         (nama_jurusan)   JTK, JSA, JTI, JTP, JMB
-    │
-Level 0 ── Program Studi   (prodi_id, nama_prodi, jenjang)  ← grain fakta per-prodi
+Level 0 ── Program Studi   (prodi_id, nama_prodi, jenjang)  ← 42 prodi, grain fakta per-prodi
 ```
 
 | Level | Kunci | Contoh |
 |-------|-------|--------|
-| **0** | `prodi_id` | IF, SD, TE |
-| **1** | `nama_jurusan` | Teknik dan Komputer |
-| **2** | `nama_fakultas` | ITERA |
-| **3** | (institusi tunggal) | Satu baris agregat seluruh kampus |
+| **0** | `prodi_id` | `IF`, `SD`, `EL`, `AR` |
+| **1** | `fakultas_id`, `nama_fakultas` | `FTI` — Fakultas Teknologi Industri |
+| **2** | (institusi) | Agregat seluruh ITERA |
 
-Fakta **IKU-6** dan **IKU-8** langsung di **Level 3** (institusi). Fakta **IKU-5** di **Level 1** (`jurusan_id`).
+Kolom `nama_jurusan` di Gold = **alias `nama_fakultas`** (legacy nama kolom). Untuk filter/drill-down gunakan **`fakultas_id`** atau **`nama_fakultas`**.
+
+Fakta **IKU-6** dan **IKU-8** di **Level 2** (institusi). Fakta **IKU-5** di **Level 1** (`jurusan_id` = `fakultas_id`).
 
 ### 5.3 `dim_dosen` dan `dim_mahasiswa` — hierarki entitas
 
@@ -302,7 +316,7 @@ Dimensi individu dipakai untuk **profil & segmentasi**; fakta IKU agregat umumny
 | Konteks analisis | Level dimensi waktu | Level dimensi organisasi | Tabel fakta contoh |
 |------------------|---------------------|--------------------------|-------------------|
 | Dashboard pimpinan | 3 (tahun) | 3 (institusi) | `fact_rekap_iku_institusi` |
-| Per jurusan | 3 | 1 | `fact_iku5_penelitian_pkm` |
+| Per fakultas | 3 | 1 | `fact_iku5_penelitian_pkm` |
 | Per prodi | 3 | 0 | `fact_iku4_kualifikasi_dosen` |
 | Drill-down bulan | 0 | 0 | Perlu fakta dengan `waktu_id` bulanan |
 
@@ -355,7 +369,7 @@ Login: http://localhost:18089 — **admin** / **admin**
 | Dataset | Tabel | Untuk dashboard |
 |---------|-------|-----------------|
 | `dim_waktu` | `dim_waktu` | Filter tahun |
-| `dim_prodi` | `dim_prodi` | Filter prodi / jurusan |
+| `dim_prodi` | `dim_prodi` | Filter prodi / fakultas (`fakultas_id`, `nama_fakultas`) |
 | `fact_rekap_iku_institusi` | `fact_rekap_iku_institusi` | Executive 8 IKU |
 | `fact_iku4_kualifikasi_dosen` | `fact_iku4_kualifikasi_dosen` | IKU-4 per prodi |
 | `fact_tata_kelola` | `fact_tata_kelola` | SAKIP & anggaran |
@@ -375,15 +389,15 @@ Selaras template [`templates/01-dashboard-executive-iku.md`](templates/01-dashbo
 | A1 | `fact_rekap_iku_institusi` | Bar grouped `iku_kode` × `nilai_capaian` |
 | A2 | Heatmap capaian vs target | `status_capaian` |
 | A3 | `fact_tata_kelola` | Line `persen_realisasi` per tahun |
-| A4 | Filter | `dim_waktu.tahun`, `dim_prodi.nama_jurusan` |
+| A4 | Filter | `dim_waktu.tahun`, `dim_prodi.fakultas_id` / `nama_fakultas` |
 
 ### Dashboard B — Per indikator (drill-down)
 
 Template: [`templates/02-dashboard-iku-per-indikator.md`](templates/02-dashboard-iku-per-indikator.md)
 
-### Dashboard C — Prodi / jurusan
+### Dashboard C — Prodi / fakultas
 
-Template: [`templates/04-dashboard-prodi-drilldown.md`](templates/04-dashboard-prodi-drilldown.md) — demonstrasi roll-up Level 0→1→3.
+Template: [`templates/04-dashboard-prodi-drilldown.md`](templates/04-dashboard-prodi-drilldown.md) — roll-up Level 0 (prodi) → Level 1 (fakultas).
 
 ### Dashboard D — Prediktif (Grafana)
 
@@ -444,7 +458,8 @@ GROUP BY p.nama_prodi;
 | Schema `gold` tidak ada | Trigger `metadata_full_experiment` atau `silver_gold_pipeline` |
 | Chart Superset kosong | Cek preview dataset; pastikan `waktu_id` / `tahun` filter benar |
 | Agregat % salah setelah roll-up | Jangan SUM `persen_*` — AVG atau hitung ulang dari count |
-| IKU-5 tidak join ke `dim_prodi` | Join via `jurusan_id` / `nama_jurusan` |
+| IKU-5 tidak join ke `dim_prodi` | `JOIN dim_prodi p ON f.jurusan_id = p.fakultas_id` |
+| `dim_prodi` kosong / < 42 baris | Regenerate staging (`real`), jalankan ulang DAG Gold |
 | Prediktif kosong | Jalankan `mlops_pipeline` atau demo metrics — § Dashboard D |
 
 ---

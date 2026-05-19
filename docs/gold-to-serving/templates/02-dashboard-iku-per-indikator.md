@@ -96,21 +96,19 @@ Dataset: [06](06-virtual-dataset-sql.md) → `v_iku4_per_prodi` (tambah `w.tahun
 
 ## IKU-5 — `chart_iku5_penelitian`
 
-> Join via `jurusan_id`, bukan `prodi_id`.
+> Grain per fakultas: join `f.jurusan_id` = `p.fakultas_id` (FS / FTI / FTIK).
 
 ### Dataset `ds_iku5_penelitian`
 
 ```sql
-SELECT w.tahun, p.nama_jurusan, f.rasio_per_dosen, f.target_iku, f.capaian_iku
+SELECT w.tahun, p.fakultas_id, p.nama_fakultas,
+       f.rasio_per_dosen, f.target_iku, f.capaian_iku
 FROM lakehouse.gold.fact_iku5_penelitian_pkm f
 JOIN lakehouse.gold.dim_waktu w ON f.waktu_id = w.waktu_id
-JOIN lakehouse.gold.dim_prodi p ON f.jurusan_id = p.nama_jurusan
-   OR f.jurusan_id = p.prodi_id;
+JOIN lakehouse.gold.dim_prodi p ON f.jurusan_id = p.fakultas_id;
 ```
 
-*(Sesuaikan join dengan kolom aktual di Gold.)*
-
-| **X-Axis** | `nama_jurusan` |
+| **X-Axis** | `nama_fakultas` |
 | **Y-Axis (Metrics)** | **AVG** → `rasio_per_dosen` |
 | **Filters** | `tahun` = `2024` |
 | **Orientation** | Horizontal |

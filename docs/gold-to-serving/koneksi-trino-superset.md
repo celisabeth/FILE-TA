@@ -2,7 +2,7 @@
 
 Langkah operasional menghubungkan **star schema Gold** di Iceberg ke **Superset** untuk dashboard KPI IKU. Untuk konsep arsitektur (kapan Superset vs Grafana, AQE OFF/ON), lihat [`arsitektur-dashboard-serving.md`](arsitektur-dashboard-serving.md).
 
-**Prasyarat:** stack Insight jalan (`./start.sh` atau `docker compose up -d`), Gold terisi (`SHOW TABLES FROM lakehouse.gold`).
+**Prasyarat:** stack Insight jalan (`./start.sh` atau `docker compose up -d`), **15 tabel Bronze** + **15 tabel Gold** terisi (`SHOW TABLES FROM lakehouse.bronze` / `lakehouse.gold`).
 
 | Service | URL default | Port |
 |---------|-------------|------|
@@ -109,6 +109,8 @@ Untuk setiap koneksi, buat dataset dari tabel (bukan hanya virtual SQL):
 | fact_rekap_iku_institusi | `lakehouse.gold.fact_rekap_iku_institusi` | `gold_aqe_off.fact_rekap_iku_institusi` | `gold_aqe_on.fact_rekap_iku_institusi` |
 | fact_iku4_kualifikasi_dosen | `lakehouse.gold.fact_iku4_kualifikasi_dosen` | … | … |
 | fact_tata_kelola | `lakehouse.gold.fact_tata_kelola` | … | … |
+
+**Bronze (opsional — populasi / governance, bukan star schema):** `lakehouse.bronze.raw_fakultas`, `raw_organisasi_itera`, `raw_tendik`, `raw_mahasiswa`, … (15 tabel).
 
 **Langkah UI:** **Data** → **Datasets** → **+ Dataset** → pilih database → pilih schema → pilih tabel → **Add**.
 

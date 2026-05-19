@@ -41,7 +41,7 @@ Dokumen ini menjawab: **apakah perlu 2 dashboard KPI di portal untuk `lakehouse_
 ### 2.1 Superset — **apa yang diukur**
 
 - **Metrik bisnis** dari tabel fakta: `nilai_capaian`, `persen_iku4`, `status_capaian`, dll.
-- **Sumber:** SQL Trino ke star schema (`fact_*`, `dim_*`).
+- **Sumber:** SQL Trino ke star schema Gold (`fact_*`, `dim_*`) — materialisasi dari **15 tabel Bronze** ITERA (42 prodi, 3 fakultas).
 - **Katalog:**
   - **Wajib:** `lakehouse` → schema **`gold`** (Gold utama, tidak tertimpa eksperimen AQE).
   - **Opsional penelitian:** `lakehouse_aqe_off` / `lakehouse_aqe_on` → schema **`gold_aqe_off`** / **`gold_aqe_on`** — KPI **harusnya setara** jika pipeline benar; perbedaan kecil bisa muncul dari timing/materialisasi.
