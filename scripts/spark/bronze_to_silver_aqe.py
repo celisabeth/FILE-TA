@@ -221,19 +221,29 @@ def transform_silver_mahasiswa(spark: SparkSession) -> tuple[DataFrame, dict]:
         *[item for k, v in JURUSAN_MAP.items() for item in (F.lit(k), F.lit(v))]
     )
 
+    has_mhs_fakultas = "fakultas_id" in mhs.columns
+    if has_mhs_fakultas:
+        mhs = mhs.withColumnRenamed("fakultas_id", "_mhs_fakultas_id")
+
+    prodi_lkp = prodi.select(
+        "prodi_id",
+        "nama_prodi",
+        "jenjang",
+        F.coalesce(F.col("fakultas_id"), F.col("jurusan_id")).alias("_prodi_fakultas_id"),
+        F.col("nama_fakultas"),
+    )
+
+    fakultas_id_expr = (
+        F.coalesce(F.col("_mhs_fakultas_id"), F.col("_prodi_fakultas_id"))
+        if has_mhs_fakultas
+        else F.col("_prodi_fakultas_id")
+    )
+
     df = (
         mhs
-        .join(
-            prodi.select(
-                "prodi_id",
-                "nama_prodi",
-                "jenjang",
-                F.coalesce(F.col("fakultas_id"), F.col("jurusan_id")).alias("fakultas_id"),
-                F.col("nama_fakultas"),
-            ),
-            on="prodi_id",
-            how="left",
-        )
+        .join(prodi_lkp, on="prodi_id", how="left")
+        .withColumn("fakultas_id", fakultas_id_expr)
+        .drop("_prodi_fakultas_id")
         .withColumn(
             "nama_jurusan",
             F.coalesce(F.col("nama_fakultas"), jurusan_mapping[F.col("jurusan_id")]),
@@ -241,6 +251,8 @@ def transform_silver_mahasiswa(spark: SparkSession) -> tuple[DataFrame, dict]:
         .withColumn("is_mbkm", F.col("sks_luar_kampus") >= 20)
         .dropDuplicates(["mahasiswa_id"])
     )
+    if has_mhs_fakultas:
+        df = df.drop("_mhs_fakultas_id")
     # status_aktif diperlukan Gold IKU-2 (tanpa join ulang ke bronze)
     if "status_aktif" not in df.columns:
         df = df.withColumn("status_aktif", F.lit("Aktif"))
