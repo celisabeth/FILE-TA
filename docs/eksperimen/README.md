@@ -24,6 +24,7 @@ Panduan operasional menjalankan **tiga metode penelitian** dalam satu stack Dock
 | insightera Portal | [`../portal/README.md`](../portal/README.md) |
 | Grafana (Insight + MLOps + AQE) | [`../monitoring-grafana/README.md`](../monitoring-grafana/README.md) |
 | Template isian eksperimen (DAG, metrik, BAB IV) | [`templates/`](templates/) |
+| **Pengukuran AQE §4.1.3–4.1.6 (Silver)** | [`pengukuran-aqe-4.1.3-4.1.6.md`](pengukuran-aqe-4.1.3-4.1.6.md) |
 | **Dashboard Superset (klik UI)** | [`../gold-to-serving/panduan-lengkap-dashboard-superset.md`](../gold-to-serving/panduan-lengkap-dashboard-superset.md) |
 
 ---

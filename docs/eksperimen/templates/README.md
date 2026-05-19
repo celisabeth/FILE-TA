@@ -41,6 +41,12 @@ Template **tidak** di-upload ke Superset atau Airflow.
 | [09-perbandingan-aqe.md](09-perbandingan-aqe.md) | Tabel OFF vs ON (metrik) | Setelah `aqe_full_experiment` |
 | [10-metrik-mlops.md](10-metrik-mlops.md) | Metrik training/inference | Setelah `mlops_pipeline` |
 | [11-skenario-e2e-off-on.md](11-skenario-e2e-off-on.md) | Ringkasan skenario penelitian | Akhir eksperimen |
+| [12-distribusi-partisi-skew.md](12-distribusi-partisi-skew.md) | Partisi & skew key Silver | Setelah `measure_aqe_experiment partition-skew` |
+| [13-efektivitas-komponen-aqe.md](13-efektivitas-komponen-aqe.md) | DPP, coalesce, skew join | Setelah `measure_aqe_experiment components` |
+| [14-perbandingan-format-data.md](14-perbandingan-format-data.md) | Parquet vs ORC vs JSON | Setelah `measure_aqe_experiment format` |
+| [15-hasil-layer-silver.md](15-hasil-layer-silver.md) | Ringkasan layer Silver saja | Setelah `silver-summary` + DAG AQE |
+
+Panduan langkah & skrip: [`../pengukuran-aqe-4.1.3-4.1.6.md`](../pengukuran-aqe-4.1.3-4.1.6.md)
 
 ---
 
@@ -48,6 +54,7 @@ Template **tidak** di-upload ke Superset atau Airflow.
 
 ```text
 01–02 (setup) → metadata DAG → 03,04,05,07 → Superset (gold-to-serving) → AQE DAG → 09
+→ pengukuran AQE 12–15 (./scripts/run_aqe_measurements.sh docker)
 → MLOps DAG → 10 → 06 screenshot → 08,11 (penulisan)
 ```
 

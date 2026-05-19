@@ -14,6 +14,7 @@ Skrip pengukuran untuk **tiga metode**: Metadata, AQE, MLOps. Output ke `metrics
 | `compare_aqe_runs.py` | AQE | `aqe_comparison_*.json` |
 | `run_spark_workloads.py` | AQE | `workloads_spark_aqe_{OFF\|ON}_*.json` |
 | `run_trino_workloads.py` | AQE | `workloads_trino_ctx_{OFF\|ON}_*.json` |
+| `measure_aqe_experiment.py` | AQE | `aqe_measurement_{partition_skew\|aqe_components\|format_comparison\|silver_layer_summary}_*.json` |
 | `metrics_exporter.py` | AQE | HTTP `/metrics` → Prometheus/Grafana |
 | `run_experiment.py` | Metadata | Orkestrator metadata saja |
 
@@ -34,6 +35,17 @@ docker exec lhmeta-airflow-scheduler airflow dags trigger mlops_pipeline
 PYTHONPATH=scripts INSIGHT_METRICS_DIR=metrics python3 scripts/benchmark/compare_aqe_runs.py --markdown
 PYTHONPATH=scripts INSIGHT_METRICS_DIR=metrics python3 scripts/benchmark/aggregate_results.py --write-latest
 ```
+
+## Pengukuran AQE §4.1.3–4.1.6 (Silver)
+
+```bash
+chmod +x scripts/run_aqe_measurements.sh
+./scripts/run_aqe_measurements.sh docker
+# atau per subbab:
+./scripts/run_aqe_measurements.sh docker components
+```
+
+Panduan: [`../../docs/eksperimen/pengukuran-aqe-4.1.3-4.1.6.md`](../../docs/eksperimen/pengukuran-aqe-4.1.3-4.1.6.md)
 
 ## Grafana
 
