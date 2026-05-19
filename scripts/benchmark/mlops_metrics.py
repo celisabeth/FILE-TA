@@ -64,18 +64,69 @@ def _demo_insight_payload() -> dict[str, Any]:
 
 
 def _demo_training_models() -> list[dict[str, Any]]:
-    """Contoh metrik model agar panel Grafana terisi sebelum training penuh."""
+    """Metrik evaluasi per use case — selaras panduan docs/mlops/panduan-model-metrik-dan-superset.md."""
     return [
-        {"model": "risk_score_prodi", "accuracy": 0.87, "f1_macro": 0.82},
-        {"model": "forecast_iku", "mae": 2.1, "rmse": 2.8},
-        {"model": "opportunity_prodi", "silhouette": 0.41},
-        {"model": "anomaly_iku", "anomaly_rate_train": 0.03},
+        {
+            "model": "forecast_iku",
+            "use_case": "forecast",
+            "algorithm": "ets",
+            "library": "statsmodels",
+            "mae": 2.1,
+            "rmse": 2.8,
+            "mape": 3.2,
+            "smape": 3.0,
+        },
+        {
+            "model": "risk_score_prodi",
+            "use_case": "risk_score",
+            "algorithm": "random_forest",
+            "library": "sklearn",
+            "accuracy": 0.87,
+            "f1_macro": 0.82,
+            "roc_auc": 0.91,
+            "precision": 0.85,
+            "recall": 0.80,
+        },
+        {
+            "model": "opportunity_prodi",
+            "use_case": "opportunity",
+            "algorithm": "kmeans",
+            "library": "spark_mllib",
+            "silhouette": 0.41,
+            "davies_bouldin": 0.92,
+        },
+        {
+            "model": "anomaly_iku",
+            "use_case": "anomaly",
+            "algorithm": "isolation_forest",
+            "library": "sklearn",
+            "anomaly_rate_train": 0.03,
+            "precision_at_k": 0.78,
+        },
     ]
+
+
+def _models_catalog(models: list[dict[str, Any]]) -> list[dict[str, str]]:
+    """Ringkasan model untuk label Grafana (use_case, algorithm, library)."""
+    catalog: list[dict[str, str]] = []
+    for m in models:
+        if m.get("status") == "placeholder" and "mae" not in m and "accuracy" not in m:
+            continue
+        catalog.append({
+            "model": str(m.get("model", "unknown")),
+            "use_case": str(m.get("use_case", "unknown")),
+            "algorithm": str(m.get("algorithm", "unknown")),
+            "library": str(m.get("library", "unknown")),
+        })
+    return catalog
 
 
 def _models_with_numeric_metrics(models: list[dict]) -> bool:
     """Ada metrik numerik bermakna (bukan accuracy=0 dari sampel uji terlalu kecil)."""
-    skip = frozenset({"model", "run_id", "status", "note", "error"})
+    skip = frozenset({
+        "model", "run_id", "status", "note", "error",
+        "use_case", "algorithm", "library", "mlflow",
+    })
     for m in models:
         for k, v in m.items():
             if k in skip or not isinstance(v, (int, float)):
@@ -119,6 +170,7 @@ def build_mlops_metrics(
         "preprocessing": preprocess or {},
         "features": features or {},
         "training": {"models": models},
+        "models_catalog": _models_catalog(models),
         "dashboard_insight": insight,
         "output_tables": (inference or {}).get("tables", []),
     }

@@ -20,8 +20,8 @@ Provisioning otomatis dari [`../../monitoring/grafana/provisioning/`](../../moni
 
 | Dashboard | UID | Isi panel |
 |-----------|-----|-----------|
-| **Dashboard Insight — Forecast · Risk · Opportunity · Anomalies** | `lakehouse-dashboard-insight` | Time series actual vs forecast; bar gauge Risk Score & Opportunity; stat + time series Anomalies |
-| **MLOps Pipeline Monitoring** | `lakehouse-mlops-pipeline` | Durasi task DAG; metrik training MLflow; ringkasan output use case |
+| **Dashboard Insight — Forecast · Risk · Opportunity · Anomalies** | `lakehouse-dashboard-insight` | Snapshot inference: forecast, risk, opportunity, anomaly (bar chart + bargauge) |
+| **MLOps Pipeline Monitoring** | `lakehouse-mlops-pipeline` | Durasi DAG; **metrik evaluasi per model** (MAE/RMSE/MAPE, Accuracy/F1/ROC-AUC, Silhouette, Precision@k); katalog model |
 | **Lakehouse AQE Experiment** | `lakehouse-aqe-experiment` | Speedup Silver, durasi pipeline & workload (metode AQE) |
 
 File JSON sumber:
@@ -77,13 +77,28 @@ Diekspor dari `mlops_metrics_latest.json` oleh [`../../scripts/benchmark/metrics
 | Metrik | Label | Keterangan |
 |--------|-------|------------|
 | `lakehouse_mlops_task_duration_seconds` | `task` | Durasi task DAG (dari Airflow) |
-| `lakehouse_mlops_model_metric` | `model`, `metric` | Accuracy, MAE, dll. dari training |
+| `lakehouse_mlops_model_metric` | `model`, `metric`, `use_case`, `metric_family` | Metrik evaluasi latih (lihat tabel di bawah) |
+| `lakehouse_mlops_model_registered` | `model`, `use_case`, `algorithm`, `library` | Katalog model (1 baris per model) |
+
+**Keluarga metrik (`metric_family`)**
+
+| Family | Metrik | Model | Library disarankan |
+|--------|--------|-------|-------------------|
+| `forecast` | `mae`, `rmse`, `mape`, `smape` | `forecast_iku` | statsmodels ETS, sklearn Ridge |
+| `classification` | `accuracy`, `f1_macro`, `roc_auc`, `precision`, `recall` | `risk_score_prodi` | sklearn RF, Spark GBT |
+| `clustering` | `silhouette`, `davies_bouldin` | `opportunity_prodi` | Spark KMeans, sklearn |
+| `anomaly` | `anomaly_rate_train`, `precision_at_k` | `anomaly_iku` | sklearn IsolationForest, PyOD |
+
+Panduan model lengkap: [`../mlops/panduan-model-metrik-dan-superset.md`](../mlops/panduan-model-metrik-dan-superset.md)
 
 Contoh query di Prometheus:
 
 ```promql
 lakehouse_insight_risk_score
 lakehouse_mlops_task_duration_seconds{task="inference_batch"}
+lakehouse_mlops_model_metric{model="forecast_iku", metric="mae"}
+lakehouse_mlops_model_metric{metric_family="classification"}
+lakehouse_mlops_model_registered
 ```
 
 ---
@@ -153,13 +168,19 @@ curl -s http://localhost:9101/metrics | grep lakehouse_insight
 - **Metrik:** `lakehouse_insight_anomaly_count`, `lakehouse_insight_anomaly_rate_percent`, `lakehouse_insight_anomaly_flag`
 - **Catatan:** label `tahun` di Prometheus bukan sumbu waktu — jangan pakai panel *Time series* (titik hanya muncul di kanan). Dashboard v2 memakai *Bar chart* + `instant: true`.
 
-### 5.5 MLOps pipeline
+### 5.5 MLOps pipeline (v4)
 
-Dashboard **MLOps Pipeline Monitoring** menampilkan:
+Dashboard **MLOps Pipeline Monitoring** (`lakehouse-mlops-pipeline`, versi 4):
 
-1. Durasi per task (`data_preprocessing`, `feature_engineering`, `train_models`, `inference_batch`)
-2. Metrik model dari MLflow (via blok `training.models` di JSON)
-3. Stat ringkasan jumlah series risk / forecast / opportunity / anomaly
+1. **Task duration** — `data_preprocessing` → `export_mlops_metrics`
+2. **Model catalog** — tabel `use_case` × `algorithm` × `library`
+3. **Forecast** — stat MAE, RMSE, MAPE (`forecast_iku`)
+4. **Risk** — stat Accuracy, F1 macro, ROC-AUC (`risk_score_prodi`)
+5. **Opportunity & Anomaly** — Silhouette, anomaly rate, Precision@k
+6. **All model metrics** — tabel lengkap dengan kolom `metric_family`
+7. **Inference snapshot** — count titik forecast / risk / opportunity / anomaly
+
+Dashboard **Insight** menampilkan **output inference**; metrik **kualitas model** ada di dashboard MLOps Pipeline (link silang di header).
 
 ---
 
@@ -193,8 +214,9 @@ Template laporan:
 | Panel workload Trino kosong / tidak ada `workloads_trino_*.json` | Task Trino belum dijalankan atau Gold AQE belum ada | Jalankan DAG `aqe_full_experiment` sampai `trino_workloads_off/on` sukses; atau manual §7.1 |
 | Forecast/Anomali hanya garis titik di kanan; Risk “merah” | Metrik insight = snapshot (bukan deret waktu); threshold Risk | Pull dashboard v2; `docker compose restart grafana`; Forecast/Anomali pakai bar chart |
 | Workload AQE hanya titik di kanan chart | Panel time series untuk metrik snapshot scrape | Dashboard `lakehouse-aqe-experiment` v2: workload → bar chart + `instant: true` |
-| MLOps: time series task kosong; Model Training *No data* | Duplikat panel time series; `training.models` tanpa angka | Dashboard `lakehouse-mlops-pipeline` v2; jalankan `mlops_pipeline` atau `mlops_metrics.py --demo` lalu restart exporter |
-| Model Training bar chart aneh (sumbu 2026, nilai 0) | Bar chart mencampur metrik beda skala (accuracy 0–1 vs MAE) | Dashboard v3: panel **tabel** Model \| Metric \| Nilai |
+| MLOps: panel metrik *No data* | JSON belum ada / exporter lama | `mlops_metrics.py --demo` atau `mlops_pipeline`; `docker compose restart metrics-exporter grafana` |
+| Stat MAE/Accuracy kosong | Nama model tidak cocok | Pastikan `training.models[].model` = `forecast_iku`, `risk_score_prodi`, dll. |
+| Model catalog kosong | `models_catalog` belum di JSON | Pull kode terbaru `mlops_metrics.py` |
 | Dashboard tidak muncul | Path provisioning salah | Pastikan volume `./monitoring/grafana/provisioning` di `docker-compose.yml` |
 | Nilai masih demo | Inference belum mengisi payload | Cek return `inference_batch` dan field `risk_score_rows`, `forecast_series`, dll. |
 | Task duration 0 | DAG belum selesai / inst.duration null | Jalankan ulang DAG; duration terisi setelah task **success** |

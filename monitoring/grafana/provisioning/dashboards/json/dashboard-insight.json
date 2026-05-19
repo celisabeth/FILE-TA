@@ -4,11 +4,25 @@
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
   "id": null,
-  "links": [],
+  "links": [
+    {
+      "title": "MLOps Pipeline & metrik model",
+      "type": "link",
+      "url": "/d/lakehouse-mlops-pipeline",
+      "targetBlank": true
+    }
+  ],
   "panels": [
     {
+      "gridPos": { "h": 2, "w": 24, "x": 0, "y": 0 },
+      "id": 1,
+      "title": "Output inference (snapshot) — analitik detail di Superset · metrik latih di MLOps Pipeline",
+      "type": "row",
+      "collapsed": false
+    },
+    {
       "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "description": "Capaian IKU per tahun (label tahun, bukan sumbu waktu). Snapshot terakhir dari metrics-exporter.",
+      "description": "Capaian IKU institusi per tahun. Model: ETS / Holt-Winters (statsmodels) atau Ridge. Metrik latih: MAE, RMSE, MAPE — lihat dashboard MLOps Pipeline.",
       "fieldConfig": {
         "defaults": { "unit": "short", "decimals": 1 },
         "overrides": [
@@ -18,9 +32,9 @@
           }
         ]
       },
-      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 0 },
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 2 },
       "id": 10,
-      "title": "Forecast — Capaian IKU (Actual vs Prediksi)",
+      "title": "Forecast — Actual vs Prediksi (IKU)",
       "type": "barchart",
       "options": {
         "orientation": "vertical",
@@ -45,7 +59,7 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "description": "Skor risiko capaian IKU per prodi (0–100). Warna: merah &lt;60, kuning 60–79, hijau ≥80 — bukan status error.",
+      "description": "Skor risiko capaian IKU per prodi (0–100). Model: Random Forest / GBT (sklearn / Spark MLlib). Threshold bisnis: merah <60, hijau ≥80.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -63,7 +77,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 0 },
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 2 },
       "id": 11,
       "title": "Risk Score — per Prodi",
       "type": "bargauge",
@@ -83,11 +97,11 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "description": "Indeks peluang peningkatan per prodi (snapshot terakhir).",
+      "description": "Indeks peluang peningkatan per prodi. Model: K-Means (Spark MLlib / sklearn). Label cluster: high_research, mbkm_growth, …",
       "fieldConfig": { "defaults": { "unit": "short", "decimals": 1, "min": 0, "max": 100 }, "overrides": [] },
-      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 9 },
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 11 },
       "id": 12,
-      "title": "Opportunity — Skor Peluang per Prodi",
+      "title": "Opportunity — Skor per Prodi (cluster)",
       "type": "barchart",
       "options": {
         "orientation": "horizontal",
@@ -105,11 +119,11 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "description": "Jumlah entitas IKU ter-flag anomali (snapshot).",
+      "description": "Jumlah entitas ter-flag anomali. Model: Isolation Forest (sklearn / PyOD).",
       "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] },
-      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 9 },
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 11 },
       "id": 13,
-      "title": "Anomalies — Jumlah Flag",
+      "title": "Anomalies — Count",
       "type": "stat",
       "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
       "targets": [
@@ -122,8 +136,9 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "description": "Persentase record anomali pada set evaluasi.",
       "fieldConfig": { "defaults": { "unit": "percent", "decimals": 1 }, "overrides": [] },
-      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 9 },
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 11 },
       "id": 14,
       "title": "Anomalies — Rate (%)",
       "type": "stat",
@@ -138,9 +153,9 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "description": "Nilai metrik yang ter-flag anomali (per entitas/tahun, bukan time series).",
+      "description": "Sampel nilai capaian IKU yang ter-flag anomali (bukan time series).",
       "fieldConfig": { "defaults": { "unit": "short", "decimals": 1 }, "overrides": [] },
-      "gridPos": { "h": 5, "w": 12, "x": 12, "y": 13 },
+      "gridPos": { "h": 5, "w": 12, "x": 12, "y": 15 },
       "id": 15,
       "title": "Anomalies — Nilai ter-flag",
       "type": "barchart",
@@ -167,5 +182,5 @@
   "timezone": "browser",
   "title": "Dashboard Insight — Forecast · Risk · Opportunity · Anomalies",
   "uid": "lakehouse-dashboard-insight",
-  "version": 2
+  "version": 3
 }

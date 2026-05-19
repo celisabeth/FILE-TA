@@ -6,20 +6,20 @@
   "id": null,
   "links": [
     {
-      "title": "Dashboard Insight",
+      "title": "Dashboard Insight (4 use cases)",
       "type": "link",
       "url": "/d/lakehouse-dashboard-insight",
       "targetBlank": true
-    }
+    },
   ],
   "panels": [
     {
       "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "description": "Durasi task DAG mlops_pipeline (snapshot terakhir dari metrics-exporter).",
+      "description": "Durasi task DAG mlops_pipeline. Sumber: export_mlops_metrics → metrics-exporter.",
       "fieldConfig": { "defaults": { "unit": "s" }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 0 },
       "id": 20,
-      "title": "MLOps Pipeline — Task Duration",
+      "title": "Pipeline — Task Duration",
       "type": "bargauge",
       "options": {
         "orientation": "horizontal",
@@ -37,27 +37,210 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "description": "Tabel metrik per model (accuracy 0–1, MAE/RMSE angka absolut). Jangan pakai bar chart — skala metrik berbeda. Kosong → jalankan mlops_pipeline task train_models lalu restart metrics-exporter.",
+      "description": "Model terdaftar: use_case, algorithm, library (statsmodels/sklearn/spark_mllib).",
       "fieldConfig": {
-        "defaults": {
-          "custom": { "align": "auto", "displayMode": "auto", "inspect": false },
-          "decimals": 4
-        },
+        "defaults": { "custom": { "align": "auto" } },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
-      "id": 21,
-      "title": "Model Training Metrics",
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 0 },
+      "id": 27,
+      "title": "Model Catalog (use case × library)",
       "type": "table",
-      "options": {
-        "showHeader": true,
-        "cellHeight": "sm",
-        "footer": { "show": false },
-        "sortBy": [{ "desc": false, "displayName": "Model" }]
-      },
+      "options": { "showHeader": true, "cellHeight": "sm" },
       "targets": [
         {
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "expr": "lakehouse_mlops_model_registered",
+          "instant": true,
+          "format": "table",
+          "refId": "A"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "labelsToFields",
+          "options": { "mode": "columns", "keepLabels": ["model", "use_case", "algorithm", "library"] }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": { "Time": true, "Value": true, "__name__": true },
+            "renameByName": {
+              "model": "Model",
+              "use_case": "Use case",
+              "algorithm": "Algorithm",
+              "library": "Library"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "gridPos": { "h": 2, "w": 24, "x": 0, "y": 7 },
+      "id": 30,
+      "title": "Forecast — regresi / deret waktu (MAE · RMSE · MAPE) — statsmodels ETS / sklearn Ridge",
+      "type": "row",
+      "collapsed": false
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "short", "decimals": 2 }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 8, "x": 0, "y": 9 },
+      "id": 31,
+      "title": "Forecast MAE",
+      "type": "stat",
+      "options": { "colorMode": "value", "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "targets": [
+        {
+          "expr": "lakehouse_mlops_model_metric{model=\"forecast_iku\", metric=\"mae\"}",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "short", "decimals": 2 }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 8, "x": 8, "y": 9 },
+      "id": 32,
+      "title": "Forecast RMSE",
+      "type": "stat",
+      "options": { "colorMode": "value", "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "targets": [
+        {
+          "expr": "lakehouse_mlops_model_metric{model=\"forecast_iku\", metric=\"rmse\"}",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "percent", "decimals": 1 }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 8, "x": 16, "y": 9 },
+      "id": 33,
+      "title": "Forecast MAPE",
+      "type": "stat",
+      "options": { "colorMode": "value", "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "targets": [
+        {
+          "expr": "lakehouse_mlops_model_metric{model=\"forecast_iku\", metric=\"mape\"}",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "gridPos": { "h": 2, "w": 24, "x": 0, "y": 13 },
+      "id": 34,
+      "title": "Risk Score — klasifikasi (Accuracy · F1 · ROC-AUC) — sklearn / Spark GBT",
+      "type": "row",
+      "collapsed": false
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "percentunit", "decimals": 2, "min": 0, "max": 1 }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 8, "x": 0, "y": 15 },
+      "id": 35,
+      "title": "Risk Accuracy",
+      "type": "stat",
+      "options": { "colorMode": "value", "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "targets": [
+        {
+          "expr": "lakehouse_mlops_model_metric{model=\"risk_score_prodi\", metric=\"accuracy\"}",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "percentunit", "decimals": 2, "min": 0, "max": 1 }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 8, "x": 8, "y": 15 },
+      "id": 36,
+      "title": "Risk F1 (macro)",
+      "type": "stat",
+      "options": { "colorMode": "value", "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "targets": [
+        {
+          "expr": "lakehouse_mlops_model_metric{model=\"risk_score_prodi\", metric=\"f1_macro\"}",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "percentunit", "decimals": 2, "min": 0, "max": 1 }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 8, "x": 16, "y": 15 },
+      "id": 37,
+      "title": "Risk ROC-AUC",
+      "type": "stat",
+      "options": { "colorMode": "value", "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "targets": [
+        {
+          "expr": "lakehouse_mlops_model_metric{model=\"risk_score_prodi\", metric=\"roc_auc\"}",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "gridPos": { "h": 2, "w": 24, "x": 0, "y": 19 },
+      "id": 38,
+      "title": "Opportunity & Anomalies — clustering / unsupervised",
+      "type": "row",
+      "collapsed": false
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "decimals": 2, "min": -1, "max": 1 }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 8, "x": 0, "y": 21 },
+      "id": 39,
+      "title": "Opportunity Silhouette",
+      "type": "stat",
+      "options": { "colorMode": "value", "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "targets": [
+        {
+          "expr": "lakehouse_mlops_model_metric{model=\"opportunity_prodi\", metric=\"silhouette\"}",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "percentunit", "decimals": 2 }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 8, "x": 8, "y": 21 },
+      "id": 40,
+      "title": "Anomaly rate (train)",
+      "type": "stat",
+      "options": { "colorMode": "value", "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "targets": [
+        {
+          "expr": "lakehouse_mlops_model_metric{model=\"anomaly_iku\", metric=\"anomaly_rate_train\"}",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "percentunit", "decimals": 2, "min": 0, "max": 1 }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 8, "x": 16, "y": 21 },
+      "id": 41,
+      "title": "Anomaly Precision@k",
+      "type": "stat",
+      "options": { "colorMode": "value", "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "targets": [
+        {
+          "expr": "lakehouse_mlops_model_metric{model=\"anomaly_iku\", metric=\"precision_at_k\"}",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "description": "Semua metrik numerik (jangan bar chart — skala berbeda). Filter: metric_family.",
+      "fieldConfig": { "defaults": { "decimals": 4 }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 25 },
+      "id": 21,
+      "title": "All Model Metrics (table)",
+      "type": "table",
+      "options": { "showHeader": true, "cellHeight": "sm", "sortBy": [{ "desc": false, "displayName": "Model" }] },
+      "targets": [
+        {
           "expr": "lakehouse_mlops_model_metric",
           "instant": true,
           "format": "table",
@@ -67,7 +250,7 @@
       "transformations": [
         {
           "id": "labelsToFields",
-          "options": { "mode": "columns", "keepLabels": ["model", "metric"] }
+          "options": { "mode": "columns", "keepLabels": ["model", "use_case", "metric_family", "metric"] }
         },
         {
           "id": "organize",
@@ -75,94 +258,71 @@
             "excludeByName": { "Time": true, "__name__": true },
             "renameByName": {
               "model": "Model",
+              "use_case": "Use case",
+              "metric_family": "Family",
               "metric": "Metric",
               "Value": "Nilai"
             },
-            "indexByName": { "Model": 0, "Metric": 1, "Nilai": 2 }
+            "indexByName": { "Model": 0, "Use case": 1, "Family": 2, "Metric": 3, "Nilai": 4 }
           }
         }
       ]
     },
     {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "gridPos": { "h": 3, "w": 24, "x": 0, "y": 8 },
+      "gridPos": { "h": 2, "w": 24, "x": 0, "y": 33 },
       "id": 22,
-      "title": "Output use cases (ringkasan)",
+      "title": "Inference output (snapshot → Dashboard Insight)",
       "type": "row",
       "collapsed": false
     },
     {
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] },
-      "gridPos": { "h": 5, "w": 6, "x": 0, "y": 11 },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 35 },
       "id": 23,
       "title": "Forecast points",
       "type": "stat",
       "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
-      "targets": [
-        {
-          "expr": "count(lakehouse_insight_forecast)",
-          "instant": true,
-          "legendFormat": "points"
-        }
-      ]
+      "targets": [{ "expr": "count(lakehouse_insight_forecast)", "instant": true }]
     },
     {
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] },
-      "gridPos": { "h": 5, "w": 6, "x": 6, "y": 11 },
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 35 },
       "id": 24,
-      "title": "Risk Score (prodi)",
+      "title": "Risk (prodi)",
       "type": "stat",
       "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
-      "targets": [
-        {
-          "expr": "count(lakehouse_insight_risk_score)",
-          "instant": true,
-          "legendFormat": "prodi"
-        }
-      ]
+      "targets": [{ "expr": "count(lakehouse_insight_risk_score)", "instant": true }]
     },
     {
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] },
-      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 11 },
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 35 },
       "id": 25,
       "title": "Opportunity (prodi)",
       "type": "stat",
       "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
-      "targets": [
-        {
-          "expr": "count(lakehouse_insight_opportunity_score)",
-          "instant": true,
-          "legendFormat": "prodi"
-        }
-      ]
+      "targets": [{ "expr": "count(lakehouse_insight_opportunity_score)", "instant": true }]
     },
     {
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] },
-      "gridPos": { "h": 5, "w": 6, "x": 18, "y": 11 },
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 35 },
       "id": 26,
       "title": "Anomalies flagged",
       "type": "stat",
       "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
-      "targets": [
-        {
-          "expr": "lakehouse_insight_anomaly_count",
-          "instant": true,
-          "legendFormat": "count"
-        }
-      ]
+      "targets": [{ "expr": "lakehouse_insight_anomaly_count", "instant": true }]
     }
   ],
   "refresh": "30s",
   "schemaVersion": 39,
-  "tags": ["lakehouse", "mlops", "pipeline", "monitoring"],
+  "tags": ["lakehouse", "mlops", "pipeline", "monitoring", "forecast", "risk", "classification"],
   "templating": { "list": [] },
   "time": { "from": "now-6h", "to": "now" },
   "timezone": "browser",
   "title": "MLOps Pipeline Monitoring",
   "uid": "lakehouse-mlops-pipeline",
-  "version": 3
+  "version": 4
 }

@@ -119,6 +119,28 @@ def _export_aqe_metrics(lines: list[str], root: Path) -> None:
             continue
 
 
+# Pemetaan nama metrik → keluarga evaluasi (forecast / classification / clustering / anomaly)
+_METRIC_FAMILY: dict[str, str] = {
+    "mae": "forecast",
+    "rmse": "forecast",
+    "mape": "forecast",
+    "smape": "forecast",
+    "r2": "forecast",
+    "accuracy": "classification",
+    "f1_macro": "classification",
+    "f1": "classification",
+    "roc_auc": "classification",
+    "precision": "classification",
+    "recall": "classification",
+    "silhouette": "clustering",
+    "davies_bouldin": "clustering",
+    "calinski_harabasz": "clustering",
+    "anomaly_rate_train": "anomaly",
+    "precision_at_k": "anomaly",
+    "anomaly_rate": "anomaly",
+}
+
+
 def _export_mlops_metrics(lines: list[str], root: Path) -> None:
     mlops_path = find_latest_metric_file(root, "mlops_metrics.json")
     if mlops_path is None:
@@ -142,19 +164,46 @@ def _export_mlops_metrics(lines: list[str], root: Path) -> None:
                 )
             )
 
+    skip_model_keys = frozenset({
+        "model", "run_id", "status", "note", "error", "use_case", "algorithm", "library", "mlflow",
+    })
     for model in data.get("training", {}).get("models", []):
         name = model.get("model", "unknown")
+        use_case = str(model.get("use_case", "unknown"))
         for key, val in model.items():
-            if key in ("model", "run_id", "status", "note", "error"):
+            if key in skip_model_keys:
                 continue
             if isinstance(val, (int, float)):
+                family = _METRIC_FAMILY.get(key, use_case)
                 lines.append(
                     _metric_line(
                         "lakehouse_mlops_model_metric",
                         float(val),
-                        {"model": name, "metric": key},
+                        {
+                            "model": name,
+                            "metric": key,
+                            "use_case": use_case,
+                            "metric_family": family,
+                        },
                     )
                 )
+
+    for entry in data.get("models_catalog") or []:
+        model_name = entry.get("model")
+        if not model_name:
+            continue
+        lines.append(
+            _metric_line(
+                "lakehouse_mlops_model_registered",
+                1.0,
+                {
+                    "model": str(model_name),
+                    "use_case": str(entry.get("use_case", "unknown")),
+                    "algorithm": str(entry.get("algorithm", "unknown")),
+                    "library": str(entry.get("library", "unknown")),
+                },
+            )
+        )
 
     insight = data.get("dashboard_insight") or {}
 
