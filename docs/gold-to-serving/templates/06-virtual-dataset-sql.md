@@ -28,10 +28,36 @@ WHERE w.waktu_id IS NULL LIMIT 20;
 | Gejala | Penyebab | Solusi |
 |--------|----------|--------|
 | `fact_rekap` = 0 | Gold rekap belum dibuat | Airflow: `metadata_full_experiment` / task `silver_to_gold` |
-| rekap > 0, join = 0 | `waktu_id` tidak ada di `dim_waktu` | Re-run pipeline Gold; cek `build_fact_rekap_iku` |
+| rekap > 0, join = 0 | **`waktu_id` tidak selaras** — fakta pakai `202412`, `dim_waktu` lama pakai `1..72` | Lihat **Join alternatif** di bawah; lalu re-run Gold (patch `build_dim_waktu` sudah selaraskan) |
 | join > 0 di Trino, 0 di Superset | Database salah / schema salah | Pastikan database `Lakehouse Gold (IKU)` |
 
 **Alternatif jika rekap kosong tetapi fakta IKU ada** — pakai query **v_iku_subset_tahun** (bawah) untuk chart sementara.
+
+### Join alternatif (sebelum re-run Gold)
+
+Jika `COUNT` rekap & `dim_waktu` > 0 tetapi `n_join = 0`, cocokkan lewat tahun + bulan:
+
+```sql
+SELECT COUNT(*) AS n_join_fix
+FROM lakehouse.gold.fact_rekap_iku_institusi r
+JOIN lakehouse.gold.dim_waktu w
+  ON w.tahun = CAST(r.waktu_id / 100 AS INTEGER)
+ AND w.bulan = MOD(r.waktu_id, 100);
+```
+
+Dataset executive sementara:
+
+```sql
+SELECT w.tahun, r.iku_kode, r.iku_nama,
+       r.nilai_capaian, r.nilai_target, r.satuan, r.status_capaian
+FROM lakehouse.gold.fact_rekap_iku_institusi r
+JOIN lakehouse.gold.dim_waktu w
+  ON w.tahun = CAST(r.waktu_id / 100 AS INTEGER)
+ AND w.bulan = MOD(r.waktu_id, 100)
+ORDER BY w.tahun, r.iku_kode;
+```
+
+Setelah `metadata_full_experiment` sukses dengan kode terbaru, join `r.waktu_id = w.waktu_id` biasa akan jalan.
 
 ---
 

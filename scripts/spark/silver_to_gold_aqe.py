@@ -151,14 +151,14 @@ def get_spark_session(aqe_context: str | None = None):
 # ───────────────────────────────────────────────────────────────────────────
 
 def build_dim_waktu(spark: SparkSession) -> DataFrame:
+    """waktu_id = tahun*100 + bulan (sama dengan kolom waktu_id di tabel fakta Gold)."""
     rows = []
-    sk = 1
     for tahun in range(2020, 2026):
         for bulan in range(1, 13):
             semester = "Ganjil" if bulan >= 8 or bulan <= 1 else "Genap"
             triwulan = (bulan - 1) // 3 + 1
-            rows.append((sk, tahun, semester, triwulan, bulan, BULAN[bulan - 1]))
-            sk += 1
+            waktu_id = tahun * 100 + bulan
+            rows.append((waktu_id, tahun, semester, triwulan, bulan, BULAN[bulan - 1]))
     return spark.createDataFrame(rows, ["waktu_id", "tahun", "semester", "triwulan", "bulan", "nama_bulan"])
 
 
