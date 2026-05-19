@@ -187,6 +187,7 @@ Template laporan:
 |--------|---------------|--------|
 | Panel *No data* | `mlops_metrics_latest.json` belum ada | Jalankan §4.1 atau trigger `mlops_pipeline` |
 | Metrik tidak muncul di Prometheus | Exporter / scrape mati | `curl http://localhost:9101/metrics`; cek target di http://localhost:19090/targets |
+| Prometheus: `lookup metrics-exporter ... server misbehaving` | Container exporter crash (mis. `ModuleNotFoundError: benchmark`) | `docker compose logs metrics-exporter`; pastikan `PYTHONPATH=/app/scripts`; `docker compose up -d metrics-exporter prometheus` |
 | Dashboard tidak muncul | Path provisioning salah | Pastikan volume `./monitoring/grafana/provisioning` di `docker-compose.yml` |
 | Nilai masih demo | Inference belum mengisi payload | Cek return `inference_batch` dan field `risk_score_rows`, `forecast_series`, dll. |
 | Task duration 0 | DAG belum selesai / inst.duration null | Jalankan ulang DAG; duration terisi setelah task **success** |

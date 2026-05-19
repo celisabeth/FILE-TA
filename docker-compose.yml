@@ -661,6 +661,9 @@ services:
     container_name: lhmeta-prometheus
     hostname: prometheus
     networks: [lakehouse-net]
+    depends_on:
+      metrics-exporter:
+        condition: service_healthy
     command:
       - --config.file=/etc/prometheus/prometheus.yml
       - --storage.tsdb.path=/prometheus
@@ -689,6 +692,7 @@ services:
       - --metrics-dir
       - /metrics
     environment:
+      PYTHONPATH: /app/scripts
       AQE_METRICS_DIR: /metrics
       INSIGHT_METRICS_DIR: /metrics
     volumes:
@@ -696,6 +700,12 @@ services:
       - ./scripts:/app/scripts:ro
     ports:
       - "${LHINSIGHT_METRICS_EXPORTER_PORT:-9101}:9101"
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:9101/health')\""]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   grafana:
     image: grafana/grafana:11.0.0
