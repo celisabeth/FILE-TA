@@ -1,19 +1,54 @@
-# Template Pencatatan Eksperimen — Data Lakehouse Insight
+# Template Pencatatan Eksperimen (BAB III–IV)
 
-Salin ke `experiment-runs/run-YYYY-MM-DD/templates-filled/` dan isi setelah setiap fase.
+Folder ini untuk **mencatat hasil penelitian** (runtime DAG, kualitas metadata, metrik AQE/MLOps, screenshot laporan).  
+**Bukan** panduan mengklik Apache Superset.
 
-| File | Metode | Subbab laporan |
-|------|--------|----------------|
-| [01-lingkungan-eksperimen.md](01-lingkungan-eksperimen.md) | Umum | BAB III — lingkungan |
-| [02-dataset.md](02-dataset.md) | Umum | BAB III — dataset |
-| [03-runtime-pipeline.md](03-runtime-pipeline.md) | Metadata | §4.1.1 runtime Medallion |
-| [04-kualitas-metadata.md](04-kualitas-metadata.md) | Metadata | §4.1.6 kualitas |
-| [05-coverage-lineage.md](05-coverage-lineage.md) | Metadata | §4.1.3, §4.1.6 lineage |
-| [06-screenshot-portal.md](06-screenshot-portal.md) | Metadata + AQE + MLOps | §4.1.3, §4.1.5 |
-| [07-umt-enrichment.md](07-umt-enrichment.md) | Metadata | §4.1.4 UMT |
-| [08-checklist-pembahasan.md](08-checklist-pembahasan.md) | Gabungan | §4.2 |
-| [09-perbandingan-aqe.md](09-perbandingan-aqe.md) | AQE | §4.1.2–4.1.4 |
-| [10-metrik-mlops.md](10-metrik-mlops.md) | MLOps | §4.1.4 MLOps |
-| [11-skenario-e2e-off-on.md](11-skenario-e2e-off-on.md) | Gabungan | §4.1.5, §4.2.4 |
+---
 
-Panduan lengkap: [`../README.md`](../README.md)
+## Bingung dengan dashboard Superset?
+
+| Yang Anda cari | Buka dokumen ini |
+|--------------|------------------|
+| Layar **New dataset**, **DATABASE / SCHEMA / TABLE**, chart KPI | **[`../../gold-to-serving/panduan-lengkap-dashboard-superset.md`](../../gold-to-serving/panduan-lengkap-dashboard-superset.md)** |
+| Checklist panel chart Executive IKU | [`../../gold-to-serving/templates/01-dashboard-executive-iku.md`](../../gold-to-serving/templates/01-dashboard-executive-iku.md) |
+| Query SQL untuk dataset Superset | [`../../gold-to-serving/templates/06-virtual-dataset-sql.md`](../../gold-to-serving/templates/06-virtual-dataset-sql.md) |
+
+---
+
+## Cara pakai folder `eksperimen/templates/`
+
+1. Jalankan DAG sesuai [`../README.md`](../README.md) (metadata → AQE → MLOps).
+2. Setelah setiap fase, buka file template yang relevan.
+3. Isi kolom kosong (angka, tanggal, screenshot).
+4. Simpan salinan ke folder run Anda, mis. `experiment-runs/run-2026-05-19/`.
+
+Template **tidak** di-upload ke Superset atau Airflow.
+
+---
+
+## Daftar file (eksperimen saja)
+
+| File | Isi | Kapan diisi |
+|------|-----|-------------|
+| [01-lingkungan-eksperimen.md](01-lingkungan-eksperimen.md) | Spesifikasi VM, versi image | Awal penelitian |
+| [02-dataset.md](02-dataset.md) | Volume staging, profil data | Setelah generate data |
+| [03-runtime-pipeline.md](03-runtime-pipeline.md) | Durasi task Medallion | Setelah `metadata_full_experiment` |
+| [04-kualitas-metadata.md](04-kualitas-metadata.md) | Skor kualitas Bronze/Silver | Setelah metadata |
+| [05-coverage-lineage.md](05-coverage-lineage.md) | Lineage Atlas | Setelah registrasi Atlas |
+| [06-screenshot-portal.md](06-screenshot-portal.md) | Daftar file screenshot (portal, **bisa** Superset/Grafana) | Saat dokumentasi BAB IV |
+| [07-umt-enrichment.md](07-umt-enrichment.md) | UMT JSON | Setelah `collect_umt` |
+| [08-checklist-pembahasan.md](08-checklist-pembahasan.md) | Kerangka narasi §4.2 | Menulis bab hasil |
+| [09-perbandingan-aqe.md](09-perbandingan-aqe.md) | Tabel OFF vs ON (metrik) | Setelah `aqe_full_experiment` |
+| [10-metrik-mlops.md](10-metrik-mlops.md) | Metrik training/inference | Setelah `mlops_pipeline` |
+| [11-skenario-e2e-off-on.md](11-skenario-e2e-off-on.md) | Ringkasan skenario penelitian | Akhir eksperimen |
+
+---
+
+## Urutan disarankan
+
+```text
+01–02 (setup) → metadata DAG → 03,04,05,07 → Superset (gold-to-serving) → AQE DAG → 09
+→ MLOps DAG → 10 → 06 screenshot → 08,11 (penulisan)
+```
+
+Panduan operasional DAG: [`../README.md`](../README.md)

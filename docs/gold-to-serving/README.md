@@ -13,7 +13,8 @@ Panduan menyajikan **Gold Layer** (star schema IKU ITERA) ke lapisan konsumsi me
 | **Dashboard embed** | http://localhost:13000/dashboards | Superset + Grafana |
 | **KPI (portal)** | http://localhost:13000/kpi | Atlas-backed KPI view |
 
-**Mulai di sini (langkah buat 3 dashboard Superset):** [`panduan-lengkap-dashboard-superset.md`](panduan-lengkap-dashboard-superset.md)
+**Mulai di sini (Superset — layar New dataset / SQL Lab):** [`panduan-lengkap-dashboard-superset.md`](panduan-lengkap-dashboard-superset.md)  
+**Template eksperimen BAB IV (bukan Superset):** [`../eksperimen/templates/`](../eksperimen/templates/)
 
 **Template dashboard (checklist isian):** [`templates/`](templates/)
 

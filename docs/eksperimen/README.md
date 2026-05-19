@@ -23,7 +23,8 @@ Panduan operasional menjalankan **tiga metode penelitian** dalam satu stack Dock
 | Gold → Serving & dashboard KPI | [`../gold-to-serving/README.md`](../gold-to-serving/README.md) |
 | insightera Portal | [`../portal/README.md`](../portal/README.md) |
 | Grafana (Insight + MLOps + AQE) | [`../monitoring-grafana/README.md`](../monitoring-grafana/README.md) |
-| Template isian | [`templates/`](templates/) |
+| Template isian eksperimen (DAG, metrik, BAB IV) | [`templates/`](templates/) |
+| **Dashboard Superset (klik UI)** | [`../gold-to-serving/panduan-lengkap-dashboard-superset.md`](../gold-to-serving/panduan-lengkap-dashboard-superset.md) |
 
 ---
 

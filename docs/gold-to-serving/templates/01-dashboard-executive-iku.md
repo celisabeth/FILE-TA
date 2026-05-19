@@ -1,7 +1,7 @@
 # Template — Dashboard Executive IKU (Pimpinan)
 
-> **Panduan langkah demi langkah:** [../panduan-lengkap-dashboard-superset.md](../panduan-lengkap-dashboard-superset.md) (§ Langkah C)  
-> Duplikat untuk AQE OFF/ON: [07-dashboard-kpi-aqe-off-on.md](07-dashboard-kpi-aqe-off-on.md)
+> **Panduan klik Superset:** [../panduan-lengkap-dashboard-superset.md](../panduan-lengkap-dashboard-superset.md) — Langkah 3–4  
+> **AQE OFF/ON:** [07-dashboard-kpi-aqe-off-on.md](07-dashboard-kpi-aqe-off-on.md) · **Eksperimen BAB IV:** [../../eksperimen/templates/](../../eksperimen/templates/)
 
 **Alat:** Apache Superset · **Schema:** `lakehouse.gold` (atau `gold_aqe_off` / `gold_aqe_on` untuk audit AQE)
 

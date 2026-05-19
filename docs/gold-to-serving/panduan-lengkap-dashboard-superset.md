@@ -1,190 +1,129 @@
-# Panduan Lengkap: Template → Dashboard Superset (Lakehouse · AQE OFF · AQE ON)
+# Panduan Superset — Dashboard KPI Lakehouse (langkah demi langkah)
 
-Dokumen ini menjawab: **bagaimana memakai file di folder `templates/`** dan **langkah klik demi klik** membuat tiga dashboard di Apache Superset, lalu menautkannya ke portal Insightera.
+Panduan ini **hanya untuk Apache Superset** (dashboard KPI dari Gold).  
+Jika Anda mengisi **laporan eksperimen BAB IV** (runtime DAG, metrik, UMT), pakai folder lain: [`../eksperimen/templates/`](../eksperimen/templates/) — **bukan** folder `gold-to-serving/templates/`.
 
-| Dokumen pendukung | Isi |
-|-------------------|-----|
-| [koneksi-trino-superset.md](koneksi-trino-superset.md) | Detail URI Trino & troubleshooting koneksi |
-| [arsitektur-dashboard-serving.md](arsitektur-dashboard-serving.md) | Kapan Superset vs Grafana |
-| [templates/](templates/) | Checklist isian per jenis dashboard (untuk laporan BAB IV) |
+| Folder | Untuk apa | Dipakai di Superset? |
+|--------|-----------|----------------------|
+| [`gold-to-serving/templates/`](templates/) | Checklist chart/dashboard KPI + query SQL | ✅ Ya (manual di UI) |
+| [`eksperimen/templates/`](../eksperimen/templates/) | Checklist penelitian (DAG, metrik, screenshot BAB IV) | ❌ Bukan panduan klik Superset |
+
+**URL VM Anda:** Superset `http://103.174.114.177:18089` · login **admin** / **admin**
 
 ---
 
-## 0. Gambaran alur (baca dulu)
+## Mulai cepat (urutan wajib)
 
-```mermaid
-flowchart LR
-  subgraph data [Data Gold]
-    G1[lakehouse.gold]
-    G2[gold_aqe_off]
-    G3[gold_aqe_on]
-  end
-  subgraph trino [Trino]
-    C1[katalog lakehouse]
-    C2[katalog lakehouse_aqe_off]
-    C3[katalog lakehouse_aqe_on]
-  end
-  subgraph superset [Superset]
-    DB1[(DB Lakehouse Gold)]
-    DB2[(DB AQE OFF)]
-    DB3[(DB AQE ON)]
-    D1[Dataset + Chart]
-    D2[Dataset + Chart]
-    D3[Dataset + Chart]
-    Dash1[Dashboard utama]
-    Dash2[Dashboard AQE OFF]
-    Dash3[Dashboard AQE ON]
-  end
-  subgraph portal [Portal Insightera]
-    P1["dashboards/analitik"]
-    P2["dashboards/kpi-aqe-off"]
-    P3["dashboards/kpi-aqe-on"]
-  end
-  G1 --> C1 --> DB1 --> D1 --> Dash1 --> P1
-  G2 --> C2 --> DB2 --> D2 --> Dash2 --> P2
-  G3 --> C3 --> DB3 --> D3 --> Dash3 --> P3
+| # | Apa yang dilakukan | Menu Superset | Selesai? |
+|---|-------------------|---------------|----------|
+| 0 | Gold terisi + Trino jalan | (terminal, lihat §0) | ☐ |
+| 1 | **Tambah koneksi DATABASE** (kalau dropdown kosong) | **Settings** → **Database connections** | ☐ |
+| 2 | Buat **satu dataset** KPI (SQL Lab) | **SQL** → **SQL Lab** | ☐ |
+| 3 | Buat **chart** batang 8 IKU | **Charts** → **+ Chart** | ☐ |
+| 4 | Buat **dashboard** | **Dashboards** → **+ Dashboard** | ☐ |
+| 5 | Embed ke portal | Portal → **URL Embed** | ☐ |
+| 6 | (Opsional penelitian AQE) Ulangi dengan DB AQE OFF/ON | §6 di bawah | ☐ |
+
+> **Jangan loncat ke Langkah 2 (Datasets)** sebelum Langkah 1 selesai — itulah penyebab layar **“Select dataset source”** dengan dropdown **DATABASE / SCHEMA / TABLE** kosong.
+
+---
+
+## Layar “New dataset” — isi apa?
+
+Anda di: **Data** → **Datasets** → **+ Dataset** (atau tombol **+** → Dataset).
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  DATABASE ▼   ← pilih dulu (harus sudah Langkah 1)      │
+│  SCHEMA   ▼   ← gold / gold_aqe_off / gold_aqe_on       │
+│  TABLE    ▼   ← nama tabel, mis. fact_rekap_iku_institusi│
+└─────────────────────────────────────────────────────────┘
 ```
 
-**Urutan wajib:** data Gold ada → Trino bisa query → 3 koneksi Superset → dataset → chart → dashboard → URL embed portal.
+### Jika dropdown DATABASE kosong
+
+Belum ada koneksi Trino → lakukan **Langkah 1** di bawah, lalu refresh halaman.
+
+### Isian untuk dashboard utama (cukup satu database dulu)
+
+| Kotak di Superset | Pilih / ketik |
+|-------------------|---------------|
+| **DATABASE** | `Lakehouse Gold (IKU)` — nama persis saat Anda simpan koneksi |
+| **SCHEMA** | `gold` |
+| **TABLE** | `fact_rekap_iku_institusi` (atau `dim_waktu`, `dim_prodi`, …) |
+
+Klik **CREATE DATASET** (tombol di kanan bawah aktif setelah ketiga field terisi).
+
+**Rekomendasi:** untuk chart Executive 8 IKU, lebih mudah lewat **SQL Lab** (Langkah 2) — satu dataset sudah berisi `tahun` + `iku_kode` + capaian, tanpa join manual di chart.
 
 ---
 
-## 1. Apa itu folder `templates/`?
-
-Folder `templates/` **bukan** file yang di-import otomatis ke Superset. Isinya **lembar kerja** (checklist) untuk:
-
-1. Mengetahui **chart apa** yang harus dibuat  
-2. Mengetahui **tabel/dataset** mana yang dipakai  
-3. Mengisi **screenshot & angka** untuk laporan penelitian (BAB IV)
-
-| File template | Kapan dipakai | Koneksi Superset |
-|---------------|---------------|------------------|
-| [01-dashboard-executive-iku.md](templates/01-dashboard-executive-iku.md) | Dashboard utama 8 IKU + SAKIP | **Lakehouse Gold** → `lakehouse.gold` |
-| [02-dashboard-iku-per-indikator.md](templates/02-dashboard-iku-per-indikator.md) | Drill-down IKU-1 … IKU-8 (opsional) | Lakehouse Gold |
-| [03-dashboard-tata-kelola-sakip.md](templates/03-dashboard-tata-kelola-sakip.md) | Panel SAKIP & anggaran | Lakehouse Gold |
-| [04-dashboard-prodi-drilldown.md](templates/04-dashboard-prodi-drilldown.md) | Per prodi / jurusan | Lakehouse Gold |
-| [05-dashboard-mlops-prediktif.md](templates/05-dashboard-mlops-prediktif.md) | Forecast, Risk, … | **Grafana** (bukan Superset) |
-| [06-virtual-dataset-sql.md](templates/06-virtual-dataset-sql.md) | Query SQL → dataset virtual | Salin ke SQL Lab, sesuaikan schema |
-| [07-dashboard-kpi-aqe-off-on.md](templates/07-dashboard-kpi-aqe-off-on.md) | Duplikat Executive untuk audit AQE | **AQE OFF** & **AQE ON** |
-
-**Cara memakai template:** buka file `.md` di samping editor/printout → saat membuat chart di Superset, centang panel yang sudah selesai → isi kolom kosong (capaian, screenshot).
-
----
-
-## 2. Prasyarat (VM / laptop)
-
-### 2.1 Jalankan service
+## §0 Prasyarat (terminal, bukan Superset)
 
 ```bash
-cd ~/Bigdata-insightera   # atau path clone Data-Lakehouse-Insight
-
-docker compose up -d trino superset-init superset postgres
-docker compose up -d portal   # opsional, untuk embed
+cd ~/Bigdata-insightera
+docker compose up -d trino postgres
+docker compose build superset superset-init && docker compose run --rm superset-init && docker compose up -d superset
 ```
 
-| Service | URL | Login |
-|---------|-----|-------|
-| Superset | http://localhost:18089 (VM: `http://103.174.114.177:18089`) | admin / admin |
-| Trino CLI | `docker exec lhmeta-trino trino` | — |
-| Portal | http://localhost:13000 | — |
-
-### 2.2 Isi data Gold
-
-| Schema | DAG / cara isi |
-|--------|----------------|
-| `lakehouse.gold` | `metadata_full_experiment` atau `silver_gold_pipeline` |
-| `lakehouse.gold_aqe_off` | `aqe_full_experiment` (skenario OFF) |
-| `lakehouse.gold_aqe_on` | `aqe_full_experiment` (skenario ON) |
+Gold harus ada (jalankan DAG jika perlu):
 
 ```bash
 docker exec lhmeta-airflow-scheduler airflow dags trigger metadata_full_experiment
-# Setelah metadata selesai:
-docker exec lhmeta-airflow-scheduler airflow dags trigger aqe_full_experiment
 ```
 
-### 2.3 Verifikasi Trino (wajib sebelum Superset)
+Cek Trino:
 
 ```bash
 docker exec lhmeta-trino trino --execute "SHOW TABLES FROM lakehouse.gold"
-docker exec lhmeta-trino trino --execute "SHOW TABLES FROM lakehouse.gold_aqe_off"
-docker exec lhmeta-trino trino --execute "SHOW TABLES FROM lakehouse.gold_aqe_on"
-```
-
-Harus muncul tabel seperti: `dim_waktu`, `dim_prodi`, `fact_rekap_iku_institusi`, `fact_iku4_kualifikasi_dosen`, …
-
-```bash
 docker exec lhmeta-trino trino --execute \
   "SELECT COUNT(*) FROM lakehouse.gold.fact_rekap_iku_institusi"
 ```
 
-Jika `0` atau error **schema does not exist** → selesaikan pipeline dulu, jangan lanjut ke Superset.
+Harus ada tabel `dim_waktu`, `fact_rekap_iku_institusi`, … dan COUNT > 0.
 
 ---
 
-## 3. Langkah A — Tiga koneksi database di Superset
+## Langkah 1 — Tambah koneksi DATABASE (wajib sebelum dataset)
 
-Buka Superset → login **admin** / **admin**.
+**Menu:** kanan atas **Settings** (ikon gerigi) → **Database connections** → **+ Database**
 
-Untuk **setiap baris** di tabel bawah, ulangi: **Settings** (⚙) → **Database connections** → **+ Database** → pilih **Trino**.
+1. Pilih jenis **Trino**
+2. **Display name:** ketik persis: `Lakehouse Gold (IKU)`
+3. **SQLAlchemy URI:**
 
-| No | Display name (nama di Superset) | SQLAlchemy URI (dari container Superset) | Schema Gold |
-|----|--------------------------------|------------------------------------------|-------------|
-| 1 | `Lakehouse Gold (IKU)` | `trino://admin@trino:8080/lakehouse` | `gold` |
-| 2 | `Lakehouse AQE OFF` | `trino://admin@trino:8080/lakehouse_aqe_off` | `gold_aqe_off` |
-| 3 | `Lakehouse AQE ON` | `trino://admin@trino:8080/lakehouse_aqe_on` | `gold_aqe_on` |
+   ```
+   trino://admin@trino:8080/lakehouse
+   ```
 
-**Setiap koneksi:**
+4. **Test connection** → harus sukses
+5. **Connect** / **Save**
 
-1. Tempel URI → klik **Test connection** (harus hijau / sukses)  
-2. **Connect** / **Save**  
-3. (Opsional) tab **Advanced** → matikan DML jika ada opsi write  
+> URI memakai hostname `trino` (dari dalam Docker), **bukan** `103.174.114.177`.
 
-> Dari browser di luar Docker, SQL Lab bisa memakai host `localhost:18088`; koneksi **database Superset** tetap memakai hostname `trino` karena dijalankan dari container Superset.
+Setelah ini, di layar **New dataset**, dropdown **DATABASE** harus menampilkan `Lakehouse Gold (IKU)`.
+
+### (Nanti, opsional BAB IV AQE) — dua koneksi lagi
+
+Ulangi Langkah 1 untuk baris 2–3 **hanya setelah** dashboard utama jalan:
+
+| Display name | SQLAlchemy URI |
+|--------------|----------------|
+| `Lakehouse AQE OFF` | `trino://admin@trino:8080/lakehouse_aqe_off` |
+| `Lakehouse AQE ON` | `trino://admin@trino:8080/lakehouse_aqe_on` |
+
+Schema di dataset: `gold_aqe_off` / `gold_aqe_on` (bukan `gold`).
 
 ---
 
-## 4. Langkah B — Dataset (dasar untuk semua dashboard)
+## Langkah 2 — Dataset KPI lewat SQL Lab (disarankan)
 
-Dataset = “sumber data” untuk chart. Buat **per koneksi** (ulangi 3× dengan database berbeda).
+**Menu:** **SQL** → **SQL Lab**
 
-### 4.1 Dataset fisik (tabel langsung)
-
-**Data** → **Datasets** → **+ Dataset**
-
-| Langkah | Koneksi 1 (Gold) | Koneksi 2 (AQE OFF) | Koneksi 3 (AQE ON) |
-|---------|------------------|---------------------|---------------------|
-| Database | Lakehouse Gold (IKU) | Lakehouse AQE OFF | Lakehouse AQE ON |
-| Schema | `gold` | `gold_aqe_off` | `gold_aqe_on` |
-| Tabel (ulangi untuk tiap baris) | lihat daftar di bawah | sama nama tabel | sama nama tabel |
-
-**Tabel minimum (buat dataset untuk masing-masing):**
-
-| Nama dataset (disarankan) | Tabel |
-|---------------------------|-------|
-| `dim_waktu` | `dim_waktu` |
-| `dim_prodi` | `dim_prodi` |
-| `fact_rekap_iku_institusi` | `fact_rekap_iku_institusi` |
-| `fact_iku4_kualifikasi_dosen` | `fact_iku4_kualifikasi_dosen` |
-| `fact_tata_kelola` | `fact_tata_kelola` |
-
-Setelah tambah → buka dataset → **⋮** → **Sync columns from source** (jika ada) → **Preview** harus menampilkan baris.
-
-### 4.2 Dataset virtual (disarankan untuk Executive IKU)
-
-Lebih praktis untuk chart 8 IKU: satu dataset sudah berisi `tahun` + `iku_kode` + capaian.
-
-1. **SQL** → **SQL Lab**  
-2. Pilih **Database** = koneksi yang sesuai (mis. Lakehouse Gold)  
-3. Tempel query dari [templates/06-virtual-dataset-sql.md](templates/06-virtual-dataset-sql.md) bagian **v_rekap_iku_tahun**  
-4. Sesuaikan prefix:
-
-| Koneksi | Ganti `lakehouse.gold` menjadi |
-|---------|-------------------------------|
-| Lakehouse Gold | `lakehouse.gold` (tetap) |
-| AQE OFF | `gold_aqe_off` (cukup schema, karena katalog sudah `lakehouse_aqe_off`) |
-| AQE ON | `gold_aqe_on` |
-
-**Contoh untuk koneksi Lakehouse Gold (katalog `lakehouse`):**
+| Kotak | Isi |
+|-------|-----|
+| **DATABASE** (atas) | `Lakehouse Gold (IKU)` |
+| Editor SQL | tempel query di bawah |
 
 ```sql
 SELECT w.tahun, r.iku_kode, r.iku_nama,
@@ -194,274 +133,159 @@ JOIN lakehouse.gold.dim_waktu w ON r.waktu_id = w.waktu_id
 ORDER BY w.tahun, r.iku_kode;
 ```
 
-**Contoh untuk koneksi Lakehouse AQE OFF** (katalog `lakehouse_aqe_off`, schema default `gold_aqe_off`):
+1. Klik **Run** → harus ada baris (bukan error `record_count` — lihat §Troubleshooting)
+2. Di bawah hasil: **Save** → **Save dataset**
+3. **Dataset name:** `v_rekap_iku_tahun`
+4. **Save**
 
-```sql
-SELECT w.tahun, r.iku_kode, r.iku_nama,
-       r.nilai_capaian, r.nilai_target, r.satuan, r.status_capaian
-FROM gold_aqe_off.fact_rekap_iku_institusi r
-JOIN gold_aqe_off.dim_waktu w ON r.waktu_id = w.waktu_id
-ORDER BY w.tahun, r.iku_kode;
-```
+**Jangan** klik nama tabel di panel kiri sebelum Run (bisa memicu bug partisi Iceberg). Cukup tempel SQL lalu Run.
 
-5. **Run** → pastikan ada baris  
-6. **Save** → **Save dataset** → nama mis. `v_rekap_iku_tahun`  
-7. Ulangi query yang sama (dengan schema berbeda) untuk koneksi **AQE ON** → simpan sebagai `v_rekap_iku_tahun` juga (beda database, nama boleh sama)
+Query ini juga ada di [templates/06-virtual-dataset-sql.md](templates/06-virtual-dataset-sql.md).
+
+### Alternatif: dataset dari tabel (layar “New dataset”)
+
+**Data** → **Datasets** → **+ Dataset** → isi seperti tabel di bagian [Layar “New dataset”](#layar-new-dataset--isi-apa) → **CREATE DATASET**.
+
+Ulangi untuk tabel lain jika perlu (lihat [templates/01-dashboard-executive-iku.md](templates/01-dashboard-executive-iku.md)).
 
 ---
 
-## 5. Langkah C — Dashboard **Lakehouse Gold** (utama)
+## Langkah 3 — Chart batang 8 IKU
 
-Ikuti checklist [templates/01-dashboard-executive-iku.md](templates/01-dashboard-executive-iku.md).
+**Menu:** **Charts** → **+ Chart**
 
-### C.1 Chart — Bar 8 IKU
+| Langkah di wizard | Pilih |
+|-------------------|--------|
+| Choose a dataset | `v_rekap_iku_tahun` |
+| Chart type | **Bar Chart** |
+| Dimension | `iku_kode` |
+| Metric | **AVG** `nilai_capaian` (jangan SUM untuk %) |
+| Filter (opsional) | `tahun` = `2024` |
+| Save chart | nama: `iku_executive_bar` |
 
-1. **Charts** → **+ Chart**  
-2. **Dataset:** `v_rekap_iku_tahun` (koneksi Lakehouse Gold)  
-3. **Chart type:** Bar Chart  
-4. **Query:**  
-   - **Dimensions:** `iku_kode` (atau `iku_nama`)  
-   - **Metrics:** `AVG(nilai_capaian)` atau `SUM(nilai_capaian)` — untuk persen gunakan **AVG**  
-   - **Filters:** `tahun` = `2024` (sesuaikan)  
-5. **Customize** → judul: `Capaian 8 IKU — Lakehouse Gold`  
-6. **Save** → nama chart: `iku_executive_bar`
+Checklist panel: [templates/01-dashboard-executive-iku.md](templates/01-dashboard-executive-iku.md).
 
-### C.2 Chart — Heatmap / tabel status (opsional)
+---
 
-- Dataset: `v_rekap_iku_tahun`  
-- Pivot atau Table: baris `iku_kode`, kolom `status_capaian` atau bandingkan `nilai_capaian` vs `nilai_target`
+## Langkah 4 — Dashboard
 
-### C.3 Chart — Tata kelola (opsional)
+**Menu:** **Dashboards** → **+ Dashboard**
 
-- Dataset: `fact_tata_kelola` + join `dim_waktu` (atau buat virtual dataset dari template 03)  
-- Line chart: `tahun` × `persen_realisasi`
+1. Nama: `Executive IKU ITERA — Lakehouse Gold`
+2. **Edit dashboard** → tambahkan chart `iku_executive_bar`
+3. (Opsional) **+ Filter** → kolom `tahun` dari dataset `v_rekap_iku_tahun`
+4. **Save**
 
-### C.4 Susun dashboard
+Salin URL browser, tambahkan `?standalone=1`, contoh:
 
-1. **Dashboards** → **+ Dashboard**  
-2. Nama: `Executive IKU ITERA — Lakehouse Gold`  
-3. **Edit dashboard** → drag chart `iku_executive_bar` (+ chart lain)  
-4. **Filters** → **+ Filter** → hubungkan ke kolom `tahun` (dataset `v_rekap_iku_tahun`)  
-5. **Save**  
-6. Buka dashboard → salin **URL** dari address bar, contoh:  
-   `http://103.174.114.177:18089/superset/dashboard/5/`  
-7. Tambahkan `?standalone=1` untuk embed:  
-   `http://103.174.114.177:18089/superset/dashboard/5/?standalone=1`
+`http://103.174.114.177:18089/superset/dashboard/1/?standalone=1`
 
-### C.5 Sematkan ke portal
+---
 
-1. Buka portal → **Dashboard Analitik** (`/dashboards/analitik`)  
-2. **URL Embed** → tempel URL langkah C.4  
+## Langkah 5 — Portal Insightera
+
+1. Buka `http://103.174.114.177:13000/dashboards/analitik`
+2. **URL Embed** → tempel URL dashboard Langkah 4
 3. **Simpan ke server**
 
-Atau di VM `.env`:
-
-```bash
-LHINSIGHT_SUPERSET_EMBED_PATH=/superset/dashboard/5/?standalone=1
-```
-
-Lalu `docker compose up -d portal`.
-
 ---
 
-## 6. Langkah D — Dashboard **Lakehouse AQE OFF**
+## §6 Opsional — Dashboard AQE OFF dan ON (penelitian)
 
-Prinsip: **sama persis** dengan Langkah C, tetapi:
+**Bukan** untuk speedup pipeline (itu **Grafana** → Monitoring AQE di portal).
 
-| Item | Nilai |
-|------|-------|
-| Database / koneksi | `Lakehouse AQE OFF` |
-| Schema | `gold_aqe_off` |
-| Dataset virtual | query dengan prefix `gold_aqe_off.*` |
-| Judul chart/dashboard | tambahkan suffix **「AQE OFF」** |
+| Tujuan | Alat |
+|--------|------|
+| Banding **nilai KPI** dari salinan Gold OFF vs ON | Superset (2 dashboard) |
+| Banding **durasi / speedup** AQE | Grafana + `metrics/aqe_comparison_*.json` |
 
-Checklist: [templates/07-dashboard-kpi-aqe-off-on.md](templates/07-dashboard-kpi-aqe-off-on.md)
+Setelah Langkah 1–5 selesai untuk **Lakehouse Gold**:
 
-1. Buat chart bar dari `v_rekap_iku_tahun` (koneksi OFF)  
-2. **Dashboards** → **+ Dashboard** → `Executive IKU — AQE OFF`  
-3. Salin URL embed → portal **KPI AQE OFF** (`/dashboards/kpi-aqe-off`)
+1. Tambah DATABASE `Lakehouse AQE OFF` dan `Lakehouse AQE ON` (§ Langkah 1 tabel AQE)
+2. SQL Lab — ganti query:
 
-**Cara cepat (duplikasi):** setelah dashboard Gold jadi, di Superset buka dashboard Gold → **⋮** → **Duplicate** (jika tersedia) → ganti dataset ke versi koneksi OFF. Jika tidak ada Duplicate, buat chart baru dengan dataset OFF lalu susun ulang.
-
----
-
-## 7. Langkah E — Dashboard **Lakehouse AQE ON**
-
-Ulangi Langkah D dengan:
-
-| Item | Nilai |
-|------|-------|
-| Koneksi | `Lakehouse AQE ON` |
-| Schema | `gold_aqe_on` |
-| Suffix judul | **「AQE ON」** |
-| Portal | `/dashboards/kpi-aqe-on` |
-
----
-
-## 8. Bandingkan OFF vs ON (verifikasi penelitian)
-
-Di **SQL Lab** (database mana saja yang bisa lihat kedua schema, atau gunakan katalog `lakehouse`):
+**OFF** (database = Lakehouse AQE OFF):
 
 ```sql
-SELECT 'OFF' AS konteks, iku_kode, nilai_capaian
-FROM lakehouse.gold_aqe_off.fact_rekap_iku_institusi
-UNION ALL
-SELECT 'ON', iku_kode, nilai_capaian
-FROM lakehouse.gold_aqe_on.fact_rekap_iku_institusi
-ORDER BY iku_kode, konteks;
+SELECT w.tahun, r.iku_kode, r.nilai_capaian, r.nilai_target, r.status_capaian
+FROM gold_aqe_off.fact_rekap_iku_institusi r
+JOIN gold_aqe_off.dim_waktu w ON r.waktu_id = w.waktu_id;
 ```
 
-| Hasil | Arti |
+**ON** (database = Lakehouse AQE ON): ganti `gold_aqe_off` → `gold_aqe_on`.
+
+3. Chart + dashboard (judul beri suffix **AQE OFF** / **AQE ON**)
+4. Embed: `/dashboards/kpi-aqe-off` dan `/dashboards/kpi-aqe-on`
+
+Checklist: [templates/07-dashboard-kpi-aqe-off-on.md](templates/07-dashboard-kpi-aqe-off-on.md).
+
+---
+
+## Apa isi folder `gold-to-serving/templates/`?
+
+Bukan file impor — **checklist** saat Anda sudah di Superset:
+
+| File | Kapan dibuka |
+|------|----------------|
+| [06-virtual-dataset-sql.md](templates/06-virtual-dataset-sql.md) | Saat Langkah 2 (salin SQL) |
+| [01-dashboard-executive-iku.md](templates/01-dashboard-executive-iku.md) | Saat Langkah 3–4 (panel chart) |
+| [07-dashboard-kpi-aqe-off-on.md](templates/07-dashboard-kpi-aqe-off-on.md) | Saat §6 AQE |
+| [02](templates/02-dashboard-iku-per-indikator.md)–[04](templates/04-dashboard-prodi-drilldown.md) | Opsional drill-down |
+| [05-dashboard-mlops-prediktif.md](templates/05-dashboard-mlops-prediktif.md) | **Grafana**, bukan Superset |
+
+---
+
+## Hubungan dengan eksperimen (`docs/eksperimen/`)
+
+| Fase penelitian | Dokumen |
+|-----------------|---------|
+| Jalankan DAG metadata / AQE / MLOps | [`../eksperimen/README.md`](../eksperimen/README.md) |
+| Isi tabel runtime, metrik, UMT untuk laporan | [`../eksperimen/templates/`](../eksperimen/templates/) |
+| Dashboard KPI di Superset | **panduan ini** + [`gold-to-serving/templates/`](templates/) |
+
+Urutan disarankan: selesaikan **metadata_full_experiment** → Superset dashboard utama → **aqe_full_experiment** → dashboard AQE OFF/ON (opsional) → isi template eksperimen untuk BAB IV.
+
+---
+
+## Troubleshooting
+
+### Dropdown DATABASE kosong di “New dataset”
+
+→ Belum Langkah 1. **Settings** → **Database connections** → tambah Trino URI `trino://admin@trino:8080/lakehouse`.
+
+### `Column 'record_count' cannot be resolved`
+
+Bug Superset + Iceberg saat preview tabel di panel kiri. **Solusi:** Langkah 2 — hanya tempel SQL di editor, **Run**, jangan klik tabel di sidebar dulu. Rebuild image Superset dengan patch (`superset/patch_trino_iceberg.py`) — lihat [`superset/README.md`](../../superset/README.md).
+
+### `schema gold does not exist`
+
+Pipeline belum jalan: `airflow dags trigger metadata_full_experiment`.
+
+### Chart kosong
+
+Dataset preview harus ada baris; longgarkan filter `tahun`.
+
+---
+
+## Diagram alur (ringkas)
+
+```mermaid
+flowchart TD
+  A[DAG metadata_full_experiment] --> B[Trino lakehouse.gold]
+  B --> C[Settings: Database Lakehouse Gold]
+  C --> D[SQL Lab: v_rekap_iku_tahun]
+  D --> E[Chart + Dashboard]
+  E --> F[Portal dashboards/analitik]
+  B --> G[Opsional: AQE OFF/ON DB + dashboard]
+  G --> H[Portal kpi-aqe-off/on]
+```
+
+---
+
+## Dokumen lain
+
+| Topik | File |
 |-------|------|
-| Nilai mendekati | Parity data OK — perbedaan performa ada di **Grafana Monitoring AQE** |
-| Jauh berbeda / kosong | Cek DAG `aqe_full_experiment` belum selesai atau gagal |
-
-**Speedup pipeline** → bukan di Superset; buka Grafana **Monitoring AQE** di portal.
-
----
-
-## 9. Template lanjutan (opsional)
-
-Setelah Executive (template 01) untuk **Lakehouse Gold**:
-
-| Urutan | Template | Aksi di Superset |
-|--------|----------|------------------|
-| 1 | [02](templates/02-dashboard-iku-per-indikator.md) | Satu chart per `fact_iku1` … `fact_iku8` |
-| 2 | [03](templates/03-dashboard-tata-kelola-sakip.md) | Chart dari `fact_tata_kelola` |
-| 3 | [04](templates/04-dashboard-prodi-drilldown.md) | Chart `fact_iku4` + `dim_prodi` |
-| 4 | [05](templates/05-dashboard-mlops-prediktif.md) | Di **Grafana**, setelah `mlops_pipeline` |
-
-Semua template 02–04 memakai **hanya koneksi Lakehouse Gold** kecuali Anda sengaja menduplikasi untuk audit AQE.
-
----
-
-## 10. Ringkasan URL portal
-
-| Dashboard Superset | Path portal | Env (opsional) |
-|--------------------|-------------|----------------|
-| Lakehouse Gold | `/dashboards/analitik` | `LHINSIGHT_SUPERSET_EMBED_PATH` |
-| AQE OFF | `/dashboards/kpi-aqe-off` | `LHINSIGHT_SUPERSET_EMBED_AQE_OFF_PATH` |
-| AQE ON | `/dashboards/kpi-aqe-on` | `LHINSIGHT_SUPERSET_EMBED_AQE_ON_PATH` |
-
-Format embed: `http://<IP-VM>:18089/superset/dashboard/<ID>/?standalone=1`
-
----
-
-## 11. Troubleshooting
-
-| Gejala | Penyebab | Solusi |
-|--------|----------|--------|
-| Test connection gagal | Trino mati | `docker compose up -d trino` |
-| Schema `gold` tidak ada | Pipeline belum jalan | Trigger `metadata_full_experiment` |
-| `gold_aqe_off` kosong | AQE DAG belum jalan | Trigger `aqe_full_experiment` |
-| Chart kosong | Filter tahun salah / data 0 | Cek preview dataset; longgarkan filter |
-| `% IKU salah` | SUM pada kolom persen | Pakai **AVG** |
-| Embed portal blank | Belum login Superset / URL salah | Buka URL embed di tab baru; login sekali |
-| Hanya 1 dashboard perlu | Penelitian operasional | Cukup Langkah C; OFF/ON opsional BAB IV |
-| **`Column 'record_count' cannot be resolved`** | Bukan kolom tabel — metadata partisi Iceberg (`file_count`, `record_count`, `total_size`) ikut terpilih di chart | Hapus metrik `record_count`; pakai kolom data saja atau `COUNT(*)` — lihat §11.1 |
-
-### 11.1 Error `record_count` / `file_count` (Superset + Trino + Iceberg)
-
-Pesan seperti:
-
-```text
-Column 'record_count' cannot be resolved
-line 3:7 (atau line 5:7)
-```
-
-**Penyebab utama (bukan salah SQL Anda):** bug Superset saat membaca tabel **Iceberg** lewat Trino. Di panel kiri SQL Lab, teks `Latest partition: .../record_count=72/file_count=2/...` adalah **metadata file Iceberg**. Superset salah menganggapnya kolom dan **menyuntikkan** `record_count`, `file_count`, `total_size`, `data` ke query — padahal query Anda di editor sudah benar.
-
-**Perbaikan permanen (repo Insight):** patch saat **build** image Superset (`superset/patch_trino_iceberg.py`) — rebuild:
-
-```bash
-cd ~/Bigdata-insightera
-docker compose build --no-cache superset superset-init
-docker compose run --rm superset-init
-docker compose up -d superset
-```
-
-Log build harus memuat `patched /app/superset/db_engine_specs/trino.py`. Jika `patch anchor not found`, laporkan versi image Superset.
-
-**Workaround cepat (tanpa rebuild):**
-
-1. Jangan mengandalkan **klik tabel** di schema browser kiri sebelum Run (itu memicu query rusak).  
-2. Tempel SQL manual di editor → **Run** langsung.  
-3. Atau uji di Trino CLI:
-
-```bash
-docker exec lhmeta-trino trino --execute "
-SELECT w.tahun, r.iku_kode, r.nilai_capaian
-FROM lakehouse.gold.fact_rekap_iku_institusi r
-JOIN lakehouse.gold.dim_waktu w ON r.waktu_id = w.waktu_id
-LIMIT 10"
-```
-
-Jika CLI sukses tetapi Superset gagal → pastikan patch di atas sudah di-build.
-
-**Jika error di Chart (bukan SQL Lab):** itu **bukan** kolom star schema. Hapus metrik `record_count` dari chart; pakai kolom data atau `COUNT(*)`.
-
-**Kolom valid `dim_waktu`:**
-
-| Kolom | Tipe |
-|-------|------|
-| `waktu_id` | BIGINT |
-| `tahun` | BIGINT |
-| `semester` | VARCHAR |
-| `triwulan` | BIGINT |
-| `bulan` | BIGINT |
-| `nama_bulan` | VARCHAR |
-
-**Perbaikan di Superset:**
-
-1. **Data** → **Datasets** → buka dataset bermasalah (mis. `dim_waktu`)  
-2. **⋮** → **Sync columns from source**  
-3. Tab **Columns** → hapus / jangan pakai `record_count`, `file_count`, `total_size` jika muncul  
-4. Buka **chart** yang error → **Metrics**: ganti `record_count` → **COUNT(\*)** atau hapus metrik  
-5. **Filters / Dimensions**: hanya `tahun`, `bulan`, `semester`, dll.
-
-**Uji di SQL Lab (harus sukses):**
-
-```sql
-SELECT waktu_id, tahun, semester, triwulan, bulan, nama_bulan
-FROM lakehouse.gold.dim_waktu
-ORDER BY tahun, bulan
-LIMIT 20;
-```
-
-Untuk jumlah baris:
-
-```sql
-SELECT COUNT(*) AS jumlah_baris FROM lakehouse.gold.dim_waktu;
-```
-
-Jangan: `SELECT record_count FROM lakehouse.gold.dim_waktu`.
-
----
-
-## 12. Checklist selesai
-
-**Lakehouse Gold**
-
-- [ ] Koneksi `Lakehouse Gold (IKU)`  
-- [ ] Dataset `v_rekap_iku_tahun` + minimal 3 tabel fakta/dim  
-- [ ] Dashboard Executive + filter tahun  
-- [ ] URL embed di `/dashboards/analitik`  
-- [ ] Template 01 terisi + screenshot  
-
-**AQE OFF**
-
-- [ ] Koneksi `Lakehouse AQE OFF`  
-- [ ] Dataset virtual `gold_aqe_off`  
-- [ ] Dashboard + embed `/dashboards/kpi-aqe-off`  
-- [ ] Template 07 (bagian OFF)  
-
-**AQE ON**
-
-- [ ] Koneksi `Lakehouse AQE ON`  
-- [ ] Dashboard + embed `/dashboards/kpi-aqe-on`  
-- [ ] Template 07 (bagian ON)  
-- [ ] Query banding OFF vs ON di SQL Lab  
-
----
-
-**Dokumen terkait:** [README.md](README.md) · [koneksi-trino-superset.md](koneksi-trino-superset.md) · [templates/README.md](templates/README.md)
+| Koneksi Trino detail | [koneksi-trino-superset.md](koneksi-trino-superset.md) |
+| Superset vs Grafana | [arsitektur-dashboard-serving.md](arsitektur-dashboard-serving.md) |
+| Konsep star schema | [README.md](README.md) |

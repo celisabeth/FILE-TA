@@ -1,5 +1,7 @@
 # Template — Screenshot Portal, Atlas, AQE & MLOps (BAB IV §4.1.3, §4.1.5)
 
+> Daftar file screenshot untuk laporan. **Cara membuat dashboard di Superset:** [`../../gold-to-serving/panduan-lengkap-dashboard-superset.md`](../../gold-to-serving/panduan-lengkap-dashboard-superset.md)
+
 ## Checklist wajib — Metadata
 
 | No | Artefak | Path file | ✓ |
