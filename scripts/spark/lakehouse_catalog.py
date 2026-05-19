@@ -17,6 +17,7 @@ Trino: katalog lakehouse (semua schema) atau lakehouse_aqe_off / lakehouse_aqe_o
 
 from __future__ import annotations
 
+import logging
 import os
 from typing import TYPE_CHECKING
 
@@ -25,6 +26,8 @@ from spark.aqe_config import resolve_aqe_scenario
 if TYPE_CHECKING:
     from pyspark.sql import DataFrame
     from pyspark.sql.session import SparkSession
+
+logger = logging.getLogger("lakehouse_catalog")
 
 SHARED_CATALOG = "lakehouse"
 BRONZE_SCHEMA = "bronze"
@@ -79,11 +82,51 @@ def ensure_metadata_namespace(spark: SparkSession, layer: str) -> None:
     spark.sql(f"CREATE NAMESPACE IF NOT EXISTS {SHARED_CATALOG}.{schema}")
 
 
+def _iceberg_write_recoverable(exc: BaseException) -> bool:
+    """True jika error biasanya dari skema rusak / metadata S3 hilang (orphan HMS)."""
+    err = str(exc).lower()
+    needles = (
+        "incompatible",
+        "commitstateunknown",
+        "column_already_exists",
+        "notfoundexception",
+        "filenotfoundexception",
+        "failed to open input stream",
+        "metadata.json",
+        "nosuchkey",
+    )
+    return any(n in err for n in needles)
+
+
+def write_iceberg_create_or_replace(spark: SparkSession, df: DataFrame, fqn: str) -> None:
+    """
+    Replace tabel Iceberg. Jika HMS/S3 tidak konsisten (skema beda, metadata hilang),
+    drop PURGE lalu create ulang.
+    """
+    try:
+        (
+            df.writeTo(fqn)
+            .using("iceberg")
+            .option("overwrite-schema", "true")
+            .createOrReplace()
+        )
+    except Exception as exc:
+        if not _iceberg_write_recoverable(exc):
+            raise
+        logger.warning(
+            "Iceberg replace gagal untuk %s — drop PURGE & create: %s",
+            fqn,
+            str(exc).split("\n")[0][:240],
+        )
+        spark.sql(f"DROP TABLE IF EXISTS {fqn} PURGE")
+        df.writeTo(fqn).using("iceberg").create()
+
+
 def write_metadata_iceberg_table(df: DataFrame, layer: str, table: str) -> str:
     """Tulis/replace tabel Iceberg metadata (lakehouse.silver.* / lakehouse.gold.*)."""
     ensure_metadata_namespace(df.sparkSession, layer)
     fqn = metadata_silver_table(table) if layer == "silver" else metadata_gold_table(table)
-    df.writeTo(fqn).using("iceberg").createOrReplace()
+    write_iceberg_create_or_replace(df.sparkSession, df, fqn)
     return fqn
 
 
@@ -126,12 +169,26 @@ def write_iceberg_table(
     ensure_namespace(df.sparkSession, scenario, layer)
     fqn = silver_table(scenario, table) if layer == "silver" else gold_table(scenario, table)
     location = table_location(scenario, layer, table)
-    (
-        df.writeTo(fqn)
-        .using("iceberg")
-        .tableProperty("location", location)
-        .createOrReplace()
-    )
+    spark = df.sparkSession
+    try:
+        (
+            df.writeTo(fqn)
+            .using("iceberg")
+            .tableProperty("location", location)
+            .option("overwrite-schema", "true")
+            .createOrReplace()
+        )
+    except Exception as exc:
+        if not _iceberg_write_recoverable(exc):
+            raise
+        logger.warning("AQE table %s — drop PURGE & recreate", fqn)
+        spark.sql(f"DROP TABLE IF EXISTS {fqn} PURGE")
+        (
+            df.writeTo(fqn)
+            .using("iceberg")
+            .tableProperty("location", location)
+            .create()
+        )
     return fqn
 
 

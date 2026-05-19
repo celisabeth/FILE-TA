@@ -185,8 +185,10 @@ def process_table(spark, table_name: str) -> dict | None:
 
     spark.sql("CREATE NAMESPACE IF NOT EXISTS bronze")
 
+    from spark.lakehouse_catalog import write_iceberg_create_or_replace
+
     iceberg_table = f"lakehouse.bronze.{table_name}"
-    df.writeTo(iceberg_table).using("iceberg").createOrReplace()
+    write_iceberg_create_or_replace(spark, df, iceberg_table)
     logger.info("  Written → %s", iceberg_table)
 
     profiling = profile_dataframe(df, table_name)

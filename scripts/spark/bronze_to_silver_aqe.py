@@ -242,7 +242,7 @@ def transform_silver_mahasiswa(spark: SparkSession) -> tuple[DataFrame, dict]:
     df = (
         mhs
         .join(prodi_lkp, on="prodi_id", how="left")
-        .withColumn("fakultas_id", fakultas_id_expr)
+        .withColumn("fakultas_id", fakultas_id_expr.cast("string"))
         .drop("_prodi_fakultas_id")
         .withColumn(
             "nama_jurusan",

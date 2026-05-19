@@ -222,7 +222,7 @@ def transform_silver_mahasiswa(spark: SparkSession) -> tuple[DataFrame, dict]:
     df = (
         mhs
         .join(prodi_lkp, on="prodi_id", how="left")
-        .withColumn("fakultas_id", fakultas_id_expr)
+        .withColumn("fakultas_id", fakultas_id_expr.cast("string"))
         .drop("_prodi_fakultas_id")
         .withColumn(
             "nama_jurusan",
@@ -582,8 +582,10 @@ def run_bronze_to_silver() -> dict:
                 }
                 continue
 
+            from spark.lakehouse_catalog import write_iceberg_create_or_replace
+
             iceberg_table = f"lakehouse.silver.{name}"
-            df.writeTo(iceberg_table).using("iceberg").createOrReplace()
+            write_iceberg_create_or_replace(spark, df, iceberg_table)
 
             row_count = df.count()
             logger.info("  Written → %s (%s rows)", iceberg_table, f"{row_count:,}")
