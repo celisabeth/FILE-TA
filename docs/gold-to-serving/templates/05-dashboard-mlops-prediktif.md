@@ -1,4 +1,7 @@
-# Template — Dashboard Prediktif (MLOps / Grafana)
+# Template 05 — Dashboard Prediktif (MLOps / Grafana)
+
+> **Bukan Superset** — tidak ada langkah Dataset/Chart di sini.  
+> KPI deskriptif (IKU) → template [01](01-dashboard-executive-iku.md) + [00-alur-superset-dataset-chart.md](00-alur-superset-dataset-chart.md).
 
 Melengkapi dashboard **deskriptif** Superset (Gold OLAP) dengan layer **prediktif** dari pipeline MLOps.
 

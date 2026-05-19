@@ -1,36 +1,45 @@
 # Template Dashboard KPI (Superset)
 
-Checklist **setelah** Anda mengikuti panduan klik Superset.
+Setiap file berisi: **Dataset → Chart → Dashboard** (langkah Superset) + **checklist laporan**.
 
 ---
 
-## Mulai di sini (wajib)
+## Urutan baca
 
-**[`../panduan-lengkap-dashboard-superset.md`](../panduan-lengkap-dashboard-superset.md)**
+| Urutan | File | Isi |
+|--------|------|-----|
+| 0 | [00-alur-superset-dataset-chart.md](00-alur-superset-dataset-chart.md) | Pola umum (database, SQL Lab, chart, dashboard) |
+| 1 | [06-virtual-dataset-sql.md](06-virtual-dataset-sql.md) | Semua query SQL + **diagnosa query 0 baris** |
+| 2 | [01-dashboard-executive-iku.md](01-dashboard-executive-iku.md) | **Wajib** — dashboard utama 8 IKU |
+| 3 | [03](03-dashboard-tata-kelola-sakip.md), [04](04-dashboard-prodi-drilldown.md) | Opsional |
+| 4 | [02-dashboard-iku-per-indikator.md](02-dashboard-iku-per-indikator.md) | Opsional — satu chart per IKU |
+| 5 | [07-dashboard-kpi-aqe-off-on.md](07-dashboard-kpi-aqe-off-on.md) | Opsional penelitian AQE |
+| — | [05-dashboard-mlops-prediktif.md](05-dashboard-mlops-prediktif.md) | **Grafana** (bukan Superset) |
 
-Ringkasannya:
-
-1. **Settings** → **Database connections** → Trino `Lakehouse Gold (IKU)`
-2. **SQL Lab** → query → **Save dataset** `v_rekap_iku_tahun`
-3. **Charts** → bar chart dari dataset itu
-4. **Dashboards** → susun + embed portal
-
-Layar **Data → Datasets → + Dataset** dipakai jika Anda memilih **tabel fisik**; untuk Executive IKU lebih mudah lewat **SQL Lab** (file [06](06-virtual-dataset-sql.md)).
+Panduan ringkas: [../panduan-lengkap-dashboard-superset.md](../panduan-lengkap-dashboard-superset.md)
 
 ---
 
-## File di folder ini
+## Ringkas: Dataset → Chart per template
 
-| File | Dipakai pada langkah panduan |
-|------|------------------------------|
-| [06-virtual-dataset-sql.md](06-virtual-dataset-sql.md) | Langkah 2 — salin SQL |
-| [01-dashboard-executive-iku.md](01-dashboard-executive-iku.md) | Langkah 3–4 — panel chart |
-| [07-dashboard-kpi-aqe-off-on.md](07-dashboard-kpi-aqe-off-on.md) | §6 opsional AQE |
-| [02](02-dashboard-iku-per-indikator.md)–[04](04-dashboard-prodi-drilldown.md) | Opsional |
-| [05-dashboard-mlops-prediktif.md](05-dashboard-mlops-prediktif.md) | Grafana (bukan Superset) |
+| Template | Nama dataset (contoh) | Chart type | Dashboard |
+|----------|----------------------|------------|-----------|
+| **01** Executive | `v_rekap_iku_tahun` | Bar (`iku_kode` × AVG capaian) | Executive IKU |
+| **02** Per IKU | `ds_iku1_lulusan`, … | Bar per prodi | Detail IKU 1-8 |
+| **03** SAKIP | `v_tata_kelola_tahun` | Line realisasi, Table predikat | Tata Kelola |
+| **04** Prodi | `v_iku4_per_prodi`, `v_capaian_roll_up_jurusan` | Bar prodi / jurusan | Drill-down |
+| **06** SQL | (semua query di atas) | — | — |
+| **07** AQE | `v_rekap_iku_tahun_off/on` | Sama seperti 01 | OFF + ON |
+| **05** MLOps | — | Grafana panels | Insight prediktif |
+
+---
+
+## Query 0 baris?
+
+Buka [06-virtual-dataset-sql.md](06-virtual-dataset-sql.md) → bagian **Diagnosa**, lalu jalankan ulang DAG Gold.
 
 ---
 
 ## Bukan folder eksperimen
 
-Laporan runtime DAG / metrik BAB IV → [`../../eksperimen/templates/`](../../eksperimen/templates/)
+Laporan DAG/metrik BAB IV → [`../../eksperimen/templates/`](../../eksperimen/templates/)

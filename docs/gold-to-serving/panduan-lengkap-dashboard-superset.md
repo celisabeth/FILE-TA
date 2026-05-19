@@ -221,17 +221,22 @@ Checklist: [templates/07-dashboard-kpi-aqe-off-on.md](templates/07-dashboard-kpi
 
 ---
 
-## Apa isi folder `gold-to-serving/templates/`?
+## Folder `templates/` — Dataset → Chart di setiap file
 
-Bukan file impor — **checklist** saat Anda sudah di Superset:
+Setiap template punya bagian **A. Dataset → Chart** (langkah Superset) + **B. Checklist laporan**.
 
-| File | Kapan dibuka |
-|------|----------------|
-| [06-virtual-dataset-sql.md](templates/06-virtual-dataset-sql.md) | Saat Langkah 2 (salin SQL) |
-| [01-dashboard-executive-iku.md](templates/01-dashboard-executive-iku.md) | Saat Langkah 3–4 (panel chart) |
-| [07-dashboard-kpi-aqe-off-on.md](templates/07-dashboard-kpi-aqe-off-on.md) | Saat §6 AQE |
-| [02](templates/02-dashboard-iku-per-indikator.md)–[04](templates/04-dashboard-prodi-drilldown.md) | Opsional drill-down |
-| [05-dashboard-mlops-prediktif.md](templates/05-dashboard-mlops-prediktif.md) | **Grafana**, bukan Superset |
+| File | Dataset (contoh) | Chart |
+|------|------------------|-------|
+| [00-alur-superset-dataset-chart.md](templates/00-alur-superset-dataset-chart.md) | Pola umum semua template | |
+| [06-virtual-dataset-sql.md](templates/06-virtual-dataset-sql.md) | Semua query + diagnosa **0 baris** | |
+| [01-dashboard-executive-iku.md](templates/01-dashboard-executive-iku.md) | `v_rekap_iku_tahun` | Bar 8 IKU |
+| [02-dashboard-iku-per-indikator.md](templates/02-dashboard-iku-per-indikator.md) | `ds_iku1_...` … `ds_iku8_...` | Bar per IKU |
+| [03-dashboard-tata-kelola-sakip.md](templates/03-dashboard-tata-kelola-sakip.md) | `v_tata_kelola_tahun` | Line / Table |
+| [04-dashboard-prodi-drilldown.md](templates/04-dashboard-prodi-drilldown.md) | `v_iku4_per_prodi` | Bar prodi |
+| [07-dashboard-kpi-aqe-off-on.md](templates/07-dashboard-kpi-aqe-off-on.md) | OFF/ON seperti 01 | Bar |
+| [05-dashboard-mlops-prediktif.md](templates/05-dashboard-mlops-prediktif.md) | — (**Grafana**) | |
+
+Indeks lengkap: [templates/README.md](templates/README.md)
 
 ---
 
@@ -260,6 +265,17 @@ Bug Superset + Iceberg saat preview tabel di panel kiri. **Solusi:** Langkah 2 �
 ### `schema gold does not exist`
 
 Pipeline belum jalan: `airflow dags trigger metadata_full_experiment`.
+
+### Query sukses tetapi **“The query returned no data”** (0 baris)
+
+SQL benar, tetapi tabel Gold kosong atau join gagal.
+
+```bash
+docker exec lhmeta-trino trino --execute "SELECT COUNT(*) FROM lakehouse.gold.fact_rekap_iku_institusi"
+docker exec lhmeta-airflow-scheduler airflow dags trigger metadata_full_experiment
+```
+
+Diagnosa lengkap + query alternatif: [templates/06-virtual-dataset-sql.md](templates/06-virtual-dataset-sql.md).
 
 ### Chart kosong
 

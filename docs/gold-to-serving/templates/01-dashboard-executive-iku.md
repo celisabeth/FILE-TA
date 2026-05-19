@@ -1,58 +1,102 @@
-# Template — Dashboard Executive IKU (Pimpinan)
+# Template 01 — Dashboard Executive IKU (8 indikator + SAKIP)
 
-> **Panduan klik Superset:** [../panduan-lengkap-dashboard-superset.md](../panduan-lengkap-dashboard-superset.md) — Langkah 3–4  
-> **AQE OFF/ON:** [07-dashboard-kpi-aqe-off-on.md](07-dashboard-kpi-aqe-off-on.md) · **Eksperimen BAB IV:** [../../eksperimen/templates/](../../eksperimen/templates/)
+**Alat:** Superset · **Schema:** `lakehouse.gold`  
+**Alur umum:** [00-alur-superset-dataset-chart.md](00-alur-superset-dataset-chart.md)
 
-**Alat:** Apache Superset · **Schema:** `lakehouse.gold` (atau `gold_aqe_off` / `gold_aqe_on` untuk audit AQE)
+---
 
-## Identitas dashboard
+## A. Dataset → Chart (langkah ini)
+
+### A1. Dataset utama (SQL Lab)
+
+| Item | Nilai |
+|------|-------|
+| Menu | **SQL** → **SQL Lab** |
+| Database | `Lakehouse Gold (IKU)` |
+| Nama dataset | `v_rekap_iku_tahun` |
+
+**SQL** (salin → **Run** → harus > 0 baris):
+
+```sql
+SELECT w.tahun, r.iku_kode, r.iku_nama,
+       r.nilai_capaian, r.nilai_target, r.satuan, r.status_capaian
+FROM lakehouse.gold.fact_rekap_iku_institusi r
+JOIN lakehouse.gold.dim_waktu w ON r.waktu_id = w.waktu_id
+ORDER BY w.tahun, r.iku_kode;
+```
+
+Jika **0 baris** → [06-virtual-dataset-sql.md](06-virtual-dataset-sql.md) bagian diagnosa.
+
+**Simpan:** **Save** → **Save dataset** → nama `v_rekap_iku_tahun`.
+
+### A2. Dataset SAKIP (opsional, SQL Lab)
+
+| Nama dataset | `v_tata_kelola_tahun` |
+| SQL | lihat [03-dashboard-tata-kelola-sakip.md](03-dashboard-tata-kelola-sakip.md) |
+
+### A3. Chart — Bar 8 IKU
+
+| Wizard | Isi |
+|--------|-----|
+| **Charts** → **+ Chart** | |
+| Dataset | `v_rekap_iku_tahun` |
+| Chart type | **Bar Chart** |
+| Dimension | `iku_kode` |
+| Metric | **AVG** `nilai_capaian` |
+| Filter | `tahun` = `2024` (sesuaikan) |
+| Save chart | `chart_executive_iku_bar` |
+
+### A4. Chart — Heatmap / tabel status (opsional)
+
+| Dataset | `v_rekap_iku_tahun` |
+| Chart type | **Pivot table** atau **Table** |
+| Rows | `iku_kode` |
+| Columns | `status_capaian` atau banding `nilai_capaian` vs `nilai_target` |
+
+### A5. Chart — Anggaran / SAKIP (opsional)
+
+| Dataset | `v_tata_kelola_tahun` |
+| Chart type | **Line Chart** |
+| Dimension | `tahun` |
+| Metric | **AVG** `persen_realisasi` |
+
+### A6. Dashboard
+
+| Item | Nilai |
+|------|-------|
+| **Dashboards** → **+ Dashboard** | `Executive IKU ITERA — Lakehouse Gold` |
+| Edit | Tambah chart A3 (+ A4, A5) |
+| Filter | `tahun` dari `v_rekap_iku_tahun` |
+| Portal embed | `/dashboards/analitik` |
+
+---
+
+## B. Checklist isian laporan (setelah chart jadi)
 
 | Item | Nilai |
 |------|-------|
 | Nama dashboard | Executive IKU ITERA |
-| URL Superset | http://localhost:18089 |
-| Dataset utama | `fact_rekap_iku_institusi` ⋈ `dim_waktu` |
-| Periode laporan | Tahun: _____ |
+| URL Superset | http://103.174.114.177:18089 |
+| Periode | Tahun: _____ |
 
-## Panel KPI (isi dari Superset / Trino)
+### Panel KPI (isi angka dari chart / export CSV)
 
-| No | IKU | Indikator | Capaian | Target | Status | Chart |
-|----|-----|-----------|---------|--------|--------|-------|
-| 1 | IKU-1 | Lulusan terserap | | % | | Bar / bullet |
-| 2 | IKU-2 | MBKM / prestasi nasional | | % | | |
-| 3 | IKU-3 | Dosen tridarma luar | | % | | |
-| 4 | IKU-4 | Kualifikasi dosen | | % | | |
-| 5 | IKU-5 | Output intl per dosen | | rasio | | |
-| 6 | IKU-6 | Prodi bermitra | | % | | |
-| 7 | IKU-7 | MK inovatif | | % | | |
-| 8 | IKU-8 | Akreditasi internasional | | % | | |
-| 9 | SAKIP | Predikat tata kelola | | BB/A | | Table |
-| 10 | Anggaran | Kinerja anggaran | | % | | Line |
+| No | IKU | Capaian | Target | Status | Chart ID |
+|----|-----|---------|--------|--------|----------|
+| 1 | IKU-1 | | | | `chart_executive_iku_bar` |
+| 2 | IKU-2 | | | | |
+| … | … | | | | |
+| 8 | IKU-8 | | | | |
+| 9 | SAKIP | | | | |
+| 10 | Anggaran | | | | line SAKIP |
 
-## Filter global
+### Screenshot
 
-| Filter | Nilai dipilih |
-|--------|---------------|
-| `dim_waktu.tahun` | |
-| `dim_prodi.nama_jurusan` | Semua / JTK / JSA / … |
+| File |
+|------|
+| superset-executive-iku-overview.png |
+| superset-executive-iku-heatmap.png |
 
-## Query verifikasi (Trino)
-
-```sql
-SELECT w.tahun, r.iku_kode, r.nilai_capaian, r.nilai_target, r.status_capaian
-FROM lakehouse.gold.fact_rekap_iku_institusi r
-JOIN lakehouse.gold.dim_waktu w ON r.waktu_id = w.waktu_id
-WHERE w.tahun = 2024
-ORDER BY r.iku_kode;
-```
-
-## Screenshot
-
-| No | File |
-|----|------|
-| 1 | superset-executive-iku-overview.png |
-| 2 | superset-executive-iku-heatmap.png |
-
-## Catatan pembahasan
+### Catatan pembahasan
 
 -

@@ -1,76 +1,91 @@
-# Template — Dashboard KPI AQE OFF & AQE ON (Superset)
+# Template 07 — Dashboard KPI AQE OFF & ON
 
-> **Panduan langkah demi langkah:** [../panduan-lengkap-dashboard-superset.md](../panduan-lengkap-dashboard-superset.md) (§ Langkah D & E)
+**Alur umum:** [00-alur-superset-dataset-chart.md](00-alur-superset-dataset-chart.md)  
+**Referensi chart:** salin dari [01-dashboard-executive-iku.md](01-dashboard-executive-iku.md), ganti database & schema saja.
 
-Duplikasi **Dashboard Executive IKU** ([01-dashboard-executive-iku.md](01-dashboard-executive-iku.md)) untuk membandingkan **salinan Gold** hasil pipeline AQE, bukan untuk mengukur speedup (speedup → Grafana Monitoring AQE).
-
----
-
-## Prasyarat
-
-- Koneksi Superset: `Lakehouse AQE OFF` dan `Lakehouse AQE ON` — lihat [`../koneksi-trino-superset.md`](../koneksi-trino-superset.md)
-- Dataset dari `gold_aqe_off.*` dan `gold_aqe_on.*` (struktur sama dengan `lakehouse.gold.*`)
+Speedup pipeline → **Grafana** (bukan template ini).
 
 ---
 
-## Dashboard OFF — `gold_aqe_off`
+## Step 1 — DATABASE (dua koneksi)
 
-| Panel | Dataset | Catatan |
-|-------|---------|---------|
-| Bar 8 IKU | `fact_rekap_iku_institusi` (koneksi OFF) | Suffix judul chart: **「AQE OFF」** |
-| Heatmap capaian | sama | |
-| Filter tahun | `dim_waktu` | |
+| Display name | SQLAlchemy URI |
+|--------------|----------------|
+| `Lakehouse AQE OFF` | `trino://admin@trino:8080/lakehouse_aqe_off` |
+| `Lakehouse AQE ON` | `trino://admin@trino:8080/lakehouse_aqe_on` |
 
-**Judul dashboard:** `Executive IKU — AQE OFF (gold_aqe_off)`
+**Settings** → **Database connections** → ulangi untuk masing-masing.
+
+Prasyarat data: DAG `aqe_full_experiment` sukses.
+
+```bash
+docker exec lhmeta-trino trino --execute "SELECT COUNT(*) FROM lakehouse.gold_aqe_off.fact_rekap_iku_institusi"
+docker exec lhmeta-trino trino --execute "SELECT COUNT(*) FROM lakehouse.gold_aqe_on.fact_rekap_iku_institusi"
+```
 
 ---
 
-## Dashboard ON — `gold_aqe_on`
+## Step 2–4 — OFF (ulangi pola template 01)
 
-Identik dengan OFF, ganti:
+### Dataset `v_rekap_iku_tahun_off`
 
-- Koneksi: **Lakehouse AQE ON**
-- Schema tabel: `gold_aqe_on`
-- Suffix: **「AQE ON」**
+| Item | Nilai |
+|------|-------|
+| SQL Lab → Database | **Lakehouse AQE OFF** |
 
-**Judul dashboard:** `Executive IKU — AQE ON (gold_aqe_on)`
+```sql
+SELECT w.tahun, r.iku_kode, r.iku_nama,
+       r.nilai_capaian, r.nilai_target, r.satuan, r.status_capaian
+FROM gold_aqe_off.fact_rekap_iku_institusi r
+JOIN gold_aqe_off.dim_waktu w ON r.waktu_id = w.waktu_id
+ORDER BY w.tahun, r.iku_kode;
+```
+
+Save dataset → `v_rekap_iku_tahun_off`.
+
+### Chart
+
+| Field | Nilai |
+|-------|-------|
+| Dataset | `v_rekap_iku_tahun_off` |
+| Type | Bar Chart |
+| Dimension | `iku_kode` |
+| Metric | AVG `nilai_capaian` |
+| Save | `chart_executive_iku_off` |
+
+### Dashboard
+
+| Nama | `Executive IKU — AQE OFF` |
+| Portal embed | `/dashboards/kpi-aqe-off` |
+
+---
+
+## Step 2–4 — ON (sama, ganti koneksi & schema)
+
+| Item | OFF | ON |
+|------|-----|-----|
+| Database SQL Lab | Lakehouse AQE OFF | Lakehouse AQE ON |
+| Schema di SQL | `gold_aqe_off` | `gold_aqe_on` |
+| Dataset | `v_rekap_iku_tahun_off` | `v_rekap_iku_tahun_on` |
+| Chart | `chart_executive_iku_off` | `chart_executive_iku_on` |
+| Dashboard | Executive IKU — AQE OFF | Executive IKU — AQE ON |
+| Portal | kpi-aqe-off | kpi-aqe-on |
 
 ---
 
 ## Verifikasi parity (SQL Lab)
 
 ```sql
--- OFF
-SELECT COUNT(*) AS n FROM gold_aqe_off.fact_rekap_iku_institusi;
-
--- ON
-SELECT COUNT(*) AS n FROM gold_aqe_on.fact_rekap_iku_institusi;
-
--- Banding nilai (harus mendekati jika data sama)
-SELECT 'OFF' AS ctx, iku_kode, nilai_capaian
-FROM gold_aqe_off.fact_rekap_iku_institusi
+SELECT 'OFF' AS ctx, COUNT(*) AS n FROM lakehouse.gold_aqe_off.fact_rekap_iku_institusi
 UNION ALL
-SELECT 'ON', iku_kode, nilai_capaian
-FROM gold_aqe_on.fact_rekap_iku_institusi
-ORDER BY iku_kode, ctx;
+SELECT 'ON', COUNT(*) FROM lakehouse.gold_aqe_on.fact_rekap_iku_institusi;
 ```
 
 ---
 
-## Embed portal
+## Checklist laporan BAB IV
 
-| Dashboard | Path portal | URL embed (contoh) |
-|-----------|-------------|-------------------|
-| OFF | `/dashboards/kpi-aqe-off` | `http://<IP>:18089/superset/dashboard/<ID_OFF>/?standalone=1` |
-| ON | `/dashboards/kpi-aqe-on` | `http://<IP>:18089/superset/dashboard/<ID_ON>/?standalone=1` |
-
-Isi ID setelah dashboard disimpan — **Atur URL Embed** di header halaman.
-
----
-
-## Laporan BAB IV
-
-| Bukti | Alat | File / screenshot |
-|-------|------|-------------------|
-| KPI parity OFF vs ON | Superset (2 dashboard) | Screenshot kedua dashboard |
-| Speedup / durasi pipeline | Grafana + metrics | `metrics/aqe_comparison_*.json` |
+| Bukti | Alat |
+|-------|------|
+| Screenshot dashboard OFF & ON | Superset |
+| Speedup / durasi | Grafana + `metrics/aqe_comparison_*.json` |
