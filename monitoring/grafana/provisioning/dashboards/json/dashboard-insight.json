@@ -8,39 +8,50 @@
   "panels": [
     {
       "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "description": "Prediksi capaian IKU (actual vs forecast) — sumber Gold / model time-series",
+      "description": "Capaian IKU per tahun (label tahun, bukan sumbu waktu). Snapshot terakhir dari metrics-exporter.",
       "fieldConfig": {
         "defaults": { "unit": "short", "decimals": 1 },
         "overrides": [
           {
-            "matcher": { "id": "byName", "options": "forecast" },
-            "properties": [{ "id": "custom.lineStyle", "value": { "fill": "dash", "dash": [10, 10] } }]
+            "matcher": { "id": "byRegexp", "options": "/forecast/i" },
+            "properties": [{ "id": "custom.fillOpacity", "value": 40 }]
           }
         ]
       },
       "gridPos": { "h": 9, "w": 12, "x": 0, "y": 0 },
       "id": 10,
       "title": "Forecast — Capaian IKU (Actual vs Prediksi)",
-      "type": "timeseries",
+      "type": "barchart",
+      "options": {
+        "orientation": "vertical",
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "single", "sort": "none" },
+        "xTickLabelRotation": 0,
+        "barWidth": 0.8,
+        "groupWidth": 0.7
+      },
       "targets": [
         {
           "expr": "lakehouse_insight_forecast{series=\"actual\"}",
+          "instant": true,
           "legendFormat": "Actual {{tahun}}"
         },
         {
           "expr": "lakehouse_insight_forecast{series=\"forecast\"}",
+          "instant": true,
           "legendFormat": "Forecast {{tahun}}"
         }
       ]
     },
     {
       "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "description": "Skor risiko capaian IKU per program studi (0–100)",
+      "description": "Skor risiko capaian IKU per prodi (0–100). Warna: merah &lt;60, kuning 60–79, hijau ≥80 — bukan status error.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
           "min": 0,
           "max": 100,
+          "decimals": 1,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -56,38 +67,58 @@
       "id": 11,
       "title": "Risk Score — per Prodi",
       "type": "bargauge",
-      "options": { "orientation": "horizontal", "displayMode": "gradient" },
+      "options": {
+        "orientation": "horizontal",
+        "displayMode": "gradient",
+        "showUnfilled": true,
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }
+      },
       "targets": [
         {
           "expr": "lakehouse_insight_risk_score",
+          "instant": true,
           "legendFormat": "{{prodi_id}}"
         }
       ]
     },
     {
       "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "description": "Indeks peluang peningkatan (clustering / rekomendasi prodi)",
-      "fieldConfig": { "defaults": { "unit": "short", "decimals": 1 }, "overrides": [] },
+      "description": "Indeks peluang peningkatan per prodi (snapshot terakhir).",
+      "fieldConfig": { "defaults": { "unit": "short", "decimals": 1, "min": 0, "max": 100 }, "overrides": [] },
       "gridPos": { "h": 9, "w": 12, "x": 0, "y": 9 },
       "id": 12,
       "title": "Opportunity — Skor Peluang per Prodi",
-      "type": "bargauge",
+      "type": "barchart",
+      "options": {
+        "orientation": "horizontal",
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "single", "sort": "none" },
+        "showValue": "always"
+      },
       "targets": [
         {
           "expr": "lakehouse_insight_opportunity_score",
+          "instant": true,
           "legendFormat": "{{prodi_id}} ({{cluster}})"
         }
       ]
     },
     {
       "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "description": "Deteksi anomali pada metrik IKU",
+      "description": "Jumlah entitas IKU ter-flag anomali (snapshot).",
       "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] },
       "gridPos": { "h": 4, "w": 6, "x": 12, "y": 9 },
       "id": 13,
       "title": "Anomalies — Jumlah Flag",
       "type": "stat",
-      "targets": [{ "expr": "lakehouse_insight_anomaly_count", "legendFormat": "anomalies" }]
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "targets": [
+        {
+          "expr": "lakehouse_insight_anomaly_count",
+          "instant": true,
+          "legendFormat": "anomalies"
+        }
+      ]
     },
     {
       "datasource": { "type": "prometheus", "uid": "prometheus" },
@@ -96,18 +127,33 @@
       "id": 14,
       "title": "Anomalies — Rate (%)",
       "type": "stat",
-      "targets": [{ "expr": "lakehouse_insight_anomaly_rate_percent", "legendFormat": "rate" }]
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "targets": [
+        {
+          "expr": "lakehouse_insight_anomaly_rate_percent",
+          "instant": true,
+          "legendFormat": "rate"
+        }
+      ]
     },
     {
       "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] },
+      "description": "Nilai metrik yang ter-flag anomali (per entitas/tahun, bukan time series).",
+      "fieldConfig": { "defaults": { "unit": "short", "decimals": 1 }, "overrides": [] },
       "gridPos": { "h": 5, "w": 12, "x": 12, "y": 13 },
       "id": 15,
       "title": "Anomalies — Nilai ter-flag",
-      "type": "timeseries",
+      "type": "barchart",
+      "options": {
+        "orientation": "horizontal",
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "single", "sort": "none" },
+        "showValue": "always"
+      },
       "targets": [
         {
           "expr": "lakehouse_insight_anomaly_flag",
+          "instant": true,
           "legendFormat": "{{entity}} {{tahun}}"
         }
       ]
@@ -121,5 +167,5 @@
   "timezone": "browser",
   "title": "Dashboard Insight — Forecast · Risk · Opportunity · Anomalies",
   "uid": "lakehouse-dashboard-insight",
-  "version": 1
+  "version": 2
 }

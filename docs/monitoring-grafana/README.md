@@ -139,6 +139,7 @@ curl -s http://localhost:9101/metrics | grep lakehouse_insight
 
 - **Panel:** *Risk Score — per Prodi* (bar gauge, threshold merah &lt; 60, hijau ≥ 80)
 - **Metrik:** `lakehouse_insight_risk_score`
+- **Bukan error:** warna merah/kuning = skor rendah menurut threshold, bukan kegagalan scrape. Panel memakai query `instant` (snapshot terakhir).
 - **Tabel Gold:** `lakehouse.gold.fact_risk_score_mlops`
 
 ### 5.3 Opportunity
@@ -148,8 +149,9 @@ curl -s http://localhost:9101/metrics | grep lakehouse_insight
 
 ### 5.4 Anomalies
 
-- **Panel:** jumlah flag, rate %, time series sampel ter-flag
+- **Panel:** jumlah flag, rate %, bar chart sampel ter-flag
 - **Metrik:** `lakehouse_insight_anomaly_count`, `lakehouse_insight_anomaly_rate_percent`, `lakehouse_insight_anomaly_flag`
+- **Catatan:** label `tahun` di Prometheus bukan sumbu waktu — jangan pakai panel *Time series* (titik hanya muncul di kanan). Dashboard v2 memakai *Bar chart* + `instant: true`.
 
 ### 5.5 MLOps pipeline
 
@@ -189,6 +191,9 @@ Template laporan:
 | Metrik tidak muncul di Prometheus | Exporter / scrape mati | `curl http://localhost:9101/metrics`; cek target di http://localhost:19090/targets |
 | Prometheus: `lookup metrics-exporter ... server misbehaving` | Container exporter crash (mis. `ModuleNotFoundError: benchmark`) | `docker compose logs metrics-exporter`; pastikan `PYTHONPATH=/app/scripts`; `docker compose up -d metrics-exporter prometheus` |
 | Panel workload Trino kosong / tidak ada `workloads_trino_*.json` | Task Trino belum dijalankan atau Gold AQE belum ada | Jalankan DAG `aqe_full_experiment` sampai `trino_workloads_off/on` sukses; atau manual §7.1 |
+| Forecast/Anomali hanya garis titik di kanan; Risk “merah” | Metrik insight = snapshot (bukan deret waktu); threshold Risk | Pull dashboard v2; `docker compose restart grafana`; Forecast/Anomali pakai bar chart |
+| Workload AQE hanya titik di kanan chart | Panel time series untuk metrik snapshot scrape | Dashboard `lakehouse-aqe-experiment` v2: workload → bar chart + `instant: true` |
+| MLOps: time series task kosong; Model Training *No data* | Duplikat panel time series; `training.models` tanpa angka | Dashboard `lakehouse-mlops-pipeline` v2; jalankan `mlops_pipeline` atau `mlops_metrics.py --demo` lalu restart exporter |
 | Dashboard tidak muncul | Path provisioning salah | Pastikan volume `./monitoring/grafana/provisioning` di `docker-compose.yml` |
 | Nilai masih demo | Inference belum mengisi payload | Cek return `inference_batch` dan field `risk_score_rows`, `forecast_series`, dll. |
 | Task duration 0 | DAG belum selesai / inst.duration null | Jalankan ulang DAG; duration terisi setelah task **success** |

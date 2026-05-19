@@ -15,38 +15,46 @@
   "panels": [
     {
       "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "description": "Durasi task DAG mlops_pipeline",
+      "description": "Durasi task DAG mlops_pipeline (snapshot terakhir dari metrics-exporter).",
       "fieldConfig": { "defaults": { "unit": "s" }, "overrides": [] },
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
       "id": 20,
       "title": "MLOps Pipeline — Task Duration",
       "type": "bargauge",
-      "options": { "orientation": "horizontal", "displayMode": "lcd" },
+      "options": {
+        "orientation": "horizontal",
+        "displayMode": "lcd",
+        "showUnfilled": true,
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }
+      },
       "targets": [
         {
           "expr": "lakehouse_mlops_task_duration_seconds",
+          "instant": true,
           "legendFormat": "{{task}}"
         }
       ]
     },
     {
       "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "description": "Metrik training dari MLflow (accuracy, MAE, dll.)",
+      "description": "Metrik numerik training (accuracy, MAE, dll.). Kosong jika DAG belum train atau hanya model placeholder — jalankan mlops_pipeline task train_models.",
       "fieldConfig": { "defaults": { "unit": "short", "decimals": 3 }, "overrides": [] },
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
       "id": 21,
       "title": "Model Training Metrics",
-      "type": "table",
+      "type": "barchart",
+      "options": {
+        "orientation": "horizontal",
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "single", "sort": "none" },
+        "showValue": "always"
+      },
       "targets": [
         {
           "expr": "lakehouse_mlops_model_metric",
-          "format": "table",
           "instant": true,
-          "legendFormat": "{{model}} {{metric}}"
+          "legendFormat": "{{model}} — {{metric}}"
         }
-      ],
-      "transformations": [
-        { "id": "labelsToFields", "options": { "mode": "columns" } }
       ]
     },
     {
@@ -64,8 +72,13 @@
       "id": 23,
       "title": "Forecast points",
       "type": "stat",
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
       "targets": [
-        { "expr": "count(lakehouse_insight_forecast)", "legendFormat": "points" }
+        {
+          "expr": "count(lakehouse_insight_forecast)",
+          "instant": true,
+          "legendFormat": "points"
+        }
       ]
     },
     {
@@ -75,8 +88,13 @@
       "id": 24,
       "title": "Risk Score (prodi)",
       "type": "stat",
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
       "targets": [
-        { "expr": "count(lakehouse_insight_risk_score)", "legendFormat": "prodi" }
+        {
+          "expr": "count(lakehouse_insight_risk_score)",
+          "instant": true,
+          "legendFormat": "prodi"
+        }
       ]
     },
     {
@@ -86,8 +104,13 @@
       "id": 25,
       "title": "Opportunity (prodi)",
       "type": "stat",
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
       "targets": [
-        { "expr": "count(lakehouse_insight_opportunity_score)", "legendFormat": "prodi" }
+        {
+          "expr": "count(lakehouse_insight_opportunity_score)",
+          "instant": true,
+          "legendFormat": "prodi"
+        }
       ]
     },
     {
@@ -97,21 +120,12 @@
       "id": 26,
       "title": "Anomalies flagged",
       "type": "stat",
-      "targets": [
-        { "expr": "lakehouse_insight_anomaly_count", "legendFormat": "count" }
-      ]
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": { "defaults": { "unit": "s" }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 16 },
-      "id": 27,
-      "title": "MLOps Task Duration (time series scrape)",
-      "type": "timeseries",
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
       "targets": [
         {
-          "expr": "lakehouse_mlops_task_duration_seconds",
-          "legendFormat": "{{task}}"
+          "expr": "lakehouse_insight_anomaly_count",
+          "instant": true,
+          "legendFormat": "count"
         }
       ]
     }
@@ -124,5 +138,5 @@
   "timezone": "browser",
   "title": "MLOps Pipeline Monitoring",
   "uid": "lakehouse-mlops-pipeline",
-  "version": 1
+  "version": 2
 }

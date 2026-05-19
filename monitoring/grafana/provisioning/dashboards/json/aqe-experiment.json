@@ -20,6 +20,7 @@
       "targets": [
         {
           "expr": "lakehouse_aqe_silver_speedup_percent",
+          "instant": true,
           "legendFormat": "speedup %"
         }
       ]
@@ -31,23 +32,37 @@
       "id": 2,
       "title": "Pipeline Duration (seconds)",
       "type": "bargauge",
+      "options": {
+        "orientation": "horizontal",
+        "displayMode": "gradient",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }
+      },
       "targets": [
         {
           "expr": "lakehouse_pipeline_duration_seconds",
+          "instant": true,
           "legendFormat": "{{pipeline}} {{aqe_scenario}}"
         }
       ]
     },
     {
       "datasource": { "type": "prometheus", "uid": "prometheus" },
-      "fieldConfig": { "defaults": { "unit": "s" }, "overrides": [] },
+      "description": "Durasi workload W1–W6 (snapshot terakhir). Bukan deret waktu — gunakan bar chart, bukan time series.",
+      "fieldConfig": { "defaults": { "unit": "s", "decimals": 3 }, "overrides": [] },
       "gridPos": { "h": 10, "w": 24, "x": 0, "y": 8 },
       "id": 3,
       "title": "Workload Duration — Spark & Trino",
-      "type": "timeseries",
+      "type": "barchart",
+      "options": {
+        "orientation": "horizontal",
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "single", "sort": "none" },
+        "showValue": "always"
+      },
       "targets": [
         {
           "expr": "lakehouse_workload_duration_seconds",
+          "instant": true,
           "legendFormat": "{{workload_id}} {{engine}} {{aqe_scenario}}"
         }
       ]
@@ -61,5 +76,5 @@
   "timezone": "browser",
   "title": "Lakehouse AQE Experiment",
   "uid": "lakehouse-aqe-experiment",
-  "version": 1
+  "version": 2
 }
