@@ -6,7 +6,7 @@ Panduan observabilitas untuk **empat use case prediktif** (Forecast, Risk Score,
 
 | Service | URL | Login |
 |---------|-----|-------|
-| **Grafana** | http://localhost:13001 | admin / admin |
+| **Grafana** | http://localhost:13001 (VM: set `LHINSIGHT_GRAFANA_PUBLIC_URL` di `.env`) | admin / admin |
 | **Prometheus** | http://localhost:19090 | — |
 | **Metrics exporter** | http://localhost:9101/metrics | — |
 | **MLflow** | http://localhost:15500 | — |
@@ -17,6 +17,8 @@ Panduan observabilitas untuk **empat use case prediktif** (Forecast, Risk Score,
 ## 1. Dashboard yang tersedia
 
 Provisioning otomatis dari [`../../monitoring/grafana/provisioning/`](../../monitoring/grafana/provisioning/). Setelah Grafana start, buka **Dashboards → folder Lakehouse Insight**.
+
+**Portal embed:** set URL lengkap di `.env` (`LHINSIGHT_GRAFANA_EMBED_*_URL`) — lihat [`.env.example`](../../.env.example) dan [`../portal/README.md`](../portal/README.md) §6.
 
 | Dashboard | UID | Isi panel |
 |-----------|-----|-----------|

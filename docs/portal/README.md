@@ -84,16 +84,28 @@ Service Compose: **`portal`** · container: **`lhmeta-portal`** · volume: `./po
 
 | Variabel | Default | Keterangan |
 |----------|---------|------------|
+| `LHINSIGHT_PUBLIC_HOST` | `103.174.114.177` | IP/domain VM — dipakai portal & `GF_SERVER_ROOT_URL` Grafana |
 | `LHINSIGHT_PORTAL_PORT` | `13000` | Port host (alias lama: `LHMETA_CATALOG_PORT`) |
 | `LHINSIGHT_PORTAL_PRODUCTION` | `0` | `1` = `yarn build` + `next start` |
 | `LHINSIGHT_PORTAL_ATLAS_URL` | `http://atlas:21000` | Atlas dari container (proxy API) |
-| `LHINSIGHT_GRAFANA_PUBLIC_URL` | `http://localhost:13001` | URL browser untuk iframe Grafana |
-| `LHINSIGHT_SUPERSET_PUBLIC_URL` | `http://localhost:18089` | URL browser untuk iframe Superset |
-| `LHINSIGHT_PROMETHEUS_PUBLIC_URL` | `http://localhost:19090` | Opsional — link Prometheus |
+| `LHINSIGHT_GRAFANA_PUBLIC_URL` | `http://<host>:13001` | Base URL Grafana (browser) |
+| `LHINSIGHT_GRAFANA_EMBED_INSIGHT_URL` | — | URL lengkap dashboard Insight (dari Share di Grafana) |
+| `LHINSIGHT_GRAFANA_EMBED_AQE_URL` | — | URL dashboard AQE Experiment |
+| `LHINSIGHT_GRAFANA_EMBED_MLOPS_URL` | — | URL dashboard MLOps Pipeline |
+| `LHINSIGHT_GRAFANA_EMBED_*_EXTERNAL_URL` | — | Tab baru (opsional, tanpa kiosk) |
+| `LHINSIGHT_SUPERSET_PUBLIC_URL` | `http://<host>:18089` | URL browser untuk iframe Superset |
+| `LHINSIGHT_PROMETHEUS_PUBLIC_URL` | `http://<host>:19090` | Opsional — link Prometheus |
 
-Salin ke `.env` dari [`.env.example`](../../.env.example).
+Salin ke `.env` dari [`.env.example`](../../.env.example) — contoh untuk VM `103.179.57.24` sudah diisi di sana.
 
-> **Penting:** `NEXT_PUBLIC_*` harus URL yang dibuka **browser di mesin pengguna** (biasanya `localhost`), bukan hostname Docker internal (`grafana`, `superset`).
+> **Penting:** URL harus yang dibuka **browser pengguna** (IP publik VM), bukan hostname Docker (`grafana`, `superset`).
+
+Setelah ubah `.env`:
+
+```bash
+docker compose up -d grafana portal
+# production portal: LHINSIGHT_PORTAL_PRODUCTION=1 docker compose up -d --build portal
+```
 
 ---
 
@@ -110,17 +122,30 @@ Salin ke `.env` dari [`.env.example`](../../.env.example).
 
 ## 6. Embed Superset & Grafana
 
-Konfigurasi UID Grafana (provisioned):
+### URL dashboard (disarankan lewat `.env`)
 
-| Halaman portal | Dashboard Grafana |
-|----------------|-------------------|
-| `/dashboards/insight` | `lakehouse-dashboard-insight` |
-| `/dashboards/monitoring-aqe` | `lakehouse-aqe-experiment` |
-| `/dashboards/monitoring-mlops` | `lakehouse-mlops-pipeline` |
+| Halaman portal | Variabel `.env` |
+|----------------|-----------------|
+| `/dashboards/insight` | `LHINSIGHT_GRAFANA_EMBED_INSIGHT_URL` |
+| `/dashboards/monitoring-aqe` | `LHINSIGHT_GRAFANA_EMBED_AQE_URL` |
+| `/dashboards/monitoring-mlops` | `LHINSIGHT_GRAFANA_EMBED_MLOPS_URL` |
 
-Grafana memerlukan `GF_SECURITY_ALLOW_EMBEDDING=true` (sudah di `docker-compose.yml`).
+Salin URL dari Grafana → **Share** → browser link (termasuk slug `/d/<uid>/<slug>`). Portal menambahkan `&kiosk` otomatis pada iframe.
 
-Login di iframe (sekali per layanan): **admin / admin**.
+Fallback tanpa env: UID provisioned `lakehouse-dashboard-insight`, `lakehouse-aqe-experiment`, `lakehouse-mlops-pipeline`.
+
+### Grafana gagal load di iframe
+
+Pesan *"Grafana has failed to load its application files"* → set di `.env`:
+
+- `LHINSIGHT_PUBLIC_HOST=<IP VM>`
+- `LHINSIGHT_GRAFANA_PUBLIC_URL=http://<IP VM>:13001`
+
+Lalu `docker compose up -d grafana` (`GF_SERVER_ROOT_URL` sudah di `docker-compose.yml`).
+
+Jika pernah simpan URL lewat modal portal, hapus override lama: `rm -f portal-main/data/embed-config.json` lalu restart portal.
+
+Grafana: `GF_SECURITY_ALLOW_EMBEDDING=true` (sudah di compose). Login iframe: **admin / admin**.
 
 Detail KPI Gold & Superset: [`../gold-to-serving/README.md`](../gold-to-serving/README.md)  
 Detail Grafana: [`../monitoring-grafana/README.md`](../monitoring-grafana/README.md)

@@ -9,10 +9,11 @@ import { readEmbedConfigFile, writeEmbedConfigFile } from '../../../helpers/embe
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 	if (req.method === 'GET') {
 		const fromFile = await readEmbedConfigFile();
-		const config = fromFile || defaultEmbedConfig();
+		// Env (.env / docker-compose) sebagai dasar; file hanya menimpa field yang disimpan UI
+		const config = fromFile ? mergeEmbedConfig(fromFile) : defaultEmbedConfig();
 		return res.status(200).json({
 			config,
-			source: fromFile ? 'file' : 'env',
+			source: fromFile ? 'file+env' : 'env',
 		});
 	}
 

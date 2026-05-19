@@ -36,6 +36,13 @@ function envOrDefault(name: string, fallback: string): string {
 	return fallback;
 }
 
+/** Baca env NEXT_PUBLIC_* atau LHINSIGHT_* (docker-compose). */
+function envPublicOrLhinsight(nextPublic: string, lhinsight: string, fallback = ''): string {
+	const v = envOrDefault(nextPublic, '');
+	if (v) return v;
+	return envOrDefault(lhinsight, fallback);
+}
+
 /** Host publik untuk mengganti localhost (env atau hostname browser). */
 export function resolvePublicHost(): string | null {
 	const fromEnv =
@@ -130,7 +137,7 @@ export function defaultEmbedConfig(): DashboardEmbedConfig {
 			'NEXT_PUBLIC_PROMETHEUS_URL',
 			`http://localhost:${SERVICE_PORTS.prometheus}`,
 		),
-		links: {},
+		links: grafanaLinksFromEnv() || {},
 	};
 	return normalizeEmbedConfigForClient(raw);
 }
@@ -138,6 +145,54 @@ export function defaultEmbedConfig(): DashboardEmbedConfig {
 function grafanaDashboardUrl(base: string, uid: string, kiosk = true): string {
 	const q = kiosk ? '?orgId=1&kiosk' : '?orgId=1';
 	return `${stripTrailingSlash(base)}/d/${uid}${q}`;
+}
+
+/** Tambah kiosk untuk iframe embed jika belum ada. */
+function ensureGrafanaKiosk(url: string): string {
+	const trimmed = url.trim();
+	if (!trimmed) return trimmed;
+	if (/[?&]kiosk(=|&|$)/i.test(trimmed)) return trimmed;
+	return trimmed.includes('?') ? `${trimmed}&kiosk` : `${trimmed}?kiosk`;
+}
+
+type GrafanaLinkKey = 'grafanaInsight' | 'grafanaAqe' | 'grafanaMlops';
+
+const GRAFANA_ENV_LINKS: Array<{
+	key: GrafanaLinkKey;
+	embedUrlEnv: string;
+	externalUrlEnv: string;
+}> = [
+	{
+		key: 'grafanaInsight',
+		embedUrlEnv: 'NEXT_PUBLIC_GRAFANA_EMBED_INSIGHT_URL',
+		externalUrlEnv: 'NEXT_PUBLIC_GRAFANA_EMBED_INSIGHT_EXTERNAL_URL',
+	},
+	{
+		key: 'grafanaAqe',
+		embedUrlEnv: 'NEXT_PUBLIC_GRAFANA_EMBED_AQE_URL',
+		externalUrlEnv: 'NEXT_PUBLIC_GRAFANA_EMBED_AQE_EXTERNAL_URL',
+	},
+	{
+		key: 'grafanaMlops',
+		embedUrlEnv: 'NEXT_PUBLIC_GRAFANA_EMBED_MLOPS_URL',
+		externalUrlEnv: 'NEXT_PUBLIC_GRAFANA_EMBED_MLOPS_EXTERNAL_URL',
+	},
+];
+
+/** Override URL dashboard Grafana dari env (docker-compose / .env). */
+function grafanaLinksFromEnv(): DashboardEmbedConfig['links'] {
+	const out: NonNullable<DashboardEmbedConfig['links']> = {};
+	for (const spec of GRAFANA_ENV_LINKS) {
+		const lhEmbed = spec.embedUrlEnv.replace('NEXT_PUBLIC_', 'LHINSIGHT_');
+		const lhExt = spec.externalUrlEnv.replace('NEXT_PUBLIC_', 'LHINSIGHT_');
+		const externalRaw = envPublicOrLhinsight(spec.externalUrlEnv, lhExt).trim();
+		const embedRaw = envPublicOrLhinsight(spec.embedUrlEnv, lhEmbed).trim();
+		if (!embedRaw && !externalRaw) continue;
+		const externalUrl = externalRaw || embedRaw;
+		const embedUrl = embedRaw ? ensureGrafanaKiosk(embedRaw) : ensureGrafanaKiosk(externalUrl);
+		out[spec.key] = { embedUrl, externalUrl };
+	}
+	return Object.keys(out).length ? out : undefined;
 }
 
 /** Path atau URL penuh embed Superset (dashboard/?standalone=1). */

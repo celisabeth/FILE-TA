@@ -25,6 +25,7 @@ const nextConfig = withInterceptStdout(
 			'catalog.insightera.cloud',
 			'www.catalog.insightera.cloud',
 			'103.174.114.177',
+			'103.179.57.24',
 			'localhost',
 			'127.0.0.1',
 			...(process.env.NEXT_ALLOWED_DEV_ORIGINS || '')
@@ -45,6 +46,30 @@ const nextConfig = withInterceptStdout(
 		env: {
 			NEXT_PUBLIC_ATLAS_URL: process.env.NEXT_PUBLIC_ATLAS_URL || 'http://localhost:21000',
 			NEXT_PUBLIC_GRAFANA_URL: process.env.NEXT_PUBLIC_GRAFANA_URL || 'http://localhost:13001',
+			NEXT_PUBLIC_GRAFANA_EMBED_INSIGHT_URL:
+				process.env.NEXT_PUBLIC_GRAFANA_EMBED_INSIGHT_URL ||
+				process.env.LHINSIGHT_GRAFANA_EMBED_INSIGHT_URL ||
+				'',
+			NEXT_PUBLIC_GRAFANA_EMBED_INSIGHT_EXTERNAL_URL:
+				process.env.NEXT_PUBLIC_GRAFANA_EMBED_INSIGHT_EXTERNAL_URL ||
+				process.env.LHINSIGHT_GRAFANA_EMBED_INSIGHT_EXTERNAL_URL ||
+				'',
+			NEXT_PUBLIC_GRAFANA_EMBED_AQE_URL:
+				process.env.NEXT_PUBLIC_GRAFANA_EMBED_AQE_URL ||
+				process.env.LHINSIGHT_GRAFANA_EMBED_AQE_URL ||
+				'',
+			NEXT_PUBLIC_GRAFANA_EMBED_AQE_EXTERNAL_URL:
+				process.env.NEXT_PUBLIC_GRAFANA_EMBED_AQE_EXTERNAL_URL ||
+				process.env.LHINSIGHT_GRAFANA_EMBED_AQE_EXTERNAL_URL ||
+				'',
+			NEXT_PUBLIC_GRAFANA_EMBED_MLOPS_URL:
+				process.env.NEXT_PUBLIC_GRAFANA_EMBED_MLOPS_URL ||
+				process.env.LHINSIGHT_GRAFANA_EMBED_MLOPS_URL ||
+				'',
+			NEXT_PUBLIC_GRAFANA_EMBED_MLOPS_EXTERNAL_URL:
+				process.env.NEXT_PUBLIC_GRAFANA_EMBED_MLOPS_EXTERNAL_URL ||
+				process.env.LHINSIGHT_GRAFANA_EMBED_MLOPS_EXTERNAL_URL ||
+				'',
 			NEXT_PUBLIC_SUPERSET_URL: process.env.NEXT_PUBLIC_SUPERSET_URL || 'http://localhost:18089',
 			NEXT_PUBLIC_SUPERSET_EMBED_PATH:
 				process.env.NEXT_PUBLIC_SUPERSET_EMBED_PATH || '/superset/welcome/?standalone=1',
