@@ -41,6 +41,14 @@ JOIN gold_aqe_off.dim_waktu w ON r.waktu_id = w.waktu_id
 ORDER BY w.tahun, r.iku_kode;
 ```
 
+Jika **0 baris** (belum re-run `aqe_full_experiment` setelah patch `build_dim_waktu`), pakai join alternatif — ganti schema `gold_aqe_off` / `gold_aqe_on` sesuai cabang:
+
+```sql
+JOIN gold_aqe_off.dim_waktu w
+  ON w.tahun = CAST(r.waktu_id / 100 AS INTEGER)
+ AND w.bulan = MOD(r.waktu_id, 100)
+```
+
 Save dataset → `v_rekap_iku_tahun_off`.
 
 ### Chart
