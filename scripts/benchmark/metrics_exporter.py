@@ -11,7 +11,7 @@ import os
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 
-from benchmark._common import metrics_dir
+from benchmark._common import find_latest_metric_file, metrics_dir
 
 
 def _escape_label(s: str) -> str:
@@ -34,11 +34,13 @@ def _read_json_if_exists(path: Path) -> dict | None:
         return None
 
 
-def _export_aqe_metrics(lines: list[str], metrics_dir: Path) -> None:
-    latest = metrics_dir / "latest" / "aqe" / "experiment_summary.json"
-    if not latest.is_file():
-        latest = metrics_dir / "experiment_summary_latest.json"
-    if latest.is_file():
+def _export_aqe_metrics(lines: list[str], root: Path) -> None:
+    latest = find_latest_metric_file(root, "experiment_summary.json")
+    if latest is None:
+        latest = find_latest_metric_file(root, "experiment_summary_*.json")
+    if latest is None:
+        latest = root / "experiment_summary_latest.json"
+    if latest and latest.is_file():
         try:
             summary = json.loads(latest.read_text(encoding="utf-8"))
             cmp_ = summary.get("aqe_comparison", {})
@@ -66,11 +68,11 @@ def _export_aqe_metrics(lines: list[str], metrics_dir: Path) -> None:
         ("bronze_to_silver_aqe_ON_*.json", "bronze_to_silver", "ON"),
         ("silver_to_gold_*.json", "silver_to_gold", None),
     ):
-        files = sorted(metrics_dir.glob(pattern), key=lambda p: p.stat().st_mtime)
-        if not files:
+        path = find_latest_metric_file(root, pattern)
+        if not path:
             continue
         try:
-            data = json.loads(files[-1].read_text(encoding="utf-8"))
+            data = json.loads(path.read_text(encoding="utf-8"))
             dur = data.get("duration_sec")
             if dur is None:
                 continue
@@ -89,11 +91,11 @@ def _export_aqe_metrics(lines: list[str], metrics_dir: Path) -> None:
         ("workloads_trino_ctx_OFF_*.json", "trino"),
         ("workloads_trino_ctx_ON_*.json", "trino"),
     ):
-        files = sorted(metrics_dir.glob(pattern), key=lambda p: p.stat().st_mtime)
-        if not files:
+        path = find_latest_metric_file(root, pattern)
+        if not path:
             continue
         try:
-            data = json.loads(files[-1].read_text(encoding="utf-8"))
+            data = json.loads(path.read_text(encoding="utf-8"))
             scenario = str(
                 data.get("aqe_scenario") or data.get("aqe_context_silver") or "unknown"
             ).upper()
@@ -117,10 +119,12 @@ def _export_aqe_metrics(lines: list[str], metrics_dir: Path) -> None:
             continue
 
 
-def _export_mlops_metrics(lines: list[str], metrics_dir: Path) -> None:
-    mlops_path = metrics_dir / "latest" / "mlops" / "mlops_metrics.json"
-    if not mlops_path.is_file():
-        mlops_path = metrics_dir / "mlops_metrics_latest.json"
+def _export_mlops_metrics(lines: list[str], root: Path) -> None:
+    mlops_path = find_latest_metric_file(root, "mlops_metrics.json")
+    if mlops_path is None:
+        mlops_path = find_latest_metric_file(root, "mlops_metrics_latest.json")
+    if mlops_path is None:
+        mlops_path = root / "mlops_metrics_latest.json"
     if not mlops_path.is_file():
         return
     try:
@@ -221,10 +225,22 @@ def _export_mlops_metrics(lines: list[str], metrics_dir: Path) -> None:
             )
 
 
-def build_prometheus_text(mdir: Path) -> str:
+def _metrics_search_root(mdir: Path) -> Path:
+    if (mdir / "runs").is_dir() or (mdir / "latest").is_dir():
+        return mdir
+    try:
+        from benchmark.experiment_run import root_metrics_dir
+
+        return root_metrics_dir()
+    except Exception:
+        return mdir
+
+
+def build_prometheus_text(mdir: Path | None = None) -> str:
+    root = _metrics_search_root(mdir or metrics_dir())
     lines: list[str] = []
-    _export_aqe_metrics(lines, mdir)
-    _export_mlops_metrics(lines, mdir)
+    _export_aqe_metrics(lines, root)
+    _export_mlops_metrics(lines, root)
     if not lines:
         lines.append("# No metrics yet — jalankan pipeline eksperimen terlebih dahulu\n")
     return "".join(lines)

@@ -51,6 +51,8 @@ x-airflow-common-env: &airflow-common-env
   SPARK_DRIVER_MEMORY: "1536m"
   AIRFLOW__SCHEDULER__TASK_QUEUED_TIMEOUT: "600"
   SPARK_MASTER: "spark://spark-master:7077"
+  TRINO_URL: "http://trino:8080"
+  TRINO_USER: "admin"
 
 services:
 
@@ -602,6 +604,8 @@ services:
     depends_on:
       airflow-webserver:
         condition: service_healthy
+      trino:
+        condition: service_started
     command: scheduler
     environment:
       <<: *airflow-common-env

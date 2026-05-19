@@ -188,9 +188,35 @@ Template laporan:
 | Panel *No data* | `mlops_metrics_latest.json` belum ada | Jalankan §4.1 atau trigger `mlops_pipeline` |
 | Metrik tidak muncul di Prometheus | Exporter / scrape mati | `curl http://localhost:9101/metrics`; cek target di http://localhost:19090/targets |
 | Prometheus: `lookup metrics-exporter ... server misbehaving` | Container exporter crash (mis. `ModuleNotFoundError: benchmark`) | `docker compose logs metrics-exporter`; pastikan `PYTHONPATH=/app/scripts`; `docker compose up -d metrics-exporter prometheus` |
+| Panel workload Trino kosong / tidak ada `workloads_trino_*.json` | Task Trino belum dijalankan atau Gold AQE belum ada | Jalankan DAG `aqe_full_experiment` sampai `trino_workloads_off/on` sukses; atau manual §7.1 |
 | Dashboard tidak muncul | Path provisioning salah | Pastikan volume `./monitoring/grafana/provisioning` di `docker-compose.yml` |
 | Nilai masih demo | Inference belum mengisi payload | Cek return `inference_batch` dan field `risk_score_rows`, `forecast_series`, dll. |
 | Task duration 0 | DAG belum selesai / inst.duration null | Jalankan ulang DAG; duration terisi setelah task **success** |
+
+### 7.1 Workload Trino (W4–W6) — generate JSON & Grafana
+
+Prasyarat: Trino jalan, Gold AQE terisi (`silver_to_gold_off/on` sukses di DAG `aqe_full_experiment`).
+
+```bash
+# Cek tabel Gold AQE OFF
+docker exec lhmeta-trino trino --execute "SHOW TABLES FROM lakehouse_aqe_off.gold_aqe_off"
+
+# Jalankan workload Trino (OFF lalu ON)
+docker exec lhmeta-airflow-scheduler python /opt/airflow/scripts/benchmark/run_trino_workloads.py --aqe-context OFF
+docker exec lhmeta-airflow-scheduler python /opt/airflow/scripts/benchmark/run_trino_workloads.py --aqe-context ON
+
+# Verifikasi artefak
+ls -la metrics/workloads_trino_ctx_*.json metrics/latest/aqe/workloads_trino_ctx_*.json 2>/dev/null
+curl -s http://localhost:9101/metrics | grep 'lakehouse_workload_duration_seconds.*trino'
+```
+
+Atau trigger DAG penuh:
+
+```bash
+docker exec lhmeta-airflow-scheduler airflow dags trigger aqe_full_experiment
+```
+
+Panel Grafana **Workload Duration — Spark & Trino** memakai `lakehouse_workload_duration_seconds{engine="trino"}`.
 
 Restart stack monitoring:
 

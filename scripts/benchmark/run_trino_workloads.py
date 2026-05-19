@@ -143,6 +143,12 @@ def run_workloads(aqe_context: str = "unknown") -> dict:
     out = metrics_dir() / f"workloads_trino_ctx_{ctx}_{ts}.json"
     write_json(out, payload)
     payload["metrics_file"] = str(out)
+    try:
+        from benchmark.experiment_run import mirror_to_latest_slot
+
+        mirror_to_latest_slot("aqe", out.name, f"workloads_trino_ctx_{ctx}.json")
+    except Exception:
+        pass
     logger.info("Trino workloads metrics → %s", out)
     return payload
 

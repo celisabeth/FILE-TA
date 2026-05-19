@@ -15,12 +15,23 @@ from pathlib import Path
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from benchmark._common import load_json, metrics_dir, speedup_pct, throughput_rows_per_sec, utc_now, write_json
+from benchmark._common import (
+    find_latest_metric_file,
+    load_json,
+    metrics_dir,
+    speedup_pct,
+    throughput_rows_per_sec,
+    utc_now,
+    write_json,
+)
 
 logger = logging.getLogger("benchmark.compare")
 
 
 def _latest(pattern: str, directory: Path) -> Path | None:
+    found = find_latest_metric_file(directory, pattern)
+    if found:
+        return found
     files = sorted(directory.glob(pattern), key=lambda p: p.stat().st_mtime)
     return files[-1] if files else None
 

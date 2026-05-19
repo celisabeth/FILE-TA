@@ -61,6 +61,31 @@ def load_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def find_latest_metric_file(root: Path, pattern: str) -> Path | None:
+    """File metrik terbaru di root, runs/*, atau latest/{track}/."""
+    candidates: list[Path] = []
+    candidates.extend(root.glob(pattern))
+    candidates.extend(root.glob(f"runs/*/{pattern}"))
+    latest_root = root / "latest"
+    if latest_root.is_dir():
+        candidates.extend(latest_root.glob(f"*/{pattern}"))
+        for track in ("aqe", "metadata", "mlops"):
+            ptr = latest_root / f"{track}.json"
+            if not ptr.is_file():
+                continue
+            try:
+                data = json.loads(ptr.read_text(encoding="utf-8"))
+                rel = data.get("dir")
+                if rel:
+                    candidates.extend((root / rel).glob(pattern))
+            except (json.JSONDecodeError, OSError):
+                continue
+    files = [p for p in candidates if p.is_file()]
+    if not files:
+        return None
+    return max(files, key=lambda p: p.stat().st_mtime)
+
+
 def speedup_pct(baseline_sec: float, comparison_sec: float) -> float | None:
     """Persen perbaikan durasi baseline (AQE OFF) vs comparison (AQE ON). Positif = ON lebih cepat."""
     if baseline_sec is None or comparison_sec is None:

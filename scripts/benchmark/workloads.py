@@ -12,7 +12,12 @@ from __future__ import annotations
 
 from typing import TypedDict
 
-from spark.lakehouse_catalog import bronze_table, gold_schema, silver_schema
+from spark.lakehouse_catalog import (
+    bronze_table,
+    gold_schema,
+    silver_schema,
+    trino_catalog_for_scenario,
+)
 from spark.aqe_config import resolve_aqe_scenario
 
 
@@ -69,6 +74,7 @@ def spark_silver_workloads(aqe_scenario: str | None = None) -> list[Workload]:
 
 def trino_gold_workloads(aqe_scenario: str | None = None) -> list[Workload]:
     sc = resolve_aqe_scenario(aqe_scenario)
+    catalog = trino_catalog_for_scenario(sc)
     gold = gold_schema(sc)
     return [
         {
@@ -78,8 +84,8 @@ def trino_gold_workloads(aqe_scenario: str | None = None) -> list[Workload]:
             "description": "Join fact_iku1_lulusan ⋈ dim_prodi",
             "sql": f"""
                 SELECT p.nama_prodi, COUNT(*) AS n
-                FROM lakehouse.{gold}.fact_iku1_lulusan f
-                JOIN lakehouse.{gold}.dim_prodi p ON f.prodi_id = p.prodi_id
+                FROM {catalog}.{gold}.fact_iku1_lulusan f
+                JOIN {catalog}.{gold}.dim_prodi p ON f.prodi_id = p.prodi_id
                 GROUP BY p.nama_prodi
             """,
         },
@@ -90,8 +96,8 @@ def trino_gold_workloads(aqe_scenario: str | None = None) -> list[Workload]:
             "description": "Agregasi rekap IKU per tahun",
             "sql": f"""
                 SELECT w.tahun, AVG(r.nilai_capaian) AS avg_capaian
-                FROM lakehouse.{gold}.fact_rekap_iku_institusi r
-                JOIN lakehouse.{gold}.dim_waktu w ON r.waktu_id = w.waktu_id
+                FROM {catalog}.{gold}.fact_rekap_iku_institusi r
+                JOIN {catalog}.{gold}.dim_waktu w ON r.waktu_id = w.waktu_id
                 GROUP BY w.tahun
             """,
         },
@@ -102,7 +108,7 @@ def trino_gold_workloads(aqe_scenario: str | None = None) -> list[Workload]:
             "description": "Filter status capaian pada fact rekap",
             "sql": f"""
                 SELECT iku_kode, status_capaian, nilai_capaian
-                FROM lakehouse.{gold}.fact_rekap_iku_institusi
+                FROM {catalog}.{gold}.fact_rekap_iku_institusi
                 WHERE status_capaian = 'Tidak Tercapai'
             """,
         },
