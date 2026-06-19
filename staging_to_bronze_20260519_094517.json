@@ -1,0 +1,1386 @@
+{
+  "pipeline": "staging_to_bronze",
+  "started_at": "2026-05-19T09:42:45.214359+00:00",
+  "ended_at": "2026-05-19T09:45:17.094198+00:00",
+  "duration_sec": 151.88,
+  "summary": {
+    "tables_total": 15,
+    "tables_written": 15,
+    "rows_written": 37538
+  },
+  "tables": {
+    "raw_fakultas": {
+      "table_name": "raw_fakultas",
+      "row_count": 3,
+      "column_count": 4,
+      "columns": {
+        "fakultas_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 3,
+          "completeness_pct": 100.0
+        },
+        "nama_fakultas": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 3,
+          "completeness_pct": 100.0
+        },
+        "status": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 1,
+          "completeness_pct": 100.0
+        },
+        "ingested_at": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 1,
+          "completeness_pct": 100.0
+        }
+      },
+      "schema": {
+        "fakultas_id": "StringType()",
+        "nama_fakultas": "StringType()",
+        "status": "StringType()",
+        "ingested_at": "StringType()"
+      },
+      "pii_columns": [],
+      "profiled_at": "2026-05-19T09:43:55.848146Z"
+    },
+    "raw_organisasi_itera": {
+      "table_name": "raw_organisasi_itera",
+      "row_count": 17,
+      "column_count": 7,
+      "columns": {
+        "org_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 17,
+          "completeness_pct": 100.0
+        },
+        "nama_organisasi": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 17,
+          "completeness_pct": 100.0
+        },
+        "tipe": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 8,
+          "completeness_pct": 100.0
+        },
+        "parent_org_id": {
+          "data_type": "StringType()",
+          "null_count": 1,
+          "null_pct": 5.88,
+          "distinct_count": 5,
+          "completeness_pct": 94.12
+        },
+        "tingkat": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 4,
+          "completeness_pct": 100.0
+        },
+        "fakultas_id": {
+          "data_type": "StringType()",
+          "null_count": 13,
+          "null_pct": 76.47,
+          "distinct_count": 3,
+          "completeness_pct": 23.53
+        },
+        "ingested_at": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 1,
+          "completeness_pct": 100.0
+        }
+      },
+      "schema": {
+        "org_id": "StringType()",
+        "nama_organisasi": "StringType()",
+        "tipe": "StringType()",
+        "parent_org_id": "StringType()",
+        "tingkat": "StringType()",
+        "fakultas_id": "StringType()",
+        "ingested_at": "StringType()"
+      },
+      "pii_columns": [],
+      "profiled_at": "2026-05-19T09:44:09.817213Z"
+    },
+    "raw_prodi": {
+      "table_name": "raw_prodi",
+      "row_count": 42,
+      "column_count": 9,
+      "columns": {
+        "prodi_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 42,
+          "completeness_pct": 100.0
+        },
+        "nama_prodi": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 42,
+          "completeness_pct": 100.0
+        },
+        "jenjang": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 2,
+          "completeness_pct": 100.0
+        },
+        "fakultas_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 3,
+          "completeness_pct": 100.0
+        },
+        "jurusan_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 3,
+          "completeness_pct": 100.0
+        },
+        "nama_fakultas": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 3,
+          "completeness_pct": 100.0
+        },
+        "tahun_berdiri": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 6,
+          "completeness_pct": 100.0
+        },
+        "status": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 1,
+          "completeness_pct": 100.0
+        },
+        "ingested_at": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 1,
+          "completeness_pct": 100.0
+        }
+      },
+      "schema": {
+        "prodi_id": "StringType()",
+        "nama_prodi": "StringType()",
+        "jenjang": "StringType()",
+        "fakultas_id": "StringType()",
+        "jurusan_id": "StringType()",
+        "nama_fakultas": "StringType()",
+        "tahun_berdiri": "StringType()",
+        "status": "StringType()",
+        "ingested_at": "StringType()"
+      },
+      "pii_columns": [],
+      "profiled_at": "2026-05-19T09:44:20.136711Z"
+    },
+    "raw_mahasiswa": {
+      "table_name": "raw_mahasiswa",
+      "row_count": 22621,
+      "column_count": 15,
+      "columns": {
+        "mahasiswa_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 22621,
+          "completeness_pct": 100.0
+        },
+        "nama": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 2040,
+          "completeness_pct": 100.0
+        },
+        "prodi_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 41,
+          "completeness_pct": 100.0
+        },
+        "fakultas_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 3,
+          "completeness_pct": 100.0
+        },
+        "jurusan_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 3,
+          "completeness_pct": 100.0
+        },
+        "angkatan": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 10,
+          "completeness_pct": 100.0
+        },
+        "jalur_masuk": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 3,
+          "completeness_pct": 100.0
+        },
+        "jenis_kelamin": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 2,
+          "completeness_pct": 100.0
+        },
+        "asal_provinsi": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 26,
+          "completeness_pct": 100.0
+        },
+        "status_aktif": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 3,
+          "completeness_pct": 100.0
+        },
+        "ipk_terakhir": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 201,
+          "completeness_pct": 100.0
+        },
+        "total_sks": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 145,
+          "completeness_pct": 100.0
+        },
+        "sks_luar_kampus": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 6,
+          "completeness_pct": 100.0
+        },
+        "tanggal_masuk": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 280,
+          "completeness_pct": 100.0
+        },
+        "ingested_at": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 1,
+          "completeness_pct": 100.0
+        }
+      },
+      "schema": {
+        "mahasiswa_id": "StringType()",
+        "nama": "StringType()",
+        "prodi_id": "StringType()",
+        "fakultas_id": "StringType()",
+        "jurusan_id": "StringType()",
+        "angkatan": "StringType()",
+        "jalur_masuk": "StringType()",
+        "jenis_kelamin": "StringType()",
+        "asal_provinsi": "StringType()",
+        "status_aktif": "StringType()",
+        "ipk_terakhir": "StringType()",
+        "total_sks": "StringType()",
+        "sks_luar_kampus": "StringType()",
+        "tanggal_masuk": "StringType()",
+        "ingested_at": "StringType()"
+      },
+      "pii_columns": [
+        "nama",
+        "mahasiswa_id",
+        "asal_provinsi"
+      ],
+      "profiled_at": "2026-05-19T09:44:30.741801Z"
+    },
+    "raw_lulusan": {
+      "table_name": "raw_lulusan",
+      "row_count": 4198,
+      "column_count": 12,
+      "columns": {
+        "lulusan_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 4198,
+          "completeness_pct": 100.0
+        },
+        "mahasiswa_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 4198,
+          "completeness_pct": 100.0
+        },
+        "prodi_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 41,
+          "completeness_pct": 100.0
+        },
+        "tanggal_lulus": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 1550,
+          "completeness_pct": 100.0
+        },
+        "ipk": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 121,
+          "completeness_pct": 100.0
+        },
+        "lama_studi_bulan": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 31,
+          "completeness_pct": 100.0
+        },
+        "status_pasca_lulus": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 4,
+          "completeness_pct": 100.0
+        },
+        "nama_perusahaan": {
+          "data_type": "StringType()",
+          "null_count": 1252,
+          "null_pct": 29.82,
+          "distinct_count": 32,
+          "completeness_pct": 70.18
+        },
+        "bidang_kerja": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 2,
+          "completeness_pct": 100.0
+        },
+        "masa_tunggu_bulan": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 19,
+          "completeness_pct": 100.0
+        },
+        "sumber_data": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 2,
+          "completeness_pct": 100.0
+        },
+        "ingested_at": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 1,
+          "completeness_pct": 100.0
+        }
+      },
+      "schema": {
+        "lulusan_id": "StringType()",
+        "mahasiswa_id": "StringType()",
+        "prodi_id": "StringType()",
+        "tanggal_lulus": "StringType()",
+        "ipk": "StringType()",
+        "lama_studi_bulan": "StringType()",
+        "status_pasca_lulus": "StringType()",
+        "nama_perusahaan": "StringType()",
+        "bidang_kerja": "StringType()",
+        "masa_tunggu_bulan": "StringType()",
+        "sumber_data": "StringType()",
+        "ingested_at": "StringType()"
+      },
+      "pii_columns": [
+        "mahasiswa_id",
+        "nama_perusahaan"
+      ],
+      "profiled_at": "2026-05-19T09:44:38.265268Z"
+    },
+    "raw_dosen": {
+      "table_name": "raw_dosen",
+      "row_count": 705,
+      "column_count": 15,
+      "columns": {
+        "dosen_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 705,
+          "completeness_pct": 100.0
+        },
+        "nama": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 595,
+          "completeness_pct": 100.0
+        },
+        "prodi_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 41,
+          "completeness_pct": 100.0
+        },
+        "fakultas_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 3,
+          "completeness_pct": 100.0
+        },
+        "jurusan_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 3,
+          "completeness_pct": 100.0
+        },
+        "unit_organisasi_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 10,
+          "completeness_pct": 100.0
+        },
+        "jenis_kelamin": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 2,
+          "completeness_pct": 100.0
+        },
+        "status_asn": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 3,
+          "completeness_pct": 100.0
+        },
+        "pendidikan_terakhir": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 2,
+          "completeness_pct": 100.0
+        },
+        "jabatan_fungsional": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 5,
+          "completeness_pct": 100.0
+        },
+        "sedang_tugas_belajar": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 2,
+          "completeness_pct": 100.0
+        },
+        "sertifikat_dosen": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 2,
+          "completeness_pct": 100.0
+        },
+        "berasal_praktisi": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 2,
+          "completeness_pct": 100.0
+        },
+        "tahun_bergabung": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 12,
+          "completeness_pct": 100.0
+        },
+        "ingested_at": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 1,
+          "completeness_pct": 100.0
+        }
+      },
+      "schema": {
+        "dosen_id": "StringType()",
+        "nama": "StringType()",
+        "prodi_id": "StringType()",
+        "fakultas_id": "StringType()",
+        "jurusan_id": "StringType()",
+        "unit_organisasi_id": "StringType()",
+        "jenis_kelamin": "StringType()",
+        "status_asn": "StringType()",
+        "pendidikan_terakhir": "StringType()",
+        "jabatan_fungsional": "StringType()",
+        "sedang_tugas_belajar": "StringType()",
+        "sertifikat_dosen": "StringType()",
+        "berasal_praktisi": "StringType()",
+        "tahun_bergabung": "StringType()",
+        "ingested_at": "StringType()"
+      },
+      "pii_columns": [
+        "nama",
+        "dosen_id"
+      ],
+      "profiled_at": "2026-05-19T09:44:45.531706Z"
+    },
+    "raw_tendik": {
+      "table_name": "raw_tendik",
+      "row_count": 320,
+      "column_count": 9,
+      "columns": {
+        "tendik_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 320,
+          "completeness_pct": 100.0
+        },
+        "nama": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 296,
+          "completeness_pct": 100.0
+        },
+        "unit_organisasi_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 12,
+          "completeness_pct": 100.0
+        },
+        "fakultas_id": {
+          "data_type": "StringType()",
+          "null_count": 320,
+          "null_pct": 100.0,
+          "distinct_count": 0,
+          "completeness_pct": 0.0
+        },
+        "jabatan": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 8,
+          "completeness_pct": 100.0
+        },
+        "jenis_kelamin": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 2,
+          "completeness_pct": 100.0
+        },
+        "status_kepegawaian": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 4,
+          "completeness_pct": 100.0
+        },
+        "tahun_bergabung": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 14,
+          "completeness_pct": 100.0
+        },
+        "ingested_at": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 1,
+          "completeness_pct": 100.0
+        }
+      },
+      "schema": {
+        "tendik_id": "StringType()",
+        "nama": "StringType()",
+        "unit_organisasi_id": "StringType()",
+        "fakultas_id": "StringType()",
+        "jabatan": "StringType()",
+        "jenis_kelamin": "StringType()",
+        "status_kepegawaian": "StringType()",
+        "tahun_bergabung": "StringType()",
+        "ingested_at": "StringType()"
+      },
+      "pii_columns": [
+        "nama",
+        "tendik_id"
+      ],
+      "profiled_at": "2026-05-19T09:44:51.765290Z"
+    },
+    "raw_kegiatan_dosen": {
+      "table_name": "raw_kegiatan_dosen",
+      "row_count": 1665,
+      "column_count": 8,
+      "columns": {
+        "kegiatan_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 1665,
+          "completeness_pct": 100.0
+        },
+        "dosen_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 631,
+          "completeness_pct": 100.0
+        },
+        "jenis_kegiatan": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 4,
+          "completeness_pct": 100.0
+        },
+        "nama_institusi": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 32,
+          "completeness_pct": 100.0
+        },
+        "tanggal_mulai": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 868,
+          "completeness_pct": 100.0
+        },
+        "tanggal_selesai": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 1171,
+          "completeness_pct": 100.0
+        },
+        "tahun": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 6,
+          "completeness_pct": 100.0
+        },
+        "ingested_at": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 1,
+          "completeness_pct": 100.0
+        }
+      },
+      "schema": {
+        "kegiatan_id": "StringType()",
+        "dosen_id": "StringType()",
+        "jenis_kegiatan": "StringType()",
+        "nama_institusi": "StringType()",
+        "tanggal_mulai": "StringType()",
+        "tanggal_selesai": "StringType()",
+        "tahun": "StringType()",
+        "ingested_at": "StringType()"
+      },
+      "pii_columns": [
+        "dosen_id"
+      ],
+      "profiled_at": "2026-05-19T09:44:56.670992Z"
+    },
+    "raw_penelitian": {
+      "table_name": "raw_penelitian",
+      "row_count": 1206,
+      "column_count": 12,
+      "columns": {
+        "penelitian_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 1206,
+          "completeness_pct": 100.0
+        },
+        "judul": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 1206,
+          "completeness_pct": 100.0
+        },
+        "dosen_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 578,
+          "completeness_pct": 100.0
+        },
+        "jurusan_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 3,
+          "completeness_pct": 100.0
+        },
+        "tahun": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 6,
+          "completeness_pct": 100.0
+        },
+        "skema": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 4,
+          "completeness_pct": 100.0
+        },
+        "dana": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 6,
+          "completeness_pct": 100.0
+        },
+        "topik": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 4,
+          "completeness_pct": 100.0
+        },
+        "status_publikasi": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 3,
+          "completeness_pct": 100.0
+        },
+        "rekognisi_internasional": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 2,
+          "completeness_pct": 100.0
+        },
+        "diterapkan_masyarakat": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 2,
+          "completeness_pct": 100.0
+        },
+        "ingested_at": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 1,
+          "completeness_pct": 100.0
+        }
+      },
+      "schema": {
+        "penelitian_id": "StringType()",
+        "judul": "StringType()",
+        "dosen_id": "StringType()",
+        "jurusan_id": "StringType()",
+        "tahun": "StringType()",
+        "skema": "StringType()",
+        "dana": "StringType()",
+        "topik": "StringType()",
+        "status_publikasi": "StringType()",
+        "rekognisi_internasional": "StringType()",
+        "diterapkan_masyarakat": "StringType()",
+        "ingested_at": "StringType()"
+      },
+      "pii_columns": [
+        "dosen_id"
+      ],
+      "profiled_at": "2026-05-19T09:45:00.591541Z"
+    },
+    "raw_pengabdian": {
+      "table_name": "raw_pengabdian",
+      "row_count": 652,
+      "column_count": 10,
+      "columns": {
+        "pkm_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 652,
+          "completeness_pct": 100.0
+        },
+        "judul": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 652,
+          "completeness_pct": 100.0
+        },
+        "dosen_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 453,
+          "completeness_pct": 100.0
+        },
+        "jurusan_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 3,
+          "completeness_pct": 100.0
+        },
+        "tahun": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 6,
+          "completeness_pct": 100.0
+        },
+        "dana": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 5,
+          "completeness_pct": 100.0
+        },
+        "lokasi": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 14,
+          "completeness_pct": 100.0
+        },
+        "rekognisi_internasional": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 2,
+          "completeness_pct": 100.0
+        },
+        "diterapkan_masyarakat": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 2,
+          "completeness_pct": 100.0
+        },
+        "ingested_at": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 1,
+          "completeness_pct": 100.0
+        }
+      },
+      "schema": {
+        "pkm_id": "StringType()",
+        "judul": "StringType()",
+        "dosen_id": "StringType()",
+        "jurusan_id": "StringType()",
+        "tahun": "StringType()",
+        "dana": "StringType()",
+        "lokasi": "StringType()",
+        "rekognisi_internasional": "StringType()",
+        "diterapkan_masyarakat": "StringType()",
+        "ingested_at": "StringType()"
+      },
+      "pii_columns": [
+        "dosen_id"
+      ],
+      "profiled_at": "2026-05-19T09:45:04.040628Z"
+    },
+    "raw_kerjasama": {
+      "table_name": "raw_kerjasama",
+      "row_count": 380,
+      "column_count": 11,
+      "columns": {
+        "kerjasama_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 380,
+          "completeness_pct": 100.0
+        },
+        "jenis": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 2,
+          "completeness_pct": 100.0
+        },
+        "mitra": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 32,
+          "completeness_pct": 100.0
+        },
+        "kategori_mitra": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 5,
+          "completeness_pct": 100.0
+        },
+        "lingkup": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 5,
+          "completeness_pct": 100.0
+        },
+        "prodi_id": {
+          "data_type": "StringType()",
+          "null_count": 6,
+          "null_pct": 1.58,
+          "distinct_count": 41,
+          "completeness_pct": 98.42
+        },
+        "tanggal_mulai": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 352,
+          "completeness_pct": 100.0
+        },
+        "tanggal_berakhir": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 361,
+          "completeness_pct": 100.0
+        },
+        "status": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 2,
+          "completeness_pct": 100.0
+        },
+        "tahun": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 7,
+          "completeness_pct": 100.0
+        },
+        "ingested_at": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 1,
+          "completeness_pct": 100.0
+        }
+      },
+      "schema": {
+        "kerjasama_id": "StringType()",
+        "jenis": "StringType()",
+        "mitra": "StringType()",
+        "kategori_mitra": "StringType()",
+        "lingkup": "StringType()",
+        "prodi_id": "StringType()",
+        "tanggal_mulai": "StringType()",
+        "tanggal_berakhir": "StringType()",
+        "status": "StringType()",
+        "tahun": "StringType()",
+        "ingested_at": "StringType()"
+      },
+      "pii_columns": [],
+      "profiled_at": "2026-05-19T09:45:06.995488Z"
+    },
+    "raw_mbkm": {
+      "table_name": "raw_mbkm",
+      "row_count": 2705,
+      "column_count": 10,
+      "columns": {
+        "mbkm_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 2705,
+          "completeness_pct": 100.0
+        },
+        "mahasiswa_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 2705,
+          "completeness_pct": 100.0
+        },
+        "prodi_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 41,
+          "completeness_pct": 100.0
+        },
+        "jenis_mbkm": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 6,
+          "completeness_pct": 100.0
+        },
+        "institusi_mitra": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 32,
+          "completeness_pct": 100.0
+        },
+        "sks_diakui": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 5,
+          "completeness_pct": 100.0
+        },
+        "tahun": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 5,
+          "completeness_pct": 100.0
+        },
+        "semester": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 2,
+          "completeness_pct": 100.0
+        },
+        "prestasi_nasional": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 2,
+          "completeness_pct": 100.0
+        },
+        "ingested_at": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 1,
+          "completeness_pct": 100.0
+        }
+      },
+      "schema": {
+        "mbkm_id": "StringType()",
+        "mahasiswa_id": "StringType()",
+        "prodi_id": "StringType()",
+        "jenis_mbkm": "StringType()",
+        "institusi_mitra": "StringType()",
+        "sks_diakui": "StringType()",
+        "tahun": "StringType()",
+        "semester": "StringType()",
+        "prestasi_nasional": "StringType()",
+        "ingested_at": "StringType()"
+      },
+      "pii_columns": [
+        "mahasiswa_id"
+      ],
+      "profiled_at": "2026-05-19T09:45:09.800070Z"
+    },
+    "raw_akreditasi": {
+      "table_name": "raw_akreditasi",
+      "row_count": 84,
+      "column_count": 9,
+      "columns": {
+        "akreditasi_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 84,
+          "completeness_pct": 100.0
+        },
+        "prodi_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 42,
+          "completeness_pct": 100.0
+        },
+        "lembaga": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 3,
+          "completeness_pct": 100.0
+        },
+        "nama_lembaga_detail": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 5,
+          "completeness_pct": 100.0
+        },
+        "predikat": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 6,
+          "completeness_pct": 100.0
+        },
+        "tanggal_sk": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 81,
+          "completeness_pct": 100.0
+        },
+        "tanggal_berakhir": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 81,
+          "completeness_pct": 100.0
+        },
+        "tahun": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 8,
+          "completeness_pct": 100.0
+        },
+        "ingested_at": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 1,
+          "completeness_pct": 100.0
+        }
+      },
+      "schema": {
+        "akreditasi_id": "StringType()",
+        "prodi_id": "StringType()",
+        "lembaga": "StringType()",
+        "nama_lembaga_detail": "StringType()",
+        "predikat": "StringType()",
+        "tanggal_sk": "StringType()",
+        "tanggal_berakhir": "StringType()",
+        "tahun": "StringType()",
+        "ingested_at": "StringType()"
+      },
+      "pii_columns": [],
+      "profiled_at": "2026-05-19T09:45:12.158025Z"
+    },
+    "raw_keuangan": {
+      "table_name": "raw_keuangan",
+      "row_count": 640,
+      "column_count": 8,
+      "columns": {
+        "anggaran_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 640,
+          "completeness_pct": 100.0
+        },
+        "tahun": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 8,
+          "completeness_pct": 100.0
+        },
+        "sumber_dana": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 4,
+          "completeness_pct": 100.0
+        },
+        "komponen": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 5,
+          "completeness_pct": 100.0
+        },
+        "pagu": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 640,
+          "completeness_pct": 100.0
+        },
+        "realisasi": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 640,
+          "completeness_pct": 100.0
+        },
+        "triwulan": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 4,
+          "completeness_pct": 100.0
+        },
+        "ingested_at": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 1,
+          "completeness_pct": 100.0
+        }
+      },
+      "schema": {
+        "anggaran_id": "StringType()",
+        "tahun": "StringType()",
+        "sumber_dana": "StringType()",
+        "komponen": "StringType()",
+        "pagu": "StringType()",
+        "realisasi": "StringType()",
+        "triwulan": "StringType()",
+        "ingested_at": "StringType()"
+      },
+      "pii_columns": [],
+      "profiled_at": "2026-05-19T09:45:14.252278Z"
+    },
+    "raw_prestasi_mahasiswa": {
+      "table_name": "raw_prestasi_mahasiswa",
+      "row_count": 2300,
+      "column_count": 9,
+      "columns": {
+        "prestasi_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 2300,
+          "completeness_pct": 100.0
+        },
+        "mahasiswa_id": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 2185,
+          "completeness_pct": 100.0
+        },
+        "nama_kompetisi": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 16,
+          "completeness_pct": 100.0
+        },
+        "bidang": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 6,
+          "completeness_pct": 100.0
+        },
+        "tingkat": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 4,
+          "completeness_pct": 100.0
+        },
+        "peringkat": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 4,
+          "completeness_pct": 100.0
+        },
+        "tahun": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 6,
+          "completeness_pct": 100.0
+        },
+        "dosen_pembina_id": {
+          "data_type": "StringType()",
+          "null_count": 472,
+          "null_pct": 20.52,
+          "distinct_count": 658,
+          "completeness_pct": 79.48
+        },
+        "ingested_at": {
+          "data_type": "StringType()",
+          "null_count": 0,
+          "null_pct": 0.0,
+          "distinct_count": 1,
+          "completeness_pct": 100.0
+        }
+      },
+      "schema": {
+        "prestasi_id": "StringType()",
+        "mahasiswa_id": "StringType()",
+        "nama_kompetisi": "StringType()",
+        "bidang": "StringType()",
+        "tingkat": "StringType()",
+        "peringkat": "StringType()",
+        "tahun": "StringType()",
+        "dosen_pembina_id": "StringType()",
+        "ingested_at": "StringType()"
+      },
+      "pii_columns": [
+        "mahasiswa_id"
+      ],
+      "profiled_at": "2026-05-19T09:45:17.092824Z"
+    }
+  },
+  "metrics_file": "staging_to_bronze_20260519_094517.json"
+}

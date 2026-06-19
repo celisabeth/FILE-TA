@@ -1,0 +1,1081 @@
+{
+  "generated_at": "2026-05-19T09:51:16.670190Z",
+  "approximate_count": 15,
+  "rows": [
+    {
+      "asset_qualified_name": "gold.dim_dosen@lakehouse",
+      "guid": "4f181404-e9ec-4066-8081-4a2552c90e6f",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {
+          "dosen_id": "StringType()",
+          "nama": "StringType()",
+          "prodi_id": "StringType()",
+          "status_asn": "StringType()",
+          "pendidikan": "StringType()",
+          "jabatan_fungsional": "StringType()",
+          "is_s3": "BooleanType()",
+          "is_serdos": "BooleanType()",
+          "is_praktisi": "BooleanType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/gold/dim_dosen",
+        "row_count": 705,
+        "column_count": 9,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Gold dimension: dim_dosen",
+        "owner": "Biro Akademik & Perencanaan",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "harian (OLAP refresh)",
+        "kpi": {},
+        "consumption": {
+          "consumers": [
+            "Rektor",
+            "Wakil Rektor Bidang Keuangan & Umum",
+            "Kepala Biro Akademik Perencanaan dan Umum"
+          ],
+          "dashboard_panel": ""
+        },
+        "ai_metadata": {
+          "ml_ready": false,
+          "feature_store_candidate": false,
+          "suggested_models": []
+        }
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer",
+          "Star_Schema_Dimension",
+          "Bronze_Layer",
+          "Staging_Layer",
+          "PII",
+          "PII",
+          "Bronze_Layer",
+          "Silver_Layer",
+          "Quality_Pass",
+          "PII",
+          "Gold_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": {
+          "table_type": "dimension",
+          "olap_role": "Dimension \u2014 drill by dosen"
+        },
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:51:05.975626Z"
+    },
+    {
+      "asset_qualified_name": "gold.dim_mahasiswa@lakehouse",
+      "guid": "640cb86a-4f84-44df-a220-bb6755c51cad",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {
+          "mahasiswa_id": "StringType()",
+          "prodi_id": "StringType()",
+          "angkatan": "StringType()",
+          "jalur_masuk": "StringType()",
+          "asal_provinsi": "StringType()",
+          "jenis_kelamin": "StringType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/gold/dim_mahasiswa",
+        "row_count": 22621,
+        "column_count": 6,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Gold dimension: dim_mahasiswa",
+        "owner": "Biro Akademik & Perencanaan",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "harian (OLAP refresh)",
+        "kpi": {},
+        "consumption": {
+          "consumers": [
+            "Rektor",
+            "Wakil Rektor Bidang Akademik & Kemahasiswaan",
+            "Kepala Bagian Umum dan Akademik"
+          ],
+          "dashboard_panel": ""
+        },
+        "ai_metadata": {
+          "ml_ready": false,
+          "feature_store_candidate": false,
+          "suggested_models": []
+        }
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer",
+          "Silver_Layer",
+          "PII",
+          "Bronze_Layer",
+          "Staging_Layer",
+          "Bronze_Layer",
+          "PII",
+          "Quality_Pass",
+          "Star_Schema_Dimension",
+          "Gold_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": {
+          "table_type": "dimension",
+          "olap_role": "Dimension \u2014 drill by mahasiswa"
+        },
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:51:06.479060Z"
+    },
+    {
+      "asset_qualified_name": "gold.dim_prodi@lakehouse",
+      "guid": "2d8f1374-6cf6-4e71-b3c6-b6c81c37c5d2",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {
+          "prodi_id": "StringType()",
+          "nama_prodi": "StringType()",
+          "jenjang": "StringType()",
+          "nama_jurusan": "StringType()",
+          "nama_fakultas": "StringType()",
+          "tahun_berdiri": "StringType()",
+          "status": "StringType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/gold/dim_prodi",
+        "row_count": 42,
+        "column_count": 7,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Gold dimension: dim_prodi",
+        "owner": "Biro Akademik & Perencanaan",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "harian (OLAP refresh)",
+        "kpi": {},
+        "consumption": {
+          "consumers": [
+            "Rektor",
+            "Wakil Rektor Bidang Akademik & Kemahasiswaan",
+            "Wakil Rektor Bidang Keuangan & Umum",
+            "Kepala Biro Akademik Perencanaan dan Umum",
+            "Kepala Bagian Umum dan Akademik",
+            "Dekan Fakultas Sains",
+            "Dekan Fakultas Teknologi Infrastruktur dan Kewilayahan",
+            "Dekan Fakultas Teknologi Industri"
+          ],
+          "dashboard_panel": ""
+        },
+        "ai_metadata": {
+          "ml_ready": false,
+          "feature_store_candidate": false,
+          "suggested_models": []
+        }
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer",
+          "Gold_Layer",
+          "Bronze_Layer",
+          "Star_Schema_Dimension"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": {
+          "table_type": "dimension",
+          "olap_role": "Dimension \u2014 drill by prodi/jurusan"
+        },
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:51:05.608601Z"
+    },
+    {
+      "asset_qualified_name": "gold.dim_topik_penelitian@lakehouse",
+      "guid": "5aec9931-ee59-446b-b906-2c3d84955471",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {
+          "topik_id": "LongType()",
+          "nama_topik": "StringType()",
+          "deskripsi": "StringType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/gold/dim_topik_penelitian",
+        "row_count": 4,
+        "column_count": 3,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Gold dimension: dim_topik_penelitian",
+        "owner": "Biro Akademik & Perencanaan",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "harian (OLAP refresh)",
+        "kpi": {},
+        "consumption": {
+          "consumers": [
+            "Rektor",
+            "Kepala Biro Akademik Perencanaan dan Umum"
+          ],
+          "dashboard_panel": ""
+        },
+        "ai_metadata": {
+          "ml_ready": false,
+          "feature_store_candidate": false,
+          "suggested_models": []
+        }
+      },
+      "operational_json": {
+        "classifications": [
+          "Gold_Layer",
+          "Star_Schema_Dimension"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": {
+          "table_type": "dimension",
+          "olap_role": "Dimension \u2014 drill by research topic"
+        },
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:51:06.902814Z"
+    },
+    {
+      "asset_qualified_name": "gold.dim_waktu@lakehouse",
+      "guid": "17820e4e-e88a-4468-97dc-143d4a846443",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {
+          "waktu_id": "LongType()",
+          "tahun": "LongType()",
+          "semester": "StringType()",
+          "triwulan": "LongType()",
+          "bulan": "LongType()",
+          "nama_bulan": "StringType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/gold/dim_waktu",
+        "row_count": 72,
+        "column_count": 6,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Gold dimension: dim_waktu",
+        "owner": "Biro Akademik & Perencanaan",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "harian (OLAP refresh)",
+        "kpi": {},
+        "consumption": {
+          "consumers": [
+            "Rektor",
+            "Wakil Rektor Bidang Akademik & Kemahasiswaan",
+            "Wakil Rektor Bidang Keuangan & Umum",
+            "Kepala Biro Akademik Perencanaan dan Umum"
+          ],
+          "dashboard_panel": ""
+        },
+        "ai_metadata": {
+          "ml_ready": false,
+          "feature_store_candidate": false,
+          "suggested_models": []
+        }
+      },
+      "operational_json": {
+        "classifications": [
+          "Gold_Layer",
+          "Star_Schema_Dimension"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": {
+          "table_type": "dimension",
+          "olap_role": "Dimension \u2014 drill by time"
+        },
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:51:05.408547Z"
+    },
+    {
+      "asset_qualified_name": "gold.fact_iku1_lulusan@lakehouse",
+      "guid": "659ec9d3-adbe-485d-9219-c2f5ddda10f4",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {
+          "fact_id": "LongType()",
+          "waktu_id": "IntegerType()",
+          "prodi_id": "StringType()",
+          "total_lulusan": "LongType()",
+          "lulusan_bekerja": "LongType()",
+          "lulusan_lanjut_studi": "LongType()",
+          "lulusan_wirausaha": "LongType()",
+          "lulusan_belum": "LongType()",
+          "persen_terserap": "DoubleType()",
+          "target_iku": "DoubleType()",
+          "capaian_iku": "DoubleType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/gold/fact_iku1_lulusan",
+        "row_count": 326,
+        "column_count": 11,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "IKU-1: Lulusan bekerja/studi lanjut/wirausaha \u2014 Formula: (lulusan_bekerja + lulusan_lanjut_studi + lulusan_wirausaha) / total_lulusan * 100",
+        "owner": "Biro Akademik & Perencanaan",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [
+          "IKU-1"
+        ],
+        "update_frequency": "harian (OLAP refresh)",
+        "kpi": {
+          "iku_code": "IKU-1",
+          "iku_nama": "Lulusan bekerja/studi lanjut/wirausaha",
+          "formula": "(lulusan_bekerja + lulusan_lanjut_studi + lulusan_wirausaha) / total_lulusan * 100",
+          "satuan": "%",
+          "sumber_renstra": "Renstra ITERA 2020-2024, Sasaran 1",
+          "nilai_capaian": 75.42,
+          "nilai_target": 77.2,
+          "status_capaian": "On Track",
+          "persen_capaian_terhadap_target": 2894.91
+        },
+        "consumption": {
+          "consumers": [
+            "Rektor",
+            "Wakil Rektor Bidang Akademik & Kemahasiswaan",
+            "Kepala Biro Akademik Perencanaan dan Umum",
+            "Dekan Fakultas Sains",
+            "Dekan Fakultas Teknologi Infrastruktur dan Kewilayahan",
+            "Dekan Fakultas Teknologi Industri"
+          ],
+          "dashboard_panel": "Executive Dashboard \u2014 Capaian IKU-1"
+        },
+        "ai_metadata": {
+          "ml_ready": true,
+          "feature_store_candidate": true,
+          "suggested_models": [
+            "trend_analysis",
+            "anomaly_detection"
+          ]
+        }
+      },
+      "operational_json": {
+        "classifications": [
+          "PII",
+          "Staging_Layer",
+          "Bronze_Layer",
+          "Quality_Pass",
+          "Silver_Layer",
+          "PII",
+          "Gold_Layer",
+          "Executive_Dashboard",
+          "Star_Schema_Fact",
+          "KPI_Metric"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": {
+          "table_type": "fact",
+          "olap_role": "Fact \u2014 IKU-1 metrics"
+        },
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:51:07.126920Z"
+    },
+    {
+      "asset_qualified_name": "gold.fact_iku2_mbkm@lakehouse",
+      "guid": "5ec46ee4-b460-4adb-b989-d24f42d62b87",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {
+          "fact_id": "LongType()",
+          "waktu_id": "IntegerType()",
+          "prodi_id": "StringType()",
+          "total_mahasiswa_aktif": "LongType()",
+          "mahasiswa_sks_luar_20": "LongType()",
+          "mahasiswa_prestasi_nasional": "LongType()",
+          "mahasiswa_memenuhi_iku2": "LongType()",
+          "persen_iku2": "DoubleType()",
+          "target_iku": "DoubleType()",
+          "capaian_iku": "DoubleType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/gold/fact_iku2_mbkm",
+        "row_count": 410,
+        "column_count": 10,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "IKU-2: Mahasiswa MBKM \u226520 SKS / prestasi nasional \u2014 Formula: mahasiswa_memenuhi_iku2 / total_mahasiswa_aktif * 100",
+        "owner": "Biro Akademik & Perencanaan",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [
+          "IKU-2"
+        ],
+        "update_frequency": "harian (OLAP refresh)",
+        "kpi": {
+          "iku_code": "IKU-2",
+          "iku_nama": "Mahasiswa MBKM \u226520 SKS / prestasi nasional",
+          "formula": "mahasiswa_memenuhi_iku2 / total_mahasiswa_aktif * 100",
+          "satuan": "%",
+          "sumber_renstra": "Renstra ITERA 2020-2024, Sasaran 1",
+          "nilai_capaian": 40.29,
+          "nilai_target": 30.0,
+          "status_capaian": "Tercapai",
+          "persen_capaian_terhadap_target": 2130.73
+        },
+        "consumption": {
+          "consumers": [
+            "Rektor",
+            "Wakil Rektor Bidang Akademik & Kemahasiswaan",
+            "Kepala Bagian Umum dan Akademik",
+            "Dekan Fakultas Sains",
+            "Dekan Fakultas Teknologi Infrastruktur dan Kewilayahan",
+            "Dekan Fakultas Teknologi Industri"
+          ],
+          "dashboard_panel": "Executive Dashboard \u2014 Capaian IKU-2"
+        },
+        "ai_metadata": {
+          "ml_ready": true,
+          "feature_store_candidate": true,
+          "suggested_models": [
+            "trend_analysis",
+            "anomaly_detection"
+          ]
+        }
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer",
+          "Staging_Layer",
+          "Silver_Layer",
+          "KPI_Metric",
+          "PII",
+          "Gold_Layer",
+          "Bronze_Layer",
+          "Staging_Layer",
+          "Bronze_Layer",
+          "PII",
+          "Bronze_Layer",
+          "Quality_Pass",
+          "Star_Schema_Fact",
+          "Executive_Dashboard"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": {
+          "table_type": "fact",
+          "olap_role": "Fact \u2014 IKU-2 metrics"
+        },
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:51:07.627947Z"
+    },
+    {
+      "asset_qualified_name": "gold.fact_iku3_dosen_tridarma@lakehouse",
+      "guid": "e306bf30-870e-4e66-ab62-8ee04bcf8ce9",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {
+          "fact_id": "LongType()",
+          "waktu_id": "IntegerType()",
+          "prodi_id": "StringType()",
+          "total_dosen_tetap": "LongType()",
+          "dosen_tridarma_pt_lain": "LongType()",
+          "dosen_praktisi_industri": "LongType()",
+          "dosen_bina_prestasi": "LongType()",
+          "dosen_qs100": "LongType()",
+          "dosen_memenuhi_iku3": "LongType()",
+          "persen_iku3": "DoubleType()",
+          "target_iku": "DoubleType()",
+          "capaian_iku": "DoubleType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/gold/fact_iku3_dosen_tridarma",
+        "row_count": 245,
+        "column_count": 12,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "IKU-3: Dosen tridarma luar/praktisi/bina prestasi \u2014 Formula: dosen_memenuhi_iku3 / total_dosen_tetap * 100",
+        "owner": "Biro Akademik & Perencanaan",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [
+          "IKU-3"
+        ],
+        "update_frequency": "harian (OLAP refresh)",
+        "kpi": {
+          "iku_code": "IKU-3",
+          "iku_nama": "Dosen tridarma luar/praktisi/bina prestasi",
+          "formula": "dosen_memenuhi_iku3 / total_dosen_tetap * 100",
+          "satuan": "%",
+          "sumber_renstra": "Renstra ITERA 2020-2024, Sasaran 2",
+          "nilai_capaian": 100.0,
+          "nilai_target": 21.4,
+          "status_capaian": "Tercapai",
+          "persen_capaian_terhadap_target": 2049.05
+        },
+        "consumption": {
+          "consumers": [
+            "Rektor",
+            "Wakil Rektor Bidang Akademik & Kemahasiswaan",
+            "Kepala Biro Akademik Perencanaan dan Umum"
+          ],
+          "dashboard_panel": "Executive Dashboard \u2014 Capaian IKU-3"
+        },
+        "ai_metadata": {
+          "ml_ready": true,
+          "feature_store_candidate": true,
+          "suggested_models": [
+            "trend_analysis",
+            "anomaly_detection"
+          ]
+        }
+      },
+      "operational_json": {
+        "classifications": [
+          "Star_Schema_Fact",
+          "KPI_Metric",
+          "Executive_Dashboard",
+          "Gold_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": {
+          "table_type": "fact",
+          "olap_role": "Fact \u2014 IKU-3 metrics"
+        },
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:51:08.122048Z"
+    },
+    {
+      "asset_qualified_name": "gold.fact_iku4_kualifikasi_dosen@lakehouse",
+      "guid": "8dd49346-bd27-4caa-8e71-e5b5edc99849",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {
+          "fact_id": "LongType()",
+          "waktu_id": "IntegerType()",
+          "prodi_id": "StringType()",
+          "total_dosen_tetap": "LongType()",
+          "dosen_s3": "LongType()",
+          "dosen_sertifikat_industri": "LongType()",
+          "dosen_dari_praktisi": "LongType()",
+          "dosen_memenuhi_iku4": "LongType()",
+          "persen_iku4": "DoubleType()",
+          "target_iku": "IntegerType()",
+          "capaian_iku": "DoubleType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/gold/fact_iku4_kualifikasi_dosen",
+        "row_count": 41,
+        "column_count": 11,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "IKU-4: Dosen S3/sertifikat kompetensi/praktisi \u2014 Formula: dosen_memenuhi_iku4 / total_dosen_tetap * 100",
+        "owner": "Biro Akademik & Perencanaan",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [
+          "IKU-4"
+        ],
+        "update_frequency": "harian (OLAP refresh)",
+        "kpi": {
+          "iku_code": "IKU-4",
+          "iku_nama": "Dosen S3/sertifikat kompetensi/praktisi",
+          "formula": "dosen_memenuhi_iku4 / total_dosen_tetap * 100",
+          "satuan": "%",
+          "sumber_renstra": "Renstra ITERA 2020-2024, Sasaran 2",
+          "nilai_capaian": 108.82,
+          "nilai_target": 50.0,
+          "status_capaian": "Tercapai",
+          "persen_capaian_terhadap_target": 217.64
+        },
+        "consumption": {
+          "consumers": [
+            "Rektor",
+            "Wakil Rektor Bidang Akademik & Kemahasiswaan",
+            "Kepala Biro Akademik Perencanaan dan Umum"
+          ],
+          "dashboard_panel": "Executive Dashboard \u2014 Capaian IKU-4"
+        },
+        "ai_metadata": {
+          "ml_ready": true,
+          "feature_store_candidate": true,
+          "suggested_models": [
+            "trend_analysis",
+            "anomaly_detection"
+          ]
+        }
+      },
+      "operational_json": {
+        "classifications": [
+          "Gold_Layer",
+          "Star_Schema_Fact",
+          "KPI_Metric",
+          "Executive_Dashboard"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": {
+          "table_type": "fact",
+          "olap_role": "Fact \u2014 IKU-4 metrics"
+        },
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:51:08.909487Z"
+    },
+    {
+      "asset_qualified_name": "gold.fact_iku5_penelitian_pkm@lakehouse",
+      "guid": "e6bd6dc9-0085-41e9-b9ce-92ede46c47e3",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {
+          "fact_id": "LongType()",
+          "waktu_id": "IntegerType()",
+          "jurusan_id": "StringType()",
+          "total_dosen": "LongType()",
+          "output_rekognisi_internasional": "LongType()",
+          "output_diterapkan_masyarakat": "LongType()",
+          "total_output_eligible": "LongType()",
+          "rasio_per_dosen": "DoubleType()",
+          "target_iku": "DoubleType()",
+          "capaian_iku": "DoubleType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/gold/fact_iku5_penelitian_pkm",
+        "row_count": 18,
+        "column_count": 10,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "IKU-5: Rasio output penelitian rekognisi intl per dosen \u2014 Formula: total_output_eligible / total_dosen",
+        "owner": "Biro Akademik & Perencanaan",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [
+          "IKU-5"
+        ],
+        "update_frequency": "harian (OLAP refresh)",
+        "kpi": {
+          "iku_code": "IKU-5",
+          "iku_nama": "Rasio output penelitian rekognisi intl per dosen",
+          "formula": "total_output_eligible / total_dosen",
+          "satuan": "Rasio",
+          "sumber_renstra": "Renstra ITERA 2020-2024, Sasaran 3",
+          "nilai_capaian": 0.17,
+          "nilai_target": 0.2,
+          "status_capaian": "On Track",
+          "persen_capaian_terhadap_target": 350.78
+        },
+        "consumption": {
+          "consumers": [
+            "Rektor",
+            "Kepala Biro Akademik Perencanaan dan Umum",
+            "Dekan Fakultas Sains"
+          ],
+          "dashboard_panel": "Executive Dashboard \u2014 Capaian IKU-5"
+        },
+        "ai_metadata": {
+          "ml_ready": true,
+          "feature_store_candidate": true,
+          "suggested_models": [
+            "trend_analysis",
+            "anomaly_detection"
+          ]
+        }
+      },
+      "operational_json": {
+        "classifications": [
+          "Star_Schema_Fact",
+          "Executive_Dashboard",
+          "KPI_Metric",
+          "Gold_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": {
+          "table_type": "fact",
+          "olap_role": "Fact \u2014 IKU-5 metrics"
+        },
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:51:09.826633Z"
+    },
+    {
+      "asset_qualified_name": "gold.fact_iku6_kerjasama_prodi@lakehouse",
+      "guid": "3074ee0a-2efa-4b03-953b-087e38d99bd1",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {
+          "fact_id": "LongType()",
+          "waktu_id": "LongType()",
+          "total_prodi_s1": "LongType()",
+          "prodi_berkerjasama": "LongType()",
+          "persen_iku6": "DoubleType()",
+          "target_iku": "LongType()",
+          "capaian_iku": "DoubleType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/gold/fact_iku6_kerjasama_prodi",
+        "row_count": 5,
+        "column_count": 7,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "IKU-6: Prodi bekerjasama dengan mitra \u2014 Formula: prodi_berkerjasama / total_prodi_s1 * 100",
+        "owner": "Biro Akademik & Perencanaan",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [
+          "IKU-6"
+        ],
+        "update_frequency": "harian (OLAP refresh)",
+        "kpi": {
+          "iku_code": "IKU-6",
+          "iku_nama": "Prodi bekerjasama dengan mitra",
+          "formula": "prodi_berkerjasama / total_prodi_s1 * 100",
+          "satuan": "%",
+          "sumber_renstra": "Renstra ITERA 2020-2024, Sasaran 3",
+          "nilai_capaian": 95.12,
+          "nilai_target": 50.0,
+          "status_capaian": "Tercapai",
+          "persen_capaian_terhadap_target": 200.94
+        },
+        "consumption": {
+          "consumers": [
+            "Rektor",
+            "Wakil Rektor Bidang Keuangan & Umum",
+            "Dekan Fakultas Sains",
+            "Dekan Fakultas Teknologi Infrastruktur dan Kewilayahan",
+            "Dekan Fakultas Teknologi Industri"
+          ],
+          "dashboard_panel": "Executive Dashboard \u2014 Capaian IKU-6"
+        },
+        "ai_metadata": {
+          "ml_ready": true,
+          "feature_store_candidate": true,
+          "suggested_models": [
+            "trend_analysis",
+            "anomaly_detection"
+          ]
+        }
+      },
+      "operational_json": {
+        "classifications": [
+          "KPI_Metric",
+          "Gold_Layer",
+          "Star_Schema_Fact",
+          "Executive_Dashboard"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": {
+          "table_type": "fact",
+          "olap_role": "Fact \u2014 IKU-6 metrics"
+        },
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:51:10.735676Z"
+    },
+    {
+      "asset_qualified_name": "gold.fact_iku7_metode_pembelajaran@lakehouse",
+      "guid": "792cb0be-096f-4170-9beb-3814c9e4215a",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {
+          "fact_id": "LongType()",
+          "waktu_id": "LongType()",
+          "prodi_id": "StringType()",
+          "total_mk": "LongType()",
+          "mk_case_method": "LongType()",
+          "mk_team_based": "LongType()",
+          "mk_memenuhi": "LongType()",
+          "persen_iku7": "DoubleType()",
+          "target_iku": "LongType()",
+          "capaian_iku": "DoubleType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/gold/fact_iku7_metode_pembelajaran",
+        "row_count": 205,
+        "column_count": 10,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "IKU-7: MK case method / team-based project \u2014 Formula: mk_memenuhi / total_mk * 100",
+        "owner": "Biro Akademik & Perencanaan",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [
+          "IKU-7"
+        ],
+        "update_frequency": "harian (OLAP refresh)",
+        "kpi": {
+          "iku_code": "IKU-7",
+          "iku_nama": "MK case method / team-based project",
+          "formula": "mk_memenuhi / total_mk * 100",
+          "satuan": "%",
+          "sumber_renstra": "Renstra ITERA 2020-2024, Sasaran 1",
+          "nilai_capaian": 52.43,
+          "nilai_target": 35.0,
+          "status_capaian": "Tercapai",
+          "persen_capaian_terhadap_target": 156.25
+        },
+        "consumption": {
+          "consumers": [
+            "Rektor",
+            "Wakil Rektor Bidang Akademik & Kemahasiswaan",
+            "Kepala Bagian Umum dan Akademik",
+            "Dekan Fakultas Sains",
+            "Dekan Fakultas Teknologi Infrastruktur dan Kewilayahan",
+            "Dekan Fakultas Teknologi Industri"
+          ],
+          "dashboard_panel": "Executive Dashboard \u2014 Capaian IKU-7"
+        },
+        "ai_metadata": {
+          "ml_ready": true,
+          "feature_store_candidate": true,
+          "suggested_models": [
+            "trend_analysis",
+            "anomaly_detection"
+          ]
+        }
+      },
+      "operational_json": {
+        "classifications": [
+          "Star_Schema_Fact",
+          "KPI_Metric",
+          "Executive_Dashboard",
+          "Gold_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": {
+          "table_type": "fact",
+          "olap_role": "Fact \u2014 IKU-7 metrics"
+        },
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:51:11.224041Z"
+    },
+    {
+      "asset_qualified_name": "gold.fact_iku8_akreditasi_internasional@lakehouse",
+      "guid": "a7bdf06c-12bf-44bc-84d6-19bb91b0a49c",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {
+          "fact_id": "LongType()",
+          "waktu_id": "LongType()",
+          "total_prodi_s1": "LongType()",
+          "prodi_akreditasi_internasional": "LongType()",
+          "persen_iku8": "DoubleType()",
+          "target_iku": "DoubleType()",
+          "capaian_iku": "DoubleType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/gold/fact_iku8_akreditasi_internasional",
+        "row_count": 5,
+        "column_count": 7,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "IKU-8: Prodi akreditasi/sertifikat internasional \u2014 Formula: prodi_akreditasi_internasional / total_prodi_s1 * 100",
+        "owner": "Biro Akademik & Perencanaan",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [
+          "IKU-8"
+        ],
+        "update_frequency": "harian (OLAP refresh)",
+        "kpi": {
+          "iku_code": "IKU-8",
+          "iku_nama": "Prodi akreditasi/sertifikat internasional",
+          "formula": "prodi_akreditasi_internasional / total_prodi_s1 * 100",
+          "satuan": "%",
+          "sumber_renstra": "Renstra ITERA 2020-2024, Sasaran 3",
+          "nilai_capaian": 4.88,
+          "nilai_target": 3.1,
+          "status_capaian": "Tercapai",
+          "persen_capaian_terhadap_target": 169.17
+        },
+        "consumption": {
+          "consumers": [
+            "Rektor",
+            "Kepala Biro Akademik Perencanaan dan Umum",
+            "Dekan Fakultas Sains",
+            "Dekan Fakultas Teknologi Infrastruktur dan Kewilayahan",
+            "Dekan Fakultas Teknologi Industri"
+          ],
+          "dashboard_panel": "Executive Dashboard \u2014 Capaian IKU-8"
+        },
+        "ai_metadata": {
+          "ml_ready": true,
+          "feature_store_candidate": true,
+          "suggested_models": [
+            "trend_analysis",
+            "anomaly_detection"
+          ]
+        }
+      },
+      "operational_json": {
+        "classifications": [
+          "Gold_Layer",
+          "Star_Schema_Fact",
+          "KPI_Metric",
+          "Executive_Dashboard"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": {
+          "table_type": "fact",
+          "olap_role": "Fact \u2014 IKU-8 metrics"
+        },
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:51:11.635666Z"
+    },
+    {
+      "asset_qualified_name": "gold.fact_rekap_iku_institusi@lakehouse",
+      "guid": "28f1a50a-d205-4703-ac71-3151cf8d7e80",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {
+          "fact_id": "LongType()",
+          "waktu_id": "LongType()",
+          "iku_kode": "StringType()",
+          "iku_nama": "StringType()",
+          "nilai_capaian": "DoubleType()",
+          "nilai_target": "DoubleType()",
+          "satuan": "StringType()",
+          "status_capaian": "StringType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/gold/fact_rekap_iku_institusi",
+        "row_count": 40,
+        "column_count": 8,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Gold fact: fact_rekap_iku_institusi",
+        "owner": "Biro Akademik & Perencanaan",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "harian (OLAP refresh)",
+        "kpi": {},
+        "consumption": {
+          "consumers": [
+            "Rektor",
+            "Wakil Rektor Bidang Akademik & Kemahasiswaan",
+            "Wakil Rektor Bidang Keuangan & Umum",
+            "Kepala Biro Akademik Perencanaan dan Umum",
+            "Kepala Bagian Umum dan Akademik",
+            "Dekan Fakultas Sains",
+            "Dekan Fakultas Teknologi Infrastruktur dan Kewilayahan",
+            "Dekan Fakultas Teknologi Industri"
+          ],
+          "dashboard_panel": ""
+        },
+        "ai_metadata": {
+          "ml_ready": true,
+          "feature_store_candidate": false,
+          "suggested_models": []
+        }
+      },
+      "operational_json": {
+        "classifications": [
+          "Star_Schema_Fact",
+          "Gold_Layer",
+          "KPI_Metric",
+          "Executive_Dashboard"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": {
+          "table_type": "fact",
+          "olap_role": "Fact \u2014 executive summary"
+        },
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:51:12.592067Z"
+    },
+    {
+      "asset_qualified_name": "gold.fact_tata_kelola@lakehouse",
+      "guid": "0de28f6e-b0e7-4ab6-a6c7-3d2a1bd72033",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {
+          "fact_id": "LongType()",
+          "waktu_id": "DoubleType()",
+          "predikat_sakip": "StringType()",
+          "nilai_sakip": "DoubleType()",
+          "nilai_kinerja_anggaran": "DoubleType()",
+          "pagu_total": "DoubleType()",
+          "realisasi_total": "DoubleType()",
+          "persen_realisasi": "DoubleType()",
+          "target_sakip": "StringType()",
+          "target_kinerja_anggaran": "DoubleType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/gold/fact_tata_kelola",
+        "row_count": 8,
+        "column_count": 10,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Gold fact: fact_tata_kelola",
+        "owner": "Biro Akademik & Perencanaan",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "harian (OLAP refresh)",
+        "kpi": {},
+        "consumption": {
+          "consumers": [
+            "Rektor",
+            "Wakil Rektor Bidang Keuangan & Umum",
+            "Kepala Biro Akademik Perencanaan dan Umum"
+          ],
+          "dashboard_panel": ""
+        },
+        "ai_metadata": {
+          "ml_ready": true,
+          "feature_store_candidate": false,
+          "suggested_models": []
+        }
+      },
+      "operational_json": {
+        "classifications": [
+          "Gold_Layer",
+          "Executive_Dashboard",
+          "Star_Schema_Fact",
+          "KPI_Metric"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": {
+          "table_type": "fact",
+          "olap_role": "Fact \u2014 SAKIP & anggaran"
+        },
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:51:12.067830Z"
+    }
+  ]
+}

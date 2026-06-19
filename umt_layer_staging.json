@@ -1,0 +1,702 @@
+{
+  "generated_at": "2026-05-19T09:51:16.670190Z",
+  "approximate_count": 15,
+  "rows": [
+    {
+      "asset_qualified_name": "staging.raw_akreditasi@lakehouse",
+      "guid": "051f160a-10db-4ff4-a437-9e55e396b63e",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {
+          "akreditasi_id": "StringType()",
+          "prodi_id": "StringType()",
+          "lembaga": "StringType()",
+          "nama_lembaga_detail": "StringType()",
+          "predikat": "StringType()",
+          "tanggal_sk": "StringType()",
+          "tanggal_berakhir": "StringType()",
+          "tahun": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "csv",
+        "location": "s3a://staging/raw_akreditasi.csv",
+        "row_count": 84,
+        "column_count": 9,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_akreditasi.csv",
+        "owner": "Tim Data Ingestion",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch (per upload CSV)",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:36.896449Z"
+    },
+    {
+      "asset_qualified_name": "staging.raw_dosen@lakehouse",
+      "guid": "2cb97c84-b437-491d-beb8-bf67b65909c7",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {
+          "dosen_id": "StringType()",
+          "nama": "StringType()",
+          "prodi_id": "StringType()",
+          "fakultas_id": "StringType()",
+          "jurusan_id": "StringType()",
+          "unit_organisasi_id": "StringType()",
+          "jenis_kelamin": "StringType()",
+          "status_asn": "StringType()",
+          "pendidikan_terakhir": "StringType()",
+          "jabatan_fungsional": "StringType()",
+          "sedang_tugas_belajar": "StringType()",
+          "sertifikat_dosen": "StringType()",
+          "berasal_praktisi": "StringType()",
+          "tahun_bergabung": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "csv",
+        "location": "s3a://staging/raw_dosen.csv",
+        "row_count": 705,
+        "column_count": 15,
+        "pii_columns": [
+          "nama",
+          "dosen_id"
+        ]
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_dosen.csv",
+        "owner": "Tim Data Ingestion",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch (per upload CSV)",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:32.368339Z"
+    },
+    {
+      "asset_qualified_name": "staging.raw_fakultas@lakehouse",
+      "guid": "3a8532d6-fb23-4df7-bd85-5b99d84ad9b9",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {
+          "fakultas_id": "StringType()",
+          "nama_fakultas": "StringType()",
+          "status": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "csv",
+        "location": "s3a://staging/raw_fakultas.csv",
+        "row_count": 3,
+        "column_count": 4,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_fakultas.csv",
+        "owner": "Tim Data Ingestion",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch (per upload CSV)",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:23.644716Z"
+    },
+    {
+      "asset_qualified_name": "staging.raw_kegiatan_dosen@lakehouse",
+      "guid": "897d2571-93e2-4e62-a924-785923177226",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {
+          "kegiatan_id": "StringType()",
+          "dosen_id": "StringType()",
+          "jenis_kegiatan": "StringType()",
+          "nama_institusi": "StringType()",
+          "tanggal_mulai": "StringType()",
+          "tanggal_selesai": "StringType()",
+          "tahun": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "csv",
+        "location": "s3a://staging/raw_kegiatan_dosen.csv",
+        "row_count": 1665,
+        "column_count": 8,
+        "pii_columns": [
+          "dosen_id"
+        ]
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_kegiatan_dosen.csv",
+        "owner": "Tim Data Ingestion",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch (per upload CSV)",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:33.711927Z"
+    },
+    {
+      "asset_qualified_name": "staging.raw_kerjasama@lakehouse",
+      "guid": "72db2f33-6d2a-43fb-a03f-9f884296cdf3",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {
+          "kerjasama_id": "StringType()",
+          "jenis": "StringType()",
+          "mitra": "StringType()",
+          "kategori_mitra": "StringType()",
+          "lingkup": "StringType()",
+          "prodi_id": "StringType()",
+          "tanggal_mulai": "StringType()",
+          "tanggal_berakhir": "StringType()",
+          "status": "StringType()",
+          "tahun": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "csv",
+        "location": "s3a://staging/raw_kerjasama.csv",
+        "row_count": 380,
+        "column_count": 11,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_kerjasama.csv",
+        "owner": "Tim Data Ingestion",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch (per upload CSV)",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:35.686043Z"
+    },
+    {
+      "asset_qualified_name": "staging.raw_keuangan@lakehouse",
+      "guid": "be558b85-0b53-432a-89c4-719218ac8798",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {
+          "anggaran_id": "StringType()",
+          "tahun": "StringType()",
+          "sumber_dana": "StringType()",
+          "komponen": "StringType()",
+          "pagu": "StringType()",
+          "realisasi": "StringType()",
+          "triwulan": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "csv",
+        "location": "s3a://staging/raw_keuangan.csv",
+        "row_count": 640,
+        "column_count": 8,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_keuangan.csv",
+        "owner": "Tim Data Ingestion",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch (per upload CSV)",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:37.614910Z"
+    },
+    {
+      "asset_qualified_name": "staging.raw_lulusan@lakehouse",
+      "guid": "79490d78-0b80-448a-8ba6-69f47e4742cd",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {
+          "lulusan_id": "StringType()",
+          "mahasiswa_id": "StringType()",
+          "prodi_id": "StringType()",
+          "tanggal_lulus": "StringType()",
+          "ipk": "StringType()",
+          "lama_studi_bulan": "StringType()",
+          "status_pasca_lulus": "StringType()",
+          "nama_perusahaan": "StringType()",
+          "bidang_kerja": "StringType()",
+          "masa_tunggu_bulan": "StringType()",
+          "sumber_data": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "csv",
+        "location": "s3a://staging/raw_lulusan.csv",
+        "row_count": 4198,
+        "column_count": 12,
+        "pii_columns": [
+          "mahasiswa_id",
+          "nama_perusahaan"
+        ]
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_lulusan.csv",
+        "owner": "Tim Data Ingestion",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch (per upload CSV)",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:31.367531Z"
+    },
+    {
+      "asset_qualified_name": "staging.raw_mahasiswa@lakehouse",
+      "guid": "2737e65a-66fd-4602-a4d2-9fc03707fc7f",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {
+          "mahasiswa_id": "StringType()",
+          "nama": "StringType()",
+          "prodi_id": "StringType()",
+          "fakultas_id": "StringType()",
+          "jurusan_id": "StringType()",
+          "angkatan": "StringType()",
+          "jalur_masuk": "StringType()",
+          "jenis_kelamin": "StringType()",
+          "asal_provinsi": "StringType()",
+          "status_aktif": "StringType()",
+          "ipk_terakhir": "StringType()",
+          "total_sks": "StringType()",
+          "sks_luar_kampus": "StringType()",
+          "tanggal_masuk": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "csv",
+        "location": "s3a://staging/raw_mahasiswa.csv",
+        "row_count": 22621,
+        "column_count": 15,
+        "pii_columns": [
+          "nama",
+          "mahasiswa_id",
+          "asal_provinsi"
+        ]
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_mahasiswa.csv",
+        "owner": "Tim Data Ingestion",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch (per upload CSV)",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:30.251318Z"
+    },
+    {
+      "asset_qualified_name": "staging.raw_mbkm@lakehouse",
+      "guid": "7e4af25d-6277-4748-bf2c-039af5aa5208",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {
+          "mbkm_id": "StringType()",
+          "mahasiswa_id": "StringType()",
+          "prodi_id": "StringType()",
+          "jenis_mbkm": "StringType()",
+          "institusi_mitra": "StringType()",
+          "sks_diakui": "StringType()",
+          "tahun": "StringType()",
+          "semester": "StringType()",
+          "prestasi_nasional": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "csv",
+        "location": "s3a://staging/raw_mbkm.csv",
+        "row_count": 2705,
+        "column_count": 10,
+        "pii_columns": [
+          "mahasiswa_id"
+        ]
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_mbkm.csv",
+        "owner": "Tim Data Ingestion",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch (per upload CSV)",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:36.270620Z"
+    },
+    {
+      "asset_qualified_name": "staging.raw_organisasi_itera@lakehouse",
+      "guid": "f73e466c-bc85-4894-b666-f00e0f362151",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {
+          "org_id": "StringType()",
+          "nama_organisasi": "StringType()",
+          "tipe": "StringType()",
+          "parent_org_id": "StringType()",
+          "tingkat": "StringType()",
+          "fakultas_id": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "csv",
+        "location": "s3a://staging/raw_organisasi_itera.csv",
+        "row_count": 17,
+        "column_count": 7,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_organisasi_itera.csv",
+        "owner": "Tim Data Ingestion",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch (per upload CSV)",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:27.290584Z"
+    },
+    {
+      "asset_qualified_name": "staging.raw_penelitian@lakehouse",
+      "guid": "a7beff5f-c78e-4b90-9897-78d33d45ee70",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {
+          "penelitian_id": "StringType()",
+          "judul": "StringType()",
+          "dosen_id": "StringType()",
+          "jurusan_id": "StringType()",
+          "tahun": "StringType()",
+          "skema": "StringType()",
+          "dana": "StringType()",
+          "topik": "StringType()",
+          "status_publikasi": "StringType()",
+          "rekognisi_internasional": "StringType()",
+          "diterapkan_masyarakat": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "csv",
+        "location": "s3a://staging/raw_penelitian.csv",
+        "row_count": 1206,
+        "column_count": 12,
+        "pii_columns": [
+          "dosen_id"
+        ]
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_penelitian.csv",
+        "owner": "Tim Data Ingestion",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch (per upload CSV)",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:34.379496Z"
+    },
+    {
+      "asset_qualified_name": "staging.raw_pengabdian@lakehouse",
+      "guid": "19bd75d4-cd83-4280-8e91-a2ddc5c8582a",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {
+          "pkm_id": "StringType()",
+          "judul": "StringType()",
+          "dosen_id": "StringType()",
+          "jurusan_id": "StringType()",
+          "tahun": "StringType()",
+          "dana": "StringType()",
+          "lokasi": "StringType()",
+          "rekognisi_internasional": "StringType()",
+          "diterapkan_masyarakat": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "csv",
+        "location": "s3a://staging/raw_pengabdian.csv",
+        "row_count": 652,
+        "column_count": 10,
+        "pii_columns": [
+          "dosen_id"
+        ]
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_pengabdian.csv",
+        "owner": "Tim Data Ingestion",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch (per upload CSV)",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:35.047879Z"
+    },
+    {
+      "asset_qualified_name": "staging.raw_prestasi_mahasiswa@lakehouse",
+      "guid": "94862f08-f0b9-46dd-8b88-414365e9931d",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {
+          "prestasi_id": "StringType()",
+          "mahasiswa_id": "StringType()",
+          "nama_kompetisi": "StringType()",
+          "bidang": "StringType()",
+          "tingkat": "StringType()",
+          "peringkat": "StringType()",
+          "tahun": "StringType()",
+          "dosen_pembina_id": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "csv",
+        "location": "s3a://staging/raw_prestasi_mahasiswa.csv",
+        "row_count": 2300,
+        "column_count": 9,
+        "pii_columns": [
+          "mahasiswa_id"
+        ]
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_prestasi_mahasiswa.csv",
+        "owner": "Tim Data Ingestion",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch (per upload CSV)",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:38.272548Z"
+    },
+    {
+      "asset_qualified_name": "staging.raw_prodi@lakehouse",
+      "guid": "f2e449a0-e21a-4aa0-8ce2-379ea89ec3c9",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {
+          "prodi_id": "StringType()",
+          "nama_prodi": "StringType()",
+          "jenjang": "StringType()",
+          "fakultas_id": "StringType()",
+          "jurusan_id": "StringType()",
+          "nama_fakultas": "StringType()",
+          "tahun_berdiri": "StringType()",
+          "status": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "csv",
+        "location": "s3a://staging/raw_prodi.csv",
+        "row_count": 42,
+        "column_count": 9,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_prodi.csv",
+        "owner": "Tim Data Ingestion",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch (per upload CSV)",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:29.176478Z"
+    },
+    {
+      "asset_qualified_name": "staging.raw_tendik@lakehouse",
+      "guid": "8db4ec10-8444-495c-8e1a-6340514e4add",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {
+          "tendik_id": "StringType()",
+          "nama": "StringType()",
+          "unit_organisasi_id": "StringType()",
+          "fakultas_id": "StringType()",
+          "jabatan": "StringType()",
+          "jenis_kelamin": "StringType()",
+          "status_kepegawaian": "StringType()",
+          "tahun_bergabung": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "csv",
+        "location": "s3a://staging/raw_tendik.csv",
+        "row_count": 320,
+        "column_count": 9,
+        "pii_columns": [
+          "nama",
+          "tendik_id"
+        ]
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_tendik.csv",
+        "owner": "Tim Data Ingestion",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch (per upload CSV)",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:33.047312Z"
+    }
+  ]
+}

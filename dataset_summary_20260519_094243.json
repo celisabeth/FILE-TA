@@ -1,0 +1,131 @@
+{
+  "staging_dir": "/opt/airflow/data/staging",
+  "generated_at": "2026-05-19T09:42:43.226938+00:00",
+  "summary": {
+    "table_count": 15,
+    "total_rows": 37538,
+    "total_size_mb": 4.11
+  },
+  "tables": [
+    {
+      "file": "raw_akreditasi.csv",
+      "table_name": "raw_akreditasi",
+      "row_count": 84,
+      "column_count": 9,
+      "size_bytes": 7835,
+      "size_mb": 0.01
+    },
+    {
+      "file": "raw_dosen.csv",
+      "table_name": "raw_dosen",
+      "row_count": 705,
+      "column_count": 15,
+      "size_bytes": 83657,
+      "size_mb": 0.08
+    },
+    {
+      "file": "raw_fakultas.csv",
+      "table_name": "raw_fakultas",
+      "row_count": 3,
+      "column_count": 4,
+      "size_bytes": 249,
+      "size_mb": 0.0
+    },
+    {
+      "file": "raw_kegiatan_dosen.csv",
+      "table_name": "raw_kegiatan_dosen",
+      "row_count": 1665,
+      "column_count": 8,
+      "size_bytes": 176274,
+      "size_mb": 0.17
+    },
+    {
+      "file": "raw_kerjasama.csv",
+      "table_name": "raw_kerjasama",
+      "row_count": 380,
+      "column_count": 11,
+      "size_bytes": 43421,
+      "size_mb": 0.04
+    },
+    {
+      "file": "raw_keuangan.csv",
+      "table_name": "raw_keuangan",
+      "row_count": 640,
+      "column_count": 8,
+      "size_bytes": 53291,
+      "size_mb": 0.05
+    },
+    {
+      "file": "raw_lulusan.csv",
+      "table_name": "raw_lulusan",
+      "row_count": 4198,
+      "column_count": 12,
+      "size_bytes": 507091,
+      "size_mb": 0.48
+    },
+    {
+      "file": "raw_mahasiswa.csv",
+      "table_name": "raw_mahasiswa",
+      "row_count": 22621,
+      "column_count": 15,
+      "size_bytes": 2591847,
+      "size_mb": 2.47
+    },
+    {
+      "file": "raw_mbkm.csv",
+      "table_name": "raw_mbkm",
+      "row_count": 2705,
+      "column_count": 10,
+      "size_bytes": 272662,
+      "size_mb": 0.26
+    },
+    {
+      "file": "raw_organisasi_itera.csv",
+      "table_name": "raw_organisasi_itera",
+      "row_count": 17,
+      "column_count": 7,
+      "size_bytes": 1596,
+      "size_mb": 0.0
+    },
+    {
+      "file": "raw_penelitian.csv",
+      "table_name": "raw_penelitian",
+      "row_count": 1206,
+      "column_count": 12,
+      "size_bytes": 202129,
+      "size_mb": 0.19
+    },
+    {
+      "file": "raw_pengabdian.csv",
+      "table_name": "raw_pengabdian",
+      "row_count": 652,
+      "column_count": 10,
+      "size_bytes": 87081,
+      "size_mb": 0.08
+    },
+    {
+      "file": "raw_prestasi_mahasiswa.csv",
+      "table_name": "raw_prestasi_mahasiswa",
+      "row_count": 2300,
+      "column_count": 9,
+      "size_bytes": 245758,
+      "size_mb": 0.23
+    },
+    {
+      "file": "raw_prodi.csv",
+      "table_name": "raw_prodi",
+      "row_count": 42,
+      "column_count": 9,
+      "size_bytes": 4322,
+      "size_mb": 0.0
+    },
+    {
+      "file": "raw_tendik.csv",
+      "table_name": "raw_tendik",
+      "row_count": 320,
+      "column_count": 9,
+      "size_bytes": 28902,
+      "size_mb": 0.03
+    }
+  ]
+}

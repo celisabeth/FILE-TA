@@ -59,7 +59,7 @@ def _resolve_jars() -> str:
         return ",".join(sorted(jars))
     return ""
 
-
+#untuk koneksiin spark baca data tulis data ke iceberg dan ngobrol sm HM
 def get_spark_session():
     import os
     import socket
@@ -113,14 +113,14 @@ def get_spark_session():
     builder = apply_cluster_resource_configs(builder, app_name="staging_to_bronze")
     return apply_pyspark_python_configs(builder).getOrCreate()
 
-
+#buat menghasilkan metadata dan statistik kualitas data.
 def profile_dataframe(df, table_name: str) -> dict:
     """Profiling efisien — satu pass agregasi untuk semua kolom."""
-    row_count = df.count()
+    row_count = df.count() #buat total baris kalo 0 langsung kosong
     if row_count == 0:
         return {"table_name": table_name, "row_count": 0, "columns": {}}
 
-    agg_exprs = []
+    agg_exprs = [] #hitung nilai unik disini unik nya null&kosong
     for col_name in df.columns:
         agg_exprs.append(
             F.sum(
@@ -137,7 +137,7 @@ def profile_dataframe(df, table_name: str) -> dict:
 
     stats_row = df.agg(*agg_exprs).collect()[0]
 
-    columns = {}
+    columns = {} #simpen hasil profiling per kolom 
     for col_name in df.columns:
         null_count = int(stats_row[f"{col_name}__nulls"])
         distinct_count = int(stats_row[f"{col_name}__distinct"])
@@ -148,27 +148,27 @@ def profile_dataframe(df, table_name: str) -> dict:
             "distinct_count": distinct_count,
             "completeness_pct": round((row_count - null_count) / row_count * 100, 2),
         }
-
-    return {
+ #metadata dan statistik kualitas data untuk satu tabel
+    return { #metadata dan statistik kualitas data untuk satu tabel
         "table_name": table_name,
         "row_count": row_count,
-        "column_count": len(df.columns),
+        "column_count": len(df.columns), #untuk tulis kolom yang ada di data (untuk update bisa)
         "columns": columns,
         "schema": {c.name: str(c.dataType) for c in df.schema},
         "pii_columns": PII_COLUMNS.get(table_name, []),
         "profiled_at": datetime.utcnow().isoformat() + "Z",
     }
 
-
+#buat ubah  CSV ke iceberg Bronze trus hitung profiling metadata
 def process_table(spark, table_name: str) -> dict | None:
     """Baca CSV staging → tulis Iceberg Bronze → return profiling."""
     csv_path = f"s3a://staging/{table_name}.csv"
     logger.info("Processing %s from %s", table_name, csv_path)
-
+#spark baca file
     try:
         df = (
             spark.read
-            .option("header", "true")
+            .option("header", "true") #untuk cek isi kolom ada apa saja
             .option("inferSchema", "false")
             .csv(csv_path)
         )

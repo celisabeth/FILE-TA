@@ -1,0 +1,10 @@
+{
+  "layer": "gold",
+  "generated_at": "2026-05-19T09:51:12.799703+00:00",
+  "atlas_url": "http://atlas:21000",
+  "counts": {
+    "lakehouse_dataset": 44,
+    "lakehouse_etl_process": 26,
+    "gold_classified": 15
+  }
+}

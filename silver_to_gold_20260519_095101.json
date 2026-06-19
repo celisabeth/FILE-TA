@@ -1,0 +1,397 @@
+{
+  "pipeline": "silver_to_gold",
+  "started_at": "2026-05-19T09:48:05.267543+00:00",
+  "ended_at": "2026-05-19T09:51:01.792918+00:00",
+  "duration_sec": 176.525,
+  "summary": {
+    "tables_total": 15,
+    "tables_written": 15,
+    "rows_written": 24747
+  },
+  "tables": {
+    "dim_waktu": {
+      "table_name": "dim_waktu",
+      "table_type": "dimension",
+      "row_count": 72,
+      "column_count": 6,
+      "schema": {
+        "waktu_id": "LongType()",
+        "tahun": "LongType()",
+        "semester": "StringType()",
+        "triwulan": "LongType()",
+        "bulan": "LongType()",
+        "nama_bulan": "StringType()"
+      },
+      "sources": [
+        "generated"
+      ],
+      "profiled_at": "2026-05-19T09:48:53.847347Z",
+      "written": true
+    },
+    "dim_prodi": {
+      "table_name": "dim_prodi",
+      "table_type": "dimension",
+      "row_count": 42,
+      "column_count": 7,
+      "schema": {
+        "prodi_id": "StringType()",
+        "nama_prodi": "StringType()",
+        "jenjang": "StringType()",
+        "nama_jurusan": "StringType()",
+        "nama_fakultas": "StringType()",
+        "tahun_berdiri": "StringType()",
+        "status": "StringType()"
+      },
+      "sources": [
+        "raw_prodi"
+      ],
+      "profiled_at": "2026-05-19T09:49:03.178745Z",
+      "written": true
+    },
+    "dim_dosen": {
+      "table_name": "dim_dosen",
+      "table_type": "dimension",
+      "row_count": 705,
+      "column_count": 9,
+      "schema": {
+        "dosen_id": "StringType()",
+        "nama": "StringType()",
+        "prodi_id": "StringType()",
+        "status_asn": "StringType()",
+        "pendidikan": "StringType()",
+        "jabatan_fungsional": "StringType()",
+        "is_s3": "BooleanType()",
+        "is_serdos": "BooleanType()",
+        "is_praktisi": "BooleanType()"
+      },
+      "sources": [
+        "silver_dosen"
+      ],
+      "profiled_at": "2026-05-19T09:49:08.024925Z",
+      "written": true
+    },
+    "dim_mahasiswa": {
+      "table_name": "dim_mahasiswa",
+      "table_type": "dimension",
+      "row_count": 22621,
+      "column_count": 6,
+      "schema": {
+        "mahasiswa_id": "StringType()",
+        "prodi_id": "StringType()",
+        "angkatan": "StringType()",
+        "jalur_masuk": "StringType()",
+        "asal_provinsi": "StringType()",
+        "jenis_kelamin": "StringType()"
+      },
+      "sources": [
+        "silver_mahasiswa"
+      ],
+      "profiled_at": "2026-05-19T09:49:14.526311Z",
+      "written": true
+    },
+    "dim_topik_penelitian": {
+      "table_name": "dim_topik_penelitian",
+      "table_type": "dimension",
+      "row_count": 4,
+      "column_count": 3,
+      "schema": {
+        "topik_id": "LongType()",
+        "nama_topik": "StringType()",
+        "deskripsi": "StringType()"
+      },
+      "sources": [
+        "generated"
+      ],
+      "profiled_at": "2026-05-19T09:49:16.879507Z",
+      "written": true
+    },
+    "fact_iku1_lulusan": {
+      "table_name": "fact_iku1_lulusan",
+      "table_type": "fact",
+      "row_count": 326,
+      "column_count": 11,
+      "schema": {
+        "fact_id": "LongType()",
+        "waktu_id": "IntegerType()",
+        "prodi_id": "StringType()",
+        "total_lulusan": "LongType()",
+        "lulusan_bekerja": "LongType()",
+        "lulusan_lanjut_studi": "LongType()",
+        "lulusan_wirausaha": "LongType()",
+        "lulusan_belum": "LongType()",
+        "persen_terserap": "DoubleType()",
+        "target_iku": "DoubleType()",
+        "capaian_iku": "DoubleType()"
+      },
+      "sources": [
+        "silver_lulusan"
+      ],
+      "profiled_at": "2026-05-19T09:49:23.008123Z",
+      "sample_kpi": {
+        "nilai_capaian": 75.42,
+        "nilai_target": 77.2,
+        "persen_capaian_terhadap_target": 2894.91,
+        "status_capaian": "On Track",
+        "satuan": "%"
+      },
+      "written": true
+    },
+    "fact_iku2_mbkm": {
+      "table_name": "fact_iku2_mbkm",
+      "table_type": "fact",
+      "row_count": 410,
+      "column_count": 10,
+      "schema": {
+        "fact_id": "LongType()",
+        "waktu_id": "IntegerType()",
+        "prodi_id": "StringType()",
+        "total_mahasiswa_aktif": "LongType()",
+        "mahasiswa_sks_luar_20": "LongType()",
+        "mahasiswa_prestasi_nasional": "LongType()",
+        "mahasiswa_memenuhi_iku2": "LongType()",
+        "persen_iku2": "DoubleType()",
+        "target_iku": "DoubleType()",
+        "capaian_iku": "DoubleType()"
+      },
+      "sources": [
+        "silver_mahasiswa",
+        "raw_prestasi_mahasiswa"
+      ],
+      "profiled_at": "2026-05-19T09:49:30.103662Z",
+      "sample_kpi": {
+        "nilai_capaian": 40.29,
+        "nilai_target": 30.0,
+        "persen_capaian_terhadap_target": 2130.73,
+        "status_capaian": "Tercapai",
+        "satuan": "%"
+      },
+      "written": true
+    },
+    "fact_iku3_dosen_tridarma": {
+      "table_name": "fact_iku3_dosen_tridarma",
+      "table_type": "fact",
+      "row_count": 245,
+      "column_count": 12,
+      "schema": {
+        "fact_id": "LongType()",
+        "waktu_id": "IntegerType()",
+        "prodi_id": "StringType()",
+        "total_dosen_tetap": "LongType()",
+        "dosen_tridarma_pt_lain": "LongType()",
+        "dosen_praktisi_industri": "LongType()",
+        "dosen_bina_prestasi": "LongType()",
+        "dosen_qs100": "LongType()",
+        "dosen_memenuhi_iku3": "LongType()",
+        "persen_iku3": "DoubleType()",
+        "target_iku": "DoubleType()",
+        "capaian_iku": "DoubleType()"
+      },
+      "sources": [
+        "silver_dosen",
+        "raw_kegiatan_dosen"
+      ],
+      "profiled_at": "2026-05-19T09:49:35.859113Z",
+      "sample_kpi": {
+        "nilai_capaian": 100.0,
+        "nilai_target": 21.4,
+        "persen_capaian_terhadap_target": 2049.05,
+        "status_capaian": "Tercapai",
+        "satuan": "%"
+      },
+      "written": true
+    },
+    "fact_iku4_kualifikasi_dosen": {
+      "table_name": "fact_iku4_kualifikasi_dosen",
+      "table_type": "fact",
+      "row_count": 41,
+      "column_count": 11,
+      "schema": {
+        "fact_id": "LongType()",
+        "waktu_id": "IntegerType()",
+        "prodi_id": "StringType()",
+        "total_dosen_tetap": "LongType()",
+        "dosen_s3": "LongType()",
+        "dosen_sertifikat_industri": "LongType()",
+        "dosen_dari_praktisi": "LongType()",
+        "dosen_memenuhi_iku4": "LongType()",
+        "persen_iku4": "DoubleType()",
+        "target_iku": "IntegerType()",
+        "capaian_iku": "DoubleType()"
+      },
+      "sources": [
+        "silver_dosen"
+      ],
+      "profiled_at": "2026-05-19T09:49:42.268441Z",
+      "sample_kpi": {
+        "nilai_capaian": 108.82,
+        "nilai_target": 50.0,
+        "persen_capaian_terhadap_target": 217.64,
+        "status_capaian": "Tercapai",
+        "satuan": "%"
+      },
+      "written": true
+    },
+    "fact_iku5_penelitian_pkm": {
+      "table_name": "fact_iku5_penelitian_pkm",
+      "table_type": "fact",
+      "row_count": 18,
+      "column_count": 10,
+      "schema": {
+        "fact_id": "LongType()",
+        "waktu_id": "IntegerType()",
+        "jurusan_id": "StringType()",
+        "total_dosen": "LongType()",
+        "output_rekognisi_internasional": "LongType()",
+        "output_diterapkan_masyarakat": "LongType()",
+        "total_output_eligible": "LongType()",
+        "rasio_per_dosen": "DoubleType()",
+        "target_iku": "DoubleType()",
+        "capaian_iku": "DoubleType()"
+      },
+      "sources": [
+        "silver_penelitian_pkm",
+        "silver_dosen"
+      ],
+      "profiled_at": "2026-05-19T09:49:49.702858Z",
+      "sample_kpi": {
+        "nilai_capaian": 0.17,
+        "nilai_target": 0.2,
+        "persen_capaian_terhadap_target": 350.78,
+        "status_capaian": "On Track",
+        "satuan": "Rasio"
+      },
+      "written": true
+    },
+    "fact_iku6_kerjasama_prodi": {
+      "table_name": "fact_iku6_kerjasama_prodi",
+      "table_type": "fact",
+      "row_count": 5,
+      "column_count": 7,
+      "schema": {
+        "fact_id": "LongType()",
+        "waktu_id": "LongType()",
+        "total_prodi_s1": "LongType()",
+        "prodi_berkerjasama": "LongType()",
+        "persen_iku6": "DoubleType()",
+        "target_iku": "LongType()",
+        "capaian_iku": "DoubleType()"
+      },
+      "sources": [
+        "silver_kerjasama_aktif",
+        "raw_prodi"
+      ],
+      "profiled_at": "2026-05-19T09:49:57.114230Z",
+      "sample_kpi": {
+        "nilai_capaian": 95.12,
+        "nilai_target": 50.0,
+        "persen_capaian_terhadap_target": 200.94,
+        "status_capaian": "Tercapai",
+        "satuan": "%"
+      },
+      "written": true
+    },
+    "fact_iku7_metode_pembelajaran": {
+      "table_name": "fact_iku7_metode_pembelajaran",
+      "table_type": "fact",
+      "row_count": 205,
+      "column_count": 10,
+      "schema": {
+        "fact_id": "LongType()",
+        "waktu_id": "LongType()",
+        "prodi_id": "StringType()",
+        "total_mk": "LongType()",
+        "mk_case_method": "LongType()",
+        "mk_team_based": "LongType()",
+        "mk_memenuhi": "LongType()",
+        "persen_iku7": "DoubleType()",
+        "target_iku": "LongType()",
+        "capaian_iku": "DoubleType()"
+      },
+      "sources": [
+        "raw_prodi"
+      ],
+      "profiled_at": "2026-05-19T09:50:03.644777Z",
+      "sample_kpi": {
+        "nilai_capaian": 52.43,
+        "nilai_target": 35.0,
+        "persen_capaian_terhadap_target": 156.25,
+        "status_capaian": "Tercapai",
+        "satuan": "%"
+      },
+      "written": true
+    },
+    "fact_iku8_akreditasi_internasional": {
+      "table_name": "fact_iku8_akreditasi_internasional",
+      "table_type": "fact",
+      "row_count": 5,
+      "column_count": 7,
+      "schema": {
+        "fact_id": "LongType()",
+        "waktu_id": "LongType()",
+        "total_prodi_s1": "LongType()",
+        "prodi_akreditasi_internasional": "LongType()",
+        "persen_iku8": "DoubleType()",
+        "target_iku": "DoubleType()",
+        "capaian_iku": "DoubleType()"
+      },
+      "sources": [
+        "silver_akreditasi_aktif",
+        "raw_prodi"
+      ],
+      "profiled_at": "2026-05-19T09:50:10.334235Z",
+      "sample_kpi": {
+        "nilai_capaian": 4.88,
+        "nilai_target": 3.1,
+        "persen_capaian_terhadap_target": 169.17,
+        "status_capaian": "Tercapai",
+        "satuan": "%"
+      },
+      "written": true
+    },
+    "fact_tata_kelola": {
+      "table_name": "fact_tata_kelola",
+      "table_type": "fact",
+      "row_count": 8,
+      "column_count": 10,
+      "schema": {
+        "fact_id": "LongType()",
+        "waktu_id": "DoubleType()",
+        "predikat_sakip": "StringType()",
+        "nilai_sakip": "DoubleType()",
+        "nilai_kinerja_anggaran": "DoubleType()",
+        "pagu_total": "DoubleType()",
+        "realisasi_total": "DoubleType()",
+        "persen_realisasi": "DoubleType()",
+        "target_sakip": "StringType()",
+        "target_kinerja_anggaran": "DoubleType()"
+      },
+      "sources": [
+        "raw_keuangan"
+      ],
+      "profiled_at": "2026-05-19T09:50:14.291779Z",
+      "written": true
+    },
+    "fact_rekap_iku_institusi": {
+      "table_name": "fact_rekap_iku_institusi",
+      "table_type": "fact",
+      "row_count": 40,
+      "column_count": 8,
+      "schema": {
+        "fact_id": "LongType()",
+        "waktu_id": "LongType()",
+        "iku_kode": "StringType()",
+        "iku_nama": "StringType()",
+        "nilai_capaian": "DoubleType()",
+        "nilai_target": "DoubleType()",
+        "satuan": "StringType()",
+        "status_capaian": "StringType()"
+      },
+      "sources": [
+        "all_iku_facts"
+      ],
+      "profiled_at": "2026-05-19T09:51:01.787386Z",
+      "written": true
+    }
+  },
+  "metrics_file": "silver_to_gold_20260519_095101.json"
+}

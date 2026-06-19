@@ -1,0 +1,1 @@
+git clone https://github.com/insightera/Bigdata-insightera.git

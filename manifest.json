@@ -1,0 +1,64 @@
+{
+  "run_id": "metadata_20260519T094238Z_7b1cd8",
+  "track": "metadata",
+  "label": "metadata_20260519T094238Z_7b1cd8",
+  "dag_id": "metadata_full_experiment",
+  "dag_run_id": "manual__2026-05-19T09:41:48+00:00",
+  "notes": null,
+  "started_at": "2026-05-19T09:42:38.193183+00:00",
+  "ended_at": "2026-05-19T09:51:29.729661+00:00",
+  "artifacts": [
+    {
+      "file": "dataset_summary_20260519_094243.json",
+      "recorded_at": "2026-05-19T09:42:43.227774+00:00"
+    },
+    {
+      "file": "staging_to_bronze_20260519_094517.json",
+      "recorded_at": "2026-05-19T09:45:17.102182+00:00",
+      "role": "pipeline:staging_to_bronze"
+    },
+    {
+      "file": "atlas_registration_bronze_20260519_094539.json",
+      "recorded_at": "2026-05-19T09:45:39.567487+00:00"
+    },
+    {
+      "file": "bronze_to_silver_20260519_094756.json",
+      "recorded_at": "2026-05-19T09:47:56.936773+00:00",
+      "role": "pipeline:bronze_to_silver"
+    },
+    {
+      "file": "atlas_registration_silver_20260519_094803.json",
+      "recorded_at": "2026-05-19T09:48:03.589610+00:00"
+    },
+    {
+      "file": "silver_to_gold_20260519_095101.json",
+      "recorded_at": "2026-05-19T09:51:01.796280+00:00",
+      "role": "pipeline:silver_to_gold"
+    },
+    {
+      "file": "atlas_registration_gold_20260519_095112.json",
+      "recorded_at": "2026-05-19T09:51:12.866976+00:00"
+    },
+    {
+      "file": "umt_20260519_095116.json",
+      "recorded_at": "2026-05-19T09:51:16.677620+00:00",
+      "role": "umt"
+    },
+    {
+      "file": "metadata_quality_20260519_095121.json",
+      "recorded_at": "2026-05-19T09:51:21.497322+00:00",
+      "role": "metadata_quality"
+    },
+    {
+      "file": "atlas_inventory_20260519_095127.json",
+      "recorded_at": "2026-05-19T09:51:27.003811+00:00",
+      "role": "atlas_inventory"
+    },
+    {
+      "file": "experiment_summary_20260519_095129.json",
+      "recorded_at": "2026-05-19T09:51:29.727658+00:00",
+      "role": "experiment_summary"
+    }
+  ],
+  "summary_file": "experiment_summary_20260519_095129.json"
+}

@@ -1,0 +1,2990 @@
+{
+  "generated_at": "2026-05-19T09:51:16.670190Z",
+  "approximate_count": 51,
+  "rows": [
+    {
+      "asset_qualified_name": "staging.raw_akreditasi@lakehouse",
+      "guid": "051f160a-10db-4ff4-a437-9e55e396b63e",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {
+          "akreditasi_id": "StringType()",
+          "prodi_id": "StringType()",
+          "lembaga": "StringType()",
+          "nama_lembaga_detail": "StringType()",
+          "predikat": "StringType()",
+          "tanggal_sk": "StringType()",
+          "tanggal_berakhir": "StringType()",
+          "tahun": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "csv",
+        "location": "s3a://staging/raw_akreditasi.csv",
+        "row_count": 84,
+        "column_count": 9,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_akreditasi.csv",
+        "owner": "Tim Data Ingestion",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch (per upload CSV)",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:36.896449Z"
+    },
+    {
+      "asset_qualified_name": "staging.raw_dosen@lakehouse",
+      "guid": "2cb97c84-b437-491d-beb8-bf67b65909c7",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {
+          "dosen_id": "StringType()",
+          "nama": "StringType()",
+          "prodi_id": "StringType()",
+          "fakultas_id": "StringType()",
+          "jurusan_id": "StringType()",
+          "unit_organisasi_id": "StringType()",
+          "jenis_kelamin": "StringType()",
+          "status_asn": "StringType()",
+          "pendidikan_terakhir": "StringType()",
+          "jabatan_fungsional": "StringType()",
+          "sedang_tugas_belajar": "StringType()",
+          "sertifikat_dosen": "StringType()",
+          "berasal_praktisi": "StringType()",
+          "tahun_bergabung": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "csv",
+        "location": "s3a://staging/raw_dosen.csv",
+        "row_count": 705,
+        "column_count": 15,
+        "pii_columns": [
+          "nama",
+          "dosen_id"
+        ]
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_dosen.csv",
+        "owner": "Tim Data Ingestion",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch (per upload CSV)",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:32.368339Z"
+    },
+    {
+      "asset_qualified_name": "staging.raw_fakultas@lakehouse",
+      "guid": "3a8532d6-fb23-4df7-bd85-5b99d84ad9b9",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {
+          "fakultas_id": "StringType()",
+          "nama_fakultas": "StringType()",
+          "status": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "csv",
+        "location": "s3a://staging/raw_fakultas.csv",
+        "row_count": 3,
+        "column_count": 4,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_fakultas.csv",
+        "owner": "Tim Data Ingestion",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch (per upload CSV)",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:23.644716Z"
+    },
+    {
+      "asset_qualified_name": "staging.raw_kegiatan_dosen@lakehouse",
+      "guid": "897d2571-93e2-4e62-a924-785923177226",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {
+          "kegiatan_id": "StringType()",
+          "dosen_id": "StringType()",
+          "jenis_kegiatan": "StringType()",
+          "nama_institusi": "StringType()",
+          "tanggal_mulai": "StringType()",
+          "tanggal_selesai": "StringType()",
+          "tahun": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "csv",
+        "location": "s3a://staging/raw_kegiatan_dosen.csv",
+        "row_count": 1665,
+        "column_count": 8,
+        "pii_columns": [
+          "dosen_id"
+        ]
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_kegiatan_dosen.csv",
+        "owner": "Tim Data Ingestion",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch (per upload CSV)",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:33.711927Z"
+    },
+    {
+      "asset_qualified_name": "staging.raw_kerjasama@lakehouse",
+      "guid": "72db2f33-6d2a-43fb-a03f-9f884296cdf3",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {
+          "kerjasama_id": "StringType()",
+          "jenis": "StringType()",
+          "mitra": "StringType()",
+          "kategori_mitra": "StringType()",
+          "lingkup": "StringType()",
+          "prodi_id": "StringType()",
+          "tanggal_mulai": "StringType()",
+          "tanggal_berakhir": "StringType()",
+          "status": "StringType()",
+          "tahun": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "csv",
+        "location": "s3a://staging/raw_kerjasama.csv",
+        "row_count": 380,
+        "column_count": 11,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_kerjasama.csv",
+        "owner": "Tim Data Ingestion",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch (per upload CSV)",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:35.686043Z"
+    },
+    {
+      "asset_qualified_name": "staging.raw_keuangan@lakehouse",
+      "guid": "be558b85-0b53-432a-89c4-719218ac8798",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {
+          "anggaran_id": "StringType()",
+          "tahun": "StringType()",
+          "sumber_dana": "StringType()",
+          "komponen": "StringType()",
+          "pagu": "StringType()",
+          "realisasi": "StringType()",
+          "triwulan": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "csv",
+        "location": "s3a://staging/raw_keuangan.csv",
+        "row_count": 640,
+        "column_count": 8,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_keuangan.csv",
+        "owner": "Tim Data Ingestion",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch (per upload CSV)",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:37.614910Z"
+    },
+    {
+      "asset_qualified_name": "staging.raw_lulusan@lakehouse",
+      "guid": "79490d78-0b80-448a-8ba6-69f47e4742cd",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {
+          "lulusan_id": "StringType()",
+          "mahasiswa_id": "StringType()",
+          "prodi_id": "StringType()",
+          "tanggal_lulus": "StringType()",
+          "ipk": "StringType()",
+          "lama_studi_bulan": "StringType()",
+          "status_pasca_lulus": "StringType()",
+          "nama_perusahaan": "StringType()",
+          "bidang_kerja": "StringType()",
+          "masa_tunggu_bulan": "StringType()",
+          "sumber_data": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "csv",
+        "location": "s3a://staging/raw_lulusan.csv",
+        "row_count": 4198,
+        "column_count": 12,
+        "pii_columns": [
+          "mahasiswa_id",
+          "nama_perusahaan"
+        ]
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_lulusan.csv",
+        "owner": "Tim Data Ingestion",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch (per upload CSV)",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:31.367531Z"
+    },
+    {
+      "asset_qualified_name": "staging.raw_mahasiswa@lakehouse",
+      "guid": "2737e65a-66fd-4602-a4d2-9fc03707fc7f",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {
+          "mahasiswa_id": "StringType()",
+          "nama": "StringType()",
+          "prodi_id": "StringType()",
+          "fakultas_id": "StringType()",
+          "jurusan_id": "StringType()",
+          "angkatan": "StringType()",
+          "jalur_masuk": "StringType()",
+          "jenis_kelamin": "StringType()",
+          "asal_provinsi": "StringType()",
+          "status_aktif": "StringType()",
+          "ipk_terakhir": "StringType()",
+          "total_sks": "StringType()",
+          "sks_luar_kampus": "StringType()",
+          "tanggal_masuk": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "csv",
+        "location": "s3a://staging/raw_mahasiswa.csv",
+        "row_count": 22621,
+        "column_count": 15,
+        "pii_columns": [
+          "nama",
+          "mahasiswa_id",
+          "asal_provinsi"
+        ]
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_mahasiswa.csv",
+        "owner": "Tim Data Ingestion",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch (per upload CSV)",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:30.251318Z"
+    },
+    {
+      "asset_qualified_name": "staging.raw_mbkm@lakehouse",
+      "guid": "7e4af25d-6277-4748-bf2c-039af5aa5208",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {
+          "mbkm_id": "StringType()",
+          "mahasiswa_id": "StringType()",
+          "prodi_id": "StringType()",
+          "jenis_mbkm": "StringType()",
+          "institusi_mitra": "StringType()",
+          "sks_diakui": "StringType()",
+          "tahun": "StringType()",
+          "semester": "StringType()",
+          "prestasi_nasional": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "csv",
+        "location": "s3a://staging/raw_mbkm.csv",
+        "row_count": 2705,
+        "column_count": 10,
+        "pii_columns": [
+          "mahasiswa_id"
+        ]
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_mbkm.csv",
+        "owner": "Tim Data Ingestion",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch (per upload CSV)",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:36.270620Z"
+    },
+    {
+      "asset_qualified_name": "staging.raw_organisasi_itera@lakehouse",
+      "guid": "f73e466c-bc85-4894-b666-f00e0f362151",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {
+          "org_id": "StringType()",
+          "nama_organisasi": "StringType()",
+          "tipe": "StringType()",
+          "parent_org_id": "StringType()",
+          "tingkat": "StringType()",
+          "fakultas_id": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "csv",
+        "location": "s3a://staging/raw_organisasi_itera.csv",
+        "row_count": 17,
+        "column_count": 7,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_organisasi_itera.csv",
+        "owner": "Tim Data Ingestion",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch (per upload CSV)",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:27.290584Z"
+    },
+    {
+      "asset_qualified_name": "staging.raw_penelitian@lakehouse",
+      "guid": "a7beff5f-c78e-4b90-9897-78d33d45ee70",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {
+          "penelitian_id": "StringType()",
+          "judul": "StringType()",
+          "dosen_id": "StringType()",
+          "jurusan_id": "StringType()",
+          "tahun": "StringType()",
+          "skema": "StringType()",
+          "dana": "StringType()",
+          "topik": "StringType()",
+          "status_publikasi": "StringType()",
+          "rekognisi_internasional": "StringType()",
+          "diterapkan_masyarakat": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "csv",
+        "location": "s3a://staging/raw_penelitian.csv",
+        "row_count": 1206,
+        "column_count": 12,
+        "pii_columns": [
+          "dosen_id"
+        ]
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_penelitian.csv",
+        "owner": "Tim Data Ingestion",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch (per upload CSV)",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:34.379496Z"
+    },
+    {
+      "asset_qualified_name": "staging.raw_pengabdian@lakehouse",
+      "guid": "19bd75d4-cd83-4280-8e91-a2ddc5c8582a",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {
+          "pkm_id": "StringType()",
+          "judul": "StringType()",
+          "dosen_id": "StringType()",
+          "jurusan_id": "StringType()",
+          "tahun": "StringType()",
+          "dana": "StringType()",
+          "lokasi": "StringType()",
+          "rekognisi_internasional": "StringType()",
+          "diterapkan_masyarakat": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "csv",
+        "location": "s3a://staging/raw_pengabdian.csv",
+        "row_count": 652,
+        "column_count": 10,
+        "pii_columns": [
+          "dosen_id"
+        ]
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_pengabdian.csv",
+        "owner": "Tim Data Ingestion",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch (per upload CSV)",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:35.047879Z"
+    },
+    {
+      "asset_qualified_name": "staging.raw_prestasi_mahasiswa@lakehouse",
+      "guid": "94862f08-f0b9-46dd-8b88-414365e9931d",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {
+          "prestasi_id": "StringType()",
+          "mahasiswa_id": "StringType()",
+          "nama_kompetisi": "StringType()",
+          "bidang": "StringType()",
+          "tingkat": "StringType()",
+          "peringkat": "StringType()",
+          "tahun": "StringType()",
+          "dosen_pembina_id": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "csv",
+        "location": "s3a://staging/raw_prestasi_mahasiswa.csv",
+        "row_count": 2300,
+        "column_count": 9,
+        "pii_columns": [
+          "mahasiswa_id"
+        ]
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_prestasi_mahasiswa.csv",
+        "owner": "Tim Data Ingestion",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch (per upload CSV)",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:38.272548Z"
+    },
+    {
+      "asset_qualified_name": "staging.raw_prodi@lakehouse",
+      "guid": "f2e449a0-e21a-4aa0-8ce2-379ea89ec3c9",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {
+          "prodi_id": "StringType()",
+          "nama_prodi": "StringType()",
+          "jenjang": "StringType()",
+          "fakultas_id": "StringType()",
+          "jurusan_id": "StringType()",
+          "nama_fakultas": "StringType()",
+          "tahun_berdiri": "StringType()",
+          "status": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "csv",
+        "location": "s3a://staging/raw_prodi.csv",
+        "row_count": 42,
+        "column_count": 9,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_prodi.csv",
+        "owner": "Tim Data Ingestion",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch (per upload CSV)",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:29.176478Z"
+    },
+    {
+      "asset_qualified_name": "staging.raw_tendik@lakehouse",
+      "guid": "8db4ec10-8444-495c-8e1a-6340514e4add",
+      "layer": "staging",
+      "technical_json": {
+        "schema": {
+          "tendik_id": "StringType()",
+          "nama": "StringType()",
+          "unit_organisasi_id": "StringType()",
+          "fakultas_id": "StringType()",
+          "jabatan": "StringType()",
+          "jenis_kelamin": "StringType()",
+          "status_kepegawaian": "StringType()",
+          "tahun_bergabung": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "csv",
+        "location": "s3a://staging/raw_tendik.csv",
+        "row_count": 320,
+        "column_count": 9,
+        "pii_columns": [
+          "nama",
+          "tendik_id"
+        ]
+      },
+      "business_json": {
+        "description": "Raw CSV source file: raw_tendik.csv",
+        "owner": "Tim Data Ingestion",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch (per upload CSV)",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:33.047312Z"
+    },
+    {
+      "asset_qualified_name": "bronze.raw_akreditasi@lakehouse",
+      "guid": "6d8aa2f1-aab3-4968-b77e-c550a25197a1",
+      "layer": "bronze",
+      "technical_json": {
+        "schema": {
+          "akreditasi_id": "StringType()",
+          "prodi_id": "StringType()",
+          "lembaga": "StringType()",
+          "nama_lembaga_detail": "StringType()",
+          "predikat": "StringType()",
+          "tanggal_sk": "StringType()",
+          "tanggal_berakhir": "StringType()",
+          "tahun": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/bronze/raw_akreditasi",
+        "row_count": 84,
+        "column_count": 9,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Iceberg table in Bronze layer: lakehouse.bronze.raw_akreditasi",
+        "owner": "data-platform",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Bronze_Layer",
+          "Staging_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:37.091118Z"
+    },
+    {
+      "asset_qualified_name": "bronze.raw_dosen@lakehouse",
+      "guid": "ebe5238c-2ff0-4b0a-a445-971bb407e1b5",
+      "layer": "bronze",
+      "technical_json": {
+        "schema": {
+          "dosen_id": "StringType()",
+          "nama": "StringType()",
+          "prodi_id": "StringType()",
+          "fakultas_id": "StringType()",
+          "jurusan_id": "StringType()",
+          "unit_organisasi_id": "StringType()",
+          "jenis_kelamin": "StringType()",
+          "status_asn": "StringType()",
+          "pendidikan_terakhir": "StringType()",
+          "jabatan_fungsional": "StringType()",
+          "sedang_tugas_belajar": "StringType()",
+          "sertifikat_dosen": "StringType()",
+          "berasal_praktisi": "StringType()",
+          "tahun_bergabung": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/bronze/raw_dosen",
+        "row_count": 705,
+        "column_count": 15,
+        "pii_columns": [
+          "nama",
+          "dosen_id"
+        ]
+      },
+      "business_json": {
+        "description": "Iceberg table in Bronze layer: lakehouse.bronze.raw_dosen",
+        "owner": "data-platform",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer",
+          "Bronze_Layer",
+          "PII"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:32.593769Z"
+    },
+    {
+      "asset_qualified_name": "bronze.raw_fakultas@lakehouse",
+      "guid": "ad7cd032-3c41-42f2-bd44-ebb90ace1f05",
+      "layer": "bronze",
+      "technical_json": {
+        "schema": {
+          "fakultas_id": "StringType()",
+          "nama_fakultas": "StringType()",
+          "status": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/bronze/raw_fakultas",
+        "row_count": 3,
+        "column_count": 4,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Iceberg table in Bronze layer: lakehouse.bronze.raw_fakultas",
+        "owner": "data-platform",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer",
+          "Bronze_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:25.544389Z"
+    },
+    {
+      "asset_qualified_name": "bronze.raw_kegiatan_dosen@lakehouse",
+      "guid": "2c3d7506-985e-48f6-8851-24f2eea97030",
+      "layer": "bronze",
+      "technical_json": {
+        "schema": {
+          "kegiatan_id": "StringType()",
+          "dosen_id": "StringType()",
+          "jenis_kegiatan": "StringType()",
+          "nama_institusi": "StringType()",
+          "tanggal_mulai": "StringType()",
+          "tanggal_selesai": "StringType()",
+          "tahun": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/bronze/raw_kegiatan_dosen",
+        "row_count": 1665,
+        "column_count": 8,
+        "pii_columns": [
+          "dosen_id"
+        ]
+      },
+      "business_json": {
+        "description": "Iceberg table in Bronze layer: lakehouse.bronze.raw_kegiatan_dosen",
+        "owner": "data-platform",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer",
+          "PII",
+          "Bronze_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:33.919755Z"
+    },
+    {
+      "asset_qualified_name": "bronze.raw_kerjasama@lakehouse",
+      "guid": "b5f685d7-fd2d-4b63-9505-d29b885014be",
+      "layer": "bronze",
+      "technical_json": {
+        "schema": {
+          "kerjasama_id": "StringType()",
+          "jenis": "StringType()",
+          "mitra": "StringType()",
+          "kategori_mitra": "StringType()",
+          "lingkup": "StringType()",
+          "prodi_id": "StringType()",
+          "tanggal_mulai": "StringType()",
+          "tanggal_berakhir": "StringType()",
+          "status": "StringType()",
+          "tahun": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/bronze/raw_kerjasama",
+        "row_count": 380,
+        "column_count": 11,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Iceberg table in Bronze layer: lakehouse.bronze.raw_kerjasama",
+        "owner": "data-platform",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Bronze_Layer",
+          "Staging_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:35.881043Z"
+    },
+    {
+      "asset_qualified_name": "bronze.raw_keuangan@lakehouse",
+      "guid": "197b84a1-b203-4d2c-b19f-5bfce61a63d7",
+      "layer": "bronze",
+      "technical_json": {
+        "schema": {
+          "anggaran_id": "StringType()",
+          "tahun": "StringType()",
+          "sumber_dana": "StringType()",
+          "komponen": "StringType()",
+          "pagu": "StringType()",
+          "realisasi": "StringType()",
+          "triwulan": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/bronze/raw_keuangan",
+        "row_count": 640,
+        "column_count": 8,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Iceberg table in Bronze layer: lakehouse.bronze.raw_keuangan",
+        "owner": "data-platform",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer",
+          "Bronze_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:37.849419Z"
+    },
+    {
+      "asset_qualified_name": "bronze.raw_lulusan@lakehouse",
+      "guid": "eba886f3-8b56-4931-90cf-f39e83697ff6",
+      "layer": "bronze",
+      "technical_json": {
+        "schema": {
+          "lulusan_id": "StringType()",
+          "mahasiswa_id": "StringType()",
+          "prodi_id": "StringType()",
+          "tanggal_lulus": "StringType()",
+          "ipk": "StringType()",
+          "lama_studi_bulan": "StringType()",
+          "status_pasca_lulus": "StringType()",
+          "nama_perusahaan": "StringType()",
+          "bidang_kerja": "StringType()",
+          "masa_tunggu_bulan": "StringType()",
+          "sumber_data": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/bronze/raw_lulusan",
+        "row_count": 4198,
+        "column_count": 12,
+        "pii_columns": [
+          "mahasiswa_id",
+          "nama_perusahaan"
+        ]
+      },
+      "business_json": {
+        "description": "Iceberg table in Bronze layer: lakehouse.bronze.raw_lulusan",
+        "owner": "data-platform",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "PII",
+          "Staging_Layer",
+          "Bronze_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:31.742928Z"
+    },
+    {
+      "asset_qualified_name": "bronze.raw_mahasiswa@lakehouse",
+      "guid": "225f2293-efe6-4038-9551-2d2d0450e457",
+      "layer": "bronze",
+      "technical_json": {
+        "schema": {
+          "mahasiswa_id": "StringType()",
+          "nama": "StringType()",
+          "prodi_id": "StringType()",
+          "fakultas_id": "StringType()",
+          "jurusan_id": "StringType()",
+          "angkatan": "StringType()",
+          "jalur_masuk": "StringType()",
+          "jenis_kelamin": "StringType()",
+          "asal_provinsi": "StringType()",
+          "status_aktif": "StringType()",
+          "ipk_terakhir": "StringType()",
+          "total_sks": "StringType()",
+          "sks_luar_kampus": "StringType()",
+          "tanggal_masuk": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/bronze/raw_mahasiswa",
+        "row_count": 22621,
+        "column_count": 15,
+        "pii_columns": [
+          "nama",
+          "mahasiswa_id",
+          "asal_provinsi"
+        ]
+      },
+      "business_json": {
+        "description": "Iceberg table in Bronze layer: lakehouse.bronze.raw_mahasiswa",
+        "owner": "data-platform",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer",
+          "Bronze_Layer",
+          "PII"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:30.610084Z"
+    },
+    {
+      "asset_qualified_name": "bronze.raw_mbkm@lakehouse",
+      "guid": "135ab689-6873-46c8-b1a9-873447b085ee",
+      "layer": "bronze",
+      "technical_json": {
+        "schema": {
+          "mbkm_id": "StringType()",
+          "mahasiswa_id": "StringType()",
+          "prodi_id": "StringType()",
+          "jenis_mbkm": "StringType()",
+          "institusi_mitra": "StringType()",
+          "sks_diakui": "StringType()",
+          "tahun": "StringType()",
+          "semester": "StringType()",
+          "prestasi_nasional": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/bronze/raw_mbkm",
+        "row_count": 2705,
+        "column_count": 10,
+        "pii_columns": [
+          "mahasiswa_id"
+        ]
+      },
+      "business_json": {
+        "description": "Iceberg table in Bronze layer: lakehouse.bronze.raw_mbkm",
+        "owner": "data-platform",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Bronze_Layer",
+          "Staging_Layer",
+          "PII"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:36.453440Z"
+    },
+    {
+      "asset_qualified_name": "bronze.raw_organisasi_itera@lakehouse",
+      "guid": "671061dd-e61b-4271-a2d6-43a1d8f7c86f",
+      "layer": "bronze",
+      "technical_json": {
+        "schema": {
+          "org_id": "StringType()",
+          "nama_organisasi": "StringType()",
+          "tipe": "StringType()",
+          "parent_org_id": "StringType()",
+          "tingkat": "StringType()",
+          "fakultas_id": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/bronze/raw_organisasi_itera",
+        "row_count": 17,
+        "column_count": 7,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Iceberg table in Bronze layer: lakehouse.bronze.raw_organisasi_itera",
+        "owner": "data-platform",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Bronze_Layer",
+          "Staging_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:27.853479Z"
+    },
+    {
+      "asset_qualified_name": "bronze.raw_penelitian@lakehouse",
+      "guid": "85a17564-508e-4b26-960f-7de9ab1e987a",
+      "layer": "bronze",
+      "technical_json": {
+        "schema": {
+          "penelitian_id": "StringType()",
+          "judul": "StringType()",
+          "dosen_id": "StringType()",
+          "jurusan_id": "StringType()",
+          "tahun": "StringType()",
+          "skema": "StringType()",
+          "dana": "StringType()",
+          "topik": "StringType()",
+          "status_publikasi": "StringType()",
+          "rekognisi_internasional": "StringType()",
+          "diterapkan_masyarakat": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/bronze/raw_penelitian",
+        "row_count": 1206,
+        "column_count": 12,
+        "pii_columns": [
+          "dosen_id"
+        ]
+      },
+      "business_json": {
+        "description": "Iceberg table in Bronze layer: lakehouse.bronze.raw_penelitian",
+        "owner": "data-platform",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Bronze_Layer",
+          "PII",
+          "Staging_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:34.566891Z"
+    },
+    {
+      "asset_qualified_name": "bronze.raw_pengabdian@lakehouse",
+      "guid": "a2ad1509-188b-4603-b0a3-f70134c45790",
+      "layer": "bronze",
+      "technical_json": {
+        "schema": {
+          "pkm_id": "StringType()",
+          "judul": "StringType()",
+          "dosen_id": "StringType()",
+          "jurusan_id": "StringType()",
+          "tahun": "StringType()",
+          "dana": "StringType()",
+          "lokasi": "StringType()",
+          "rekognisi_internasional": "StringType()",
+          "diterapkan_masyarakat": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/bronze/raw_pengabdian",
+        "row_count": 652,
+        "column_count": 10,
+        "pii_columns": [
+          "dosen_id"
+        ]
+      },
+      "business_json": {
+        "description": "Iceberg table in Bronze layer: lakehouse.bronze.raw_pengabdian",
+        "owner": "data-platform",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer",
+          "PII",
+          "Bronze_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:35.250206Z"
+    },
+    {
+      "asset_qualified_name": "bronze.raw_prestasi_mahasiswa@lakehouse",
+      "guid": "f15c85aa-dad8-4d95-b1fe-e4a0d12973bc",
+      "layer": "bronze",
+      "technical_json": {
+        "schema": {
+          "prestasi_id": "StringType()",
+          "mahasiswa_id": "StringType()",
+          "nama_kompetisi": "StringType()",
+          "bidang": "StringType()",
+          "tingkat": "StringType()",
+          "peringkat": "StringType()",
+          "tahun": "StringType()",
+          "dosen_pembina_id": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/bronze/raw_prestasi_mahasiswa",
+        "row_count": 2300,
+        "column_count": 9,
+        "pii_columns": [
+          "mahasiswa_id"
+        ]
+      },
+      "business_json": {
+        "description": "Iceberg table in Bronze layer: lakehouse.bronze.raw_prestasi_mahasiswa",
+        "owner": "data-platform",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer",
+          "Bronze_Layer",
+          "PII"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:38.483299Z"
+    },
+    {
+      "asset_qualified_name": "bronze.raw_prodi@lakehouse",
+      "guid": "6865e75e-a192-470b-9ec8-2d96798ccbdc",
+      "layer": "bronze",
+      "technical_json": {
+        "schema": {
+          "prodi_id": "StringType()",
+          "nama_prodi": "StringType()",
+          "jenjang": "StringType()",
+          "fakultas_id": "StringType()",
+          "jurusan_id": "StringType()",
+          "nama_fakultas": "StringType()",
+          "tahun_berdiri": "StringType()",
+          "status": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/bronze/raw_prodi",
+        "row_count": 42,
+        "column_count": 9,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Iceberg table in Bronze layer: lakehouse.bronze.raw_prodi",
+        "owner": "data-platform",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer",
+          "Bronze_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:29.597628Z"
+    },
+    {
+      "asset_qualified_name": "bronze.raw_tendik@lakehouse",
+      "guid": "aa976b01-b5fe-4d50-9d40-89a4e2159e73",
+      "layer": "bronze",
+      "technical_json": {
+        "schema": {
+          "tendik_id": "StringType()",
+          "nama": "StringType()",
+          "unit_organisasi_id": "StringType()",
+          "fakultas_id": "StringType()",
+          "jabatan": "StringType()",
+          "jenis_kelamin": "StringType()",
+          "status_kepegawaian": "StringType()",
+          "tahun_bergabung": "StringType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/bronze/raw_tendik",
+        "row_count": 320,
+        "column_count": 9,
+        "pii_columns": [
+          "nama",
+          "tendik_id"
+        ]
+      },
+      "business_json": {
+        "description": "Iceberg table in Bronze layer: lakehouse.bronze.raw_tendik",
+        "owner": "data-platform",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "batch",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "PII",
+          "Bronze_Layer",
+          "Staging_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": null,
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:45:33.228520Z"
+    },
+    {
+      "asset_qualified_name": "silver.silver_akreditasi_aktif@lakehouse",
+      "guid": "1257a95a-b290-4027-8a34-e1ccdcc2106c",
+      "layer": "silver",
+      "technical_json": {
+        "schema": {
+          "akreditasi_id": "StringType()",
+          "prodi_id": "StringType()",
+          "lembaga": "StringType()",
+          "nama_lembaga_detail": "StringType()",
+          "predikat": "StringType()",
+          "tanggal_sk": "StringType()",
+          "tanggal_berakhir": "StringType()",
+          "tahun": "StringType()",
+          "ingested_at": "StringType()",
+          "is_internasional": "BooleanType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/silver/silver_akreditasi_aktif",
+        "row_count": 21,
+        "column_count": 10,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Akreditasi terakhir per prodi yang masih berlaku, termasuk flag akreditasi internasional. Sumber IKU-8 (prodi akreditasi/sertifikat internasional).",
+        "owner": "LP3M (Lembaga Penjaminan Mutu)",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [
+          "BAN-PT",
+          "LAM",
+          "Akreditasi Internasional",
+          "Unggul"
+        ],
+        "iku_relevance": [
+          "IKU-8"
+        ],
+        "update_frequency": "Setiap siklus akreditasi (5 tahun)",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Bronze_Layer",
+          "Staging_Layer",
+          "Silver_Layer",
+          "Quality_Pass"
+        ],
+        "quality": {
+          "source_score": 100.0,
+          "overall_score": 100.0,
+          "source_status": "PASS",
+          "silver_completeness": 100.0
+        },
+        "compliance": {
+          "contains_pii": false,
+          "pii_columns": [],
+          "data_classification": "Public",
+          "retention_policy": "Permanen",
+          "access_restriction": "Role: semua"
+        },
+        "star_schema": null,
+        "transformations": [
+          "FILTER tanggal_berakhir >= today (masih berlaku)",
+          "WINDOW ROW_NUMBER per prodi ORDER BY tanggal_sk DESC",
+          "KEEP latest akreditasi per prodi",
+          "FLAG is_internasional = lembaga == 'Internasional'"
+        ]
+      },
+      "last_enriched_at": "2026-05-19T09:48:03.016903Z"
+    },
+    {
+      "asset_qualified_name": "silver.silver_dosen@lakehouse",
+      "guid": "3eb6607d-5b01-4b10-89d3-def6482a8e38",
+      "layer": "silver",
+      "technical_json": {
+        "schema": {
+          "dosen_id": "StringType()",
+          "nama": "StringType()",
+          "prodi_id": "StringType()",
+          "fakultas_id": "StringType()",
+          "jurusan_id": "StringType()",
+          "unit_organisasi_id": "StringType()",
+          "jenis_kelamin": "StringType()",
+          "status_asn": "StringType()",
+          "pendidikan_terakhir": "StringType()",
+          "jabatan_fungsional": "StringType()",
+          "sedang_tugas_belajar": "StringType()",
+          "sertifikat_dosen": "StringType()",
+          "berasal_praktisi": "StringType()",
+          "tahun_bergabung": "StringType()",
+          "ingested_at": "StringType()",
+          "is_s3": "BooleanType()",
+          "is_praktisi": "BooleanType()",
+          "is_serdos": "BooleanType()",
+          "is_aktif_tridarma": "BooleanType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/silver/silver_dosen",
+        "row_count": 705,
+        "column_count": 19,
+        "pii_columns": [
+          "nama",
+          "dosen_id"
+        ]
+      },
+      "business_json": {
+        "description": "Data dosen ITERA dengan flag kualifikasi (S3, sertifikasi, praktisi) dan aktivitas tridarma. Sumber IKU-3 (dosen tridarma luar) dan IKU-4 (kualifikasi dosen).",
+        "owner": "Biro Sumber Daya Manusia",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [
+          "Dosen Tetap",
+          "Tridarma",
+          "Serdos",
+          "Jabatan Fungsional"
+        ],
+        "iku_relevance": [
+          "IKU-3",
+          "IKU-4"
+        ],
+        "update_frequency": "Semesteran",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer",
+          "Bronze_Layer",
+          "Staging_Layer",
+          "PII",
+          "PII",
+          "Bronze_Layer",
+          "Silver_Layer",
+          "Quality_Pass",
+          "PII"
+        ],
+        "quality": {
+          "source_score": 100.0,
+          "overall_score": 100.0,
+          "source_status": "PASS",
+          "silver_completeness": 100.0
+        },
+        "compliance": {
+          "contains_pii": true,
+          "pii_columns": [
+            "nama",
+            "dosen_id"
+          ],
+          "data_classification": "Internal",
+          "retention_policy": "Selama aktif + 5 tahun",
+          "access_restriction": "Role: admin, sdm"
+        },
+        "star_schema": null,
+        "transformations": [
+          "FLAG is_s3 = pendidikan_terakhir == 'S3'",
+          "FLAG is_praktisi = berasal_praktisi",
+          "FLAG is_serdos = sertifikat_dosen",
+          "JOIN kegiatan → is_aktif_tridarma (≥1 jenis kegiatan)",
+          "DEDUP on dosen_id"
+        ]
+      },
+      "last_enriched_at": "2026-05-19T09:48:01.510013Z"
+    },
+    {
+      "asset_qualified_name": "silver.silver_kerjasama_aktif@lakehouse",
+      "guid": "93c9c63d-cc66-4c0e-94eb-ec2dc51f21e2",
+      "layer": "silver",
+      "technical_json": {
+        "schema": {
+          "kerjasama_id": "StringType()",
+          "jenis": "StringType()",
+          "mitra": "StringType()",
+          "kategori_mitra": "StringType()",
+          "lingkup": "StringType()",
+          "prodi_id": "StringType()",
+          "tanggal_mulai": "StringType()",
+          "tanggal_berakhir": "StringType()",
+          "status": "StringType()",
+          "tahun": "StringType()",
+          "ingested_at": "StringType()",
+          "is_mbkm": "BooleanType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/silver/silver_kerjasama_aktif",
+        "row_count": 114,
+        "column_count": 12,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Kerjasama (MoU/PKS) ITERA yang masih aktif, dengan flag program MBKM. Sumber IKU-6 (persentase prodi bekerjasama dengan mitra).",
+        "owner": "Biro Kerjasama & Hubungan Internasional",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [
+          "MoU",
+          "PKS",
+          "Mitra Kerjasama",
+          "MBKM"
+        ],
+        "iku_relevance": [
+          "IKU-6"
+        ],
+        "update_frequency": "Setiap ada MoU/PKS baru",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Quality_Pass",
+          "Bronze_Layer",
+          "Staging_Layer",
+          "Silver_Layer"
+        ],
+        "quality": {
+          "source_score": 99.86,
+          "overall_score": 99.86,
+          "source_status": "PASS",
+          "silver_completeness": 99.78
+        },
+        "compliance": {
+          "contains_pii": false,
+          "pii_columns": [],
+          "data_classification": "Public",
+          "retention_policy": "Permanen",
+          "access_restriction": "Role: semua"
+        },
+        "star_schema": null,
+        "transformations": [
+          "FILTER status == 'Aktif'",
+          "FLAG is_mbkm = lingkup IN ('MBKM', 'Semua')",
+          "DEDUP on kerjasama_id"
+        ]
+      },
+      "last_enriched_at": "2026-05-19T09:48:02.619215Z"
+    },
+    {
+      "asset_qualified_name": "silver.silver_lulusan@lakehouse",
+      "guid": "9850bbd9-c839-4d94-8365-af1f3917fb3d",
+      "layer": "silver",
+      "technical_json": {
+        "schema": {
+          "lulusan_id": "StringType()",
+          "mahasiswa_id": "StringType()",
+          "prodi_id": "StringType()",
+          "tanggal_lulus": "StringType()",
+          "ipk": "StringType()",
+          "lama_studi_bulan": "StringType()",
+          "status_pasca_lulus": "StringType()",
+          "nama_perusahaan": "StringType()",
+          "bidang_kerja": "StringType()",
+          "masa_tunggu_bulan": "StringType()",
+          "sumber_data": "StringType()",
+          "ingested_at": "StringType()",
+          "is_employed": "BooleanType()",
+          "is_lanjut_studi": "BooleanType()",
+          "is_wirausaha": "BooleanType()",
+          "is_terserap": "BooleanType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/silver/silver_lulusan",
+        "row_count": 4198,
+        "column_count": 16,
+        "pii_columns": [
+          "mahasiswa_id",
+          "nama_perusahaan"
+        ]
+      },
+      "business_json": {
+        "description": "Data lulusan ITERA dengan flag status pasca-lulus (bekerja, studi lanjut, wirausaha). Merupakan sumber utama IKU-1 (persentase lulusan terserap).",
+        "owner": "Pusat Karir & Alumni",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [
+          "Lulusan Terserap",
+          "Tracer Study",
+          "Masa Tunggu"
+        ],
+        "iku_relevance": [
+          "IKU-1"
+        ],
+        "update_frequency": "Tahunan (pasca wisuda)",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "PII",
+          "Staging_Layer",
+          "Bronze_Layer",
+          "Quality_Pass",
+          "Silver_Layer",
+          "PII"
+        ],
+        "quality": {
+          "source_score": 97.52,
+          "overall_score": 97.52,
+          "source_status": "PASS",
+          "silver_completeness": 98.14
+        },
+        "compliance": {
+          "contains_pii": true,
+          "pii_columns": [
+            "mahasiswa_id",
+            "nama_perusahaan"
+          ],
+          "data_classification": "Internal",
+          "retention_policy": "10 tahun",
+          "access_restriction": "Role: admin, karir"
+        },
+        "star_schema": null,
+        "transformations": [
+          "FLAG is_employed = status_pasca_lulus == 'Bekerja'",
+          "FLAG is_lanjut_studi = status_pasca_lulus == 'Studi Lanjut'",
+          "FLAG is_wirausaha = status_pasca_lulus == 'Wirausaha'",
+          "FLAG is_terserap = employed | studi | wirausaha",
+          "DEDUP on lulusan_id"
+        ]
+      },
+      "last_enriched_at": "2026-05-19T09:48:00.933219Z"
+    },
+    {
+      "asset_qualified_name": "silver.silver_mahasiswa@lakehouse",
+      "guid": "71084f0f-1279-4eb3-b0a2-7ab4707db5db",
+      "layer": "silver",
+      "technical_json": {
+        "schema": {
+          "prodi_id": "StringType()",
+          "mahasiswa_id": "StringType()",
+          "nama": "StringType()",
+          "jurusan_id": "StringType()",
+          "angkatan": "StringType()",
+          "jalur_masuk": "StringType()",
+          "jenis_kelamin": "StringType()",
+          "asal_provinsi": "StringType()",
+          "status_aktif": "StringType()",
+          "ipk_terakhir": "StringType()",
+          "total_sks": "StringType()",
+          "sks_luar_kampus": "StringType()",
+          "tanggal_masuk": "StringType()",
+          "ingested_at": "StringType()",
+          "nama_prodi": "StringType()",
+          "jenjang": "StringType()",
+          "nama_fakultas": "StringType()",
+          "fakultas_id": "StringType()",
+          "nama_jurusan": "StringType()",
+          "is_mbkm": "BooleanType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/silver/silver_mahasiswa",
+        "row_count": 22621,
+        "column_count": 20,
+        "pii_columns": [
+          "nama",
+          "mahasiswa_id",
+          "asal_provinsi"
+        ]
+      },
+      "business_json": {
+        "description": "Data mahasiswa aktif ITERA yang telah di-enriched dengan nama prodi, jurusan, dan flag MBKM (≥20 SKS luar kampus). Sumber utama untuk IKU-2 (mahasiswa MBKM/prestasi) dan basis dimensi mahasiswa di Gold layer.",
+        "owner": "Biro Akademik & Kemahasiswaan",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [
+          "Mahasiswa Aktif",
+          "MBKM",
+          "SKS Luar Kampus"
+        ],
+        "iku_relevance": [
+          "IKU-2"
+        ],
+        "update_frequency": "Semesteran",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer",
+          "Silver_Layer",
+          "PII",
+          "Bronze_Layer",
+          "Staging_Layer",
+          "Bronze_Layer",
+          "PII",
+          "Quality_Pass"
+        ],
+        "quality": {
+          "source_score": 100.0,
+          "overall_score": 100.0,
+          "source_status": "PASS",
+          "silver_completeness": 100.0
+        },
+        "compliance": {
+          "contains_pii": true,
+          "pii_columns": [
+            "nama",
+            "mahasiswa_id",
+            "asal_provinsi"
+          ],
+          "data_classification": "Internal",
+          "retention_policy": "7 tahun setelah lulus",
+          "access_restriction": "Role: admin, akademik"
+        },
+        "star_schema": null,
+        "transformations": [
+          "JOIN raw_prodi → nama_prodi, jenjang",
+          "MAP jurusan_id → nama_jurusan",
+          "FLAG is_mbkm = sks_luar_kampus >= 20",
+          "DEDUP on mahasiswa_id"
+        ]
+      },
+      "last_enriched_at": "2026-05-19T09:48:00.049879Z"
+    },
+    {
+      "asset_qualified_name": "silver.silver_penelitian_pkm@lakehouse",
+      "guid": "415dbf37-abc1-417a-a4e1-433ebe653a17",
+      "layer": "silver",
+      "technical_json": {
+        "schema": {
+          "id": "StringType()",
+          "judul": "StringType()",
+          "dosen_id": "StringType()",
+          "jurusan_id": "StringType()",
+          "tahun": "StringType()",
+          "dana": "StringType()",
+          "jenis": "StringType()",
+          "is_rekognisi": "BooleanType()",
+          "is_diterapkan": "BooleanType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/silver/silver_penelitian_pkm",
+        "row_count": 1858,
+        "column_count": 10,
+        "pii_columns": [
+          "dosen_id"
+        ]
+      },
+      "business_json": {
+        "description": "Gabungan data penelitian dan pengabdian masyarakat (PkM) dosen ITERA dengan flag rekognisi internasional dan penerapan masyarakat. Sumber IKU-5 (rasio output penelitian per dosen).",
+        "owner": "LPPM (Lembaga Penelitian & Pengabdian Masyarakat)",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [
+          "Rekognisi Internasional",
+          "Pengabdian Masyarakat",
+          "Hibah Penelitian"
+        ],
+        "iku_relevance": [
+          "IKU-5"
+        ],
+        "update_frequency": "Tahunan",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer",
+          "Bronze_Layer",
+          "PII",
+          "PII",
+          "Staging_Layer",
+          "Bronze_Layer",
+          "Quality_Pass",
+          "Silver_Layer"
+        ],
+        "quality": {
+          "source_score": 100.0,
+          "overall_score": 100.0,
+          "source_status": "PASS",
+          "silver_completeness": 100.0
+        },
+        "compliance": {
+          "contains_pii": false,
+          "pii_columns": [
+            "dosen_id"
+          ],
+          "data_classification": "Public",
+          "retention_policy": "Permanen",
+          "access_restriction": "Role: semua"
+        },
+        "star_schema": null,
+        "transformations": [
+          "UNION raw_penelitian + raw_pengabdian",
+          "NORMALIZE columns (id, judul, dosen_id, …)",
+          "FLAG is_rekognisi = rekognisi_internasional",
+          "FLAG is_diterapkan = diterapkan_masyarakat",
+          "ADD jenis = 'Penelitian' | 'Pengabdian'",
+          "DEDUP on id"
+        ]
+      },
+      "last_enriched_at": "2026-05-19T09:48:02.154791Z"
+    },
+    {
+      "asset_qualified_name": "gold.dim_dosen@lakehouse",
+      "guid": "4f181404-e9ec-4066-8081-4a2552c90e6f",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {
+          "dosen_id": "StringType()",
+          "nama": "StringType()",
+          "prodi_id": "StringType()",
+          "status_asn": "StringType()",
+          "pendidikan": "StringType()",
+          "jabatan_fungsional": "StringType()",
+          "is_s3": "BooleanType()",
+          "is_serdos": "BooleanType()",
+          "is_praktisi": "BooleanType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/gold/dim_dosen",
+        "row_count": 705,
+        "column_count": 9,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Gold dimension: dim_dosen",
+        "owner": "Biro Akademik & Perencanaan",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "harian (OLAP refresh)",
+        "kpi": {},
+        "consumption": {
+          "consumers": [
+            "Rektor",
+            "Wakil Rektor Bidang Keuangan & Umum",
+            "Kepala Biro Akademik Perencanaan dan Umum"
+          ],
+          "dashboard_panel": ""
+        },
+        "ai_metadata": {
+          "ml_ready": false,
+          "feature_store_candidate": false,
+          "suggested_models": []
+        }
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer",
+          "Star_Schema_Dimension",
+          "Bronze_Layer",
+          "Staging_Layer",
+          "PII",
+          "PII",
+          "Bronze_Layer",
+          "Silver_Layer",
+          "Quality_Pass",
+          "PII",
+          "Gold_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": {
+          "table_type": "dimension",
+          "olap_role": "Dimension — drill by dosen"
+        },
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:51:05.975626Z"
+    },
+    {
+      "asset_qualified_name": "gold.dim_mahasiswa@lakehouse",
+      "guid": "640cb86a-4f84-44df-a220-bb6755c51cad",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {
+          "mahasiswa_id": "StringType()",
+          "prodi_id": "StringType()",
+          "angkatan": "StringType()",
+          "jalur_masuk": "StringType()",
+          "asal_provinsi": "StringType()",
+          "jenis_kelamin": "StringType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/gold/dim_mahasiswa",
+        "row_count": 22621,
+        "column_count": 6,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Gold dimension: dim_mahasiswa",
+        "owner": "Biro Akademik & Perencanaan",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "harian (OLAP refresh)",
+        "kpi": {},
+        "consumption": {
+          "consumers": [
+            "Rektor",
+            "Wakil Rektor Bidang Akademik & Kemahasiswaan",
+            "Kepala Bagian Umum dan Akademik"
+          ],
+          "dashboard_panel": ""
+        },
+        "ai_metadata": {
+          "ml_ready": false,
+          "feature_store_candidate": false,
+          "suggested_models": []
+        }
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer",
+          "Silver_Layer",
+          "PII",
+          "Bronze_Layer",
+          "Staging_Layer",
+          "Bronze_Layer",
+          "PII",
+          "Quality_Pass",
+          "Star_Schema_Dimension",
+          "Gold_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": {
+          "table_type": "dimension",
+          "olap_role": "Dimension — drill by mahasiswa"
+        },
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:51:06.479060Z"
+    },
+    {
+      "asset_qualified_name": "gold.dim_prodi@lakehouse",
+      "guid": "2d8f1374-6cf6-4e71-b3c6-b6c81c37c5d2",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {
+          "prodi_id": "StringType()",
+          "nama_prodi": "StringType()",
+          "jenjang": "StringType()",
+          "nama_jurusan": "StringType()",
+          "nama_fakultas": "StringType()",
+          "tahun_berdiri": "StringType()",
+          "status": "StringType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/gold/dim_prodi",
+        "row_count": 42,
+        "column_count": 7,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Gold dimension: dim_prodi",
+        "owner": "Biro Akademik & Perencanaan",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "harian (OLAP refresh)",
+        "kpi": {},
+        "consumption": {
+          "consumers": [
+            "Rektor",
+            "Wakil Rektor Bidang Akademik & Kemahasiswaan",
+            "Wakil Rektor Bidang Keuangan & Umum",
+            "Kepala Biro Akademik Perencanaan dan Umum",
+            "Kepala Bagian Umum dan Akademik",
+            "Dekan Fakultas Sains",
+            "Dekan Fakultas Teknologi Infrastruktur dan Kewilayahan",
+            "Dekan Fakultas Teknologi Industri"
+          ],
+          "dashboard_panel": ""
+        },
+        "ai_metadata": {
+          "ml_ready": false,
+          "feature_store_candidate": false,
+          "suggested_models": []
+        }
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer",
+          "Gold_Layer",
+          "Bronze_Layer",
+          "Star_Schema_Dimension"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": {
+          "table_type": "dimension",
+          "olap_role": "Dimension — drill by prodi/jurusan"
+        },
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:51:05.608601Z"
+    },
+    {
+      "asset_qualified_name": "gold.dim_topik_penelitian@lakehouse",
+      "guid": "5aec9931-ee59-446b-b906-2c3d84955471",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {
+          "topik_id": "LongType()",
+          "nama_topik": "StringType()",
+          "deskripsi": "StringType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/gold/dim_topik_penelitian",
+        "row_count": 4,
+        "column_count": 3,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Gold dimension: dim_topik_penelitian",
+        "owner": "Biro Akademik & Perencanaan",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "harian (OLAP refresh)",
+        "kpi": {},
+        "consumption": {
+          "consumers": [
+            "Rektor",
+            "Kepala Biro Akademik Perencanaan dan Umum"
+          ],
+          "dashboard_panel": ""
+        },
+        "ai_metadata": {
+          "ml_ready": false,
+          "feature_store_candidate": false,
+          "suggested_models": []
+        }
+      },
+      "operational_json": {
+        "classifications": [
+          "Gold_Layer",
+          "Star_Schema_Dimension"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": {
+          "table_type": "dimension",
+          "olap_role": "Dimension — drill by research topic"
+        },
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:51:06.902814Z"
+    },
+    {
+      "asset_qualified_name": "gold.dim_waktu@lakehouse",
+      "guid": "17820e4e-e88a-4468-97dc-143d4a846443",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {
+          "waktu_id": "LongType()",
+          "tahun": "LongType()",
+          "semester": "StringType()",
+          "triwulan": "LongType()",
+          "bulan": "LongType()",
+          "nama_bulan": "StringType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/gold/dim_waktu",
+        "row_count": 72,
+        "column_count": 6,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Gold dimension: dim_waktu",
+        "owner": "Biro Akademik & Perencanaan",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "harian (OLAP refresh)",
+        "kpi": {},
+        "consumption": {
+          "consumers": [
+            "Rektor",
+            "Wakil Rektor Bidang Akademik & Kemahasiswaan",
+            "Wakil Rektor Bidang Keuangan & Umum",
+            "Kepala Biro Akademik Perencanaan dan Umum"
+          ],
+          "dashboard_panel": ""
+        },
+        "ai_metadata": {
+          "ml_ready": false,
+          "feature_store_candidate": false,
+          "suggested_models": []
+        }
+      },
+      "operational_json": {
+        "classifications": [
+          "Gold_Layer",
+          "Star_Schema_Dimension"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": {
+          "table_type": "dimension",
+          "olap_role": "Dimension — drill by time"
+        },
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:51:05.408547Z"
+    },
+    {
+      "asset_qualified_name": "gold.fact_iku1_lulusan@lakehouse",
+      "guid": "659ec9d3-adbe-485d-9219-c2f5ddda10f4",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {
+          "fact_id": "LongType()",
+          "waktu_id": "IntegerType()",
+          "prodi_id": "StringType()",
+          "total_lulusan": "LongType()",
+          "lulusan_bekerja": "LongType()",
+          "lulusan_lanjut_studi": "LongType()",
+          "lulusan_wirausaha": "LongType()",
+          "lulusan_belum": "LongType()",
+          "persen_terserap": "DoubleType()",
+          "target_iku": "DoubleType()",
+          "capaian_iku": "DoubleType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/gold/fact_iku1_lulusan",
+        "row_count": 326,
+        "column_count": 11,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "IKU-1: Lulusan bekerja/studi lanjut/wirausaha — Formula: (lulusan_bekerja + lulusan_lanjut_studi + lulusan_wirausaha) / total_lulusan * 100",
+        "owner": "Biro Akademik & Perencanaan",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [
+          "IKU-1"
+        ],
+        "update_frequency": "harian (OLAP refresh)",
+        "kpi": {
+          "iku_code": "IKU-1",
+          "iku_nama": "Lulusan bekerja/studi lanjut/wirausaha",
+          "formula": "(lulusan_bekerja + lulusan_lanjut_studi + lulusan_wirausaha) / total_lulusan * 100",
+          "satuan": "%",
+          "sumber_renstra": "Renstra ITERA 2020-2024, Sasaran 1",
+          "nilai_capaian": 75.42,
+          "nilai_target": 77.2,
+          "status_capaian": "On Track",
+          "persen_capaian_terhadap_target": 2894.91
+        },
+        "consumption": {
+          "consumers": [
+            "Rektor",
+            "Wakil Rektor Bidang Akademik & Kemahasiswaan",
+            "Kepala Biro Akademik Perencanaan dan Umum",
+            "Dekan Fakultas Sains",
+            "Dekan Fakultas Teknologi Infrastruktur dan Kewilayahan",
+            "Dekan Fakultas Teknologi Industri"
+          ],
+          "dashboard_panel": "Executive Dashboard — Capaian IKU-1"
+        },
+        "ai_metadata": {
+          "ml_ready": true,
+          "feature_store_candidate": true,
+          "suggested_models": [
+            "trend_analysis",
+            "anomaly_detection"
+          ]
+        }
+      },
+      "operational_json": {
+        "classifications": [
+          "PII",
+          "Staging_Layer",
+          "Bronze_Layer",
+          "Quality_Pass",
+          "Silver_Layer",
+          "PII",
+          "Gold_Layer",
+          "Executive_Dashboard",
+          "Star_Schema_Fact",
+          "KPI_Metric"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": {
+          "table_type": "fact",
+          "olap_role": "Fact — IKU-1 metrics"
+        },
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:51:07.126920Z"
+    },
+    {
+      "asset_qualified_name": "gold.fact_iku2_mbkm@lakehouse",
+      "guid": "5ec46ee4-b460-4adb-b989-d24f42d62b87",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {
+          "fact_id": "LongType()",
+          "waktu_id": "IntegerType()",
+          "prodi_id": "StringType()",
+          "total_mahasiswa_aktif": "LongType()",
+          "mahasiswa_sks_luar_20": "LongType()",
+          "mahasiswa_prestasi_nasional": "LongType()",
+          "mahasiswa_memenuhi_iku2": "LongType()",
+          "persen_iku2": "DoubleType()",
+          "target_iku": "DoubleType()",
+          "capaian_iku": "DoubleType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/gold/fact_iku2_mbkm",
+        "row_count": 410,
+        "column_count": 10,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "IKU-2: Mahasiswa MBKM ≥20 SKS / prestasi nasional — Formula: mahasiswa_memenuhi_iku2 / total_mahasiswa_aktif * 100",
+        "owner": "Biro Akademik & Perencanaan",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [
+          "IKU-2"
+        ],
+        "update_frequency": "harian (OLAP refresh)",
+        "kpi": {
+          "iku_code": "IKU-2",
+          "iku_nama": "Mahasiswa MBKM ≥20 SKS / prestasi nasional",
+          "formula": "mahasiswa_memenuhi_iku2 / total_mahasiswa_aktif * 100",
+          "satuan": "%",
+          "sumber_renstra": "Renstra ITERA 2020-2024, Sasaran 1",
+          "nilai_capaian": 40.29,
+          "nilai_target": 30.0,
+          "status_capaian": "Tercapai",
+          "persen_capaian_terhadap_target": 2130.73
+        },
+        "consumption": {
+          "consumers": [
+            "Rektor",
+            "Wakil Rektor Bidang Akademik & Kemahasiswaan",
+            "Kepala Bagian Umum dan Akademik",
+            "Dekan Fakultas Sains",
+            "Dekan Fakultas Teknologi Infrastruktur dan Kewilayahan",
+            "Dekan Fakultas Teknologi Industri"
+          ],
+          "dashboard_panel": "Executive Dashboard — Capaian IKU-2"
+        },
+        "ai_metadata": {
+          "ml_ready": true,
+          "feature_store_candidate": true,
+          "suggested_models": [
+            "trend_analysis",
+            "anomaly_detection"
+          ]
+        }
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer",
+          "Staging_Layer",
+          "Silver_Layer",
+          "KPI_Metric",
+          "PII",
+          "Gold_Layer",
+          "Bronze_Layer",
+          "Staging_Layer",
+          "Bronze_Layer",
+          "PII",
+          "Bronze_Layer",
+          "Quality_Pass",
+          "Star_Schema_Fact",
+          "Executive_Dashboard"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": {
+          "table_type": "fact",
+          "olap_role": "Fact — IKU-2 metrics"
+        },
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:51:07.627947Z"
+    },
+    {
+      "asset_qualified_name": "gold.fact_iku3_dosen_tridarma@lakehouse",
+      "guid": "e306bf30-870e-4e66-ab62-8ee04bcf8ce9",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {
+          "fact_id": "LongType()",
+          "waktu_id": "IntegerType()",
+          "prodi_id": "StringType()",
+          "total_dosen_tetap": "LongType()",
+          "dosen_tridarma_pt_lain": "LongType()",
+          "dosen_praktisi_industri": "LongType()",
+          "dosen_bina_prestasi": "LongType()",
+          "dosen_qs100": "LongType()",
+          "dosen_memenuhi_iku3": "LongType()",
+          "persen_iku3": "DoubleType()",
+          "target_iku": "DoubleType()",
+          "capaian_iku": "DoubleType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/gold/fact_iku3_dosen_tridarma",
+        "row_count": 245,
+        "column_count": 12,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "IKU-3: Dosen tridarma luar/praktisi/bina prestasi — Formula: dosen_memenuhi_iku3 / total_dosen_tetap * 100",
+        "owner": "Biro Akademik & Perencanaan",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [
+          "IKU-3"
+        ],
+        "update_frequency": "harian (OLAP refresh)",
+        "kpi": {
+          "iku_code": "IKU-3",
+          "iku_nama": "Dosen tridarma luar/praktisi/bina prestasi",
+          "formula": "dosen_memenuhi_iku3 / total_dosen_tetap * 100",
+          "satuan": "%",
+          "sumber_renstra": "Renstra ITERA 2020-2024, Sasaran 2",
+          "nilai_capaian": 100.0,
+          "nilai_target": 21.4,
+          "status_capaian": "Tercapai",
+          "persen_capaian_terhadap_target": 2049.05
+        },
+        "consumption": {
+          "consumers": [
+            "Rektor",
+            "Wakil Rektor Bidang Akademik & Kemahasiswaan",
+            "Kepala Biro Akademik Perencanaan dan Umum"
+          ],
+          "dashboard_panel": "Executive Dashboard — Capaian IKU-3"
+        },
+        "ai_metadata": {
+          "ml_ready": true,
+          "feature_store_candidate": true,
+          "suggested_models": [
+            "trend_analysis",
+            "anomaly_detection"
+          ]
+        }
+      },
+      "operational_json": {
+        "classifications": [
+          "Star_Schema_Fact",
+          "KPI_Metric",
+          "Executive_Dashboard",
+          "Gold_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": {
+          "table_type": "fact",
+          "olap_role": "Fact — IKU-3 metrics"
+        },
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:51:08.122048Z"
+    },
+    {
+      "asset_qualified_name": "gold.fact_iku4_kualifikasi_dosen@lakehouse",
+      "guid": "8dd49346-bd27-4caa-8e71-e5b5edc99849",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {
+          "fact_id": "LongType()",
+          "waktu_id": "IntegerType()",
+          "prodi_id": "StringType()",
+          "total_dosen_tetap": "LongType()",
+          "dosen_s3": "LongType()",
+          "dosen_sertifikat_industri": "LongType()",
+          "dosen_dari_praktisi": "LongType()",
+          "dosen_memenuhi_iku4": "LongType()",
+          "persen_iku4": "DoubleType()",
+          "target_iku": "IntegerType()",
+          "capaian_iku": "DoubleType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/gold/fact_iku4_kualifikasi_dosen",
+        "row_count": 41,
+        "column_count": 11,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "IKU-4: Dosen S3/sertifikat kompetensi/praktisi — Formula: dosen_memenuhi_iku4 / total_dosen_tetap * 100",
+        "owner": "Biro Akademik & Perencanaan",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [
+          "IKU-4"
+        ],
+        "update_frequency": "harian (OLAP refresh)",
+        "kpi": {
+          "iku_code": "IKU-4",
+          "iku_nama": "Dosen S3/sertifikat kompetensi/praktisi",
+          "formula": "dosen_memenuhi_iku4 / total_dosen_tetap * 100",
+          "satuan": "%",
+          "sumber_renstra": "Renstra ITERA 2020-2024, Sasaran 2",
+          "nilai_capaian": 108.82,
+          "nilai_target": 50.0,
+          "status_capaian": "Tercapai",
+          "persen_capaian_terhadap_target": 217.64
+        },
+        "consumption": {
+          "consumers": [
+            "Rektor",
+            "Wakil Rektor Bidang Akademik & Kemahasiswaan",
+            "Kepala Biro Akademik Perencanaan dan Umum"
+          ],
+          "dashboard_panel": "Executive Dashboard — Capaian IKU-4"
+        },
+        "ai_metadata": {
+          "ml_ready": true,
+          "feature_store_candidate": true,
+          "suggested_models": [
+            "trend_analysis",
+            "anomaly_detection"
+          ]
+        }
+      },
+      "operational_json": {
+        "classifications": [
+          "Gold_Layer",
+          "Star_Schema_Fact",
+          "KPI_Metric",
+          "Executive_Dashboard"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": {
+          "table_type": "fact",
+          "olap_role": "Fact — IKU-4 metrics"
+        },
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:51:08.909487Z"
+    },
+    {
+      "asset_qualified_name": "gold.fact_iku5_penelitian_pkm@lakehouse",
+      "guid": "e6bd6dc9-0085-41e9-b9ce-92ede46c47e3",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {
+          "fact_id": "LongType()",
+          "waktu_id": "IntegerType()",
+          "jurusan_id": "StringType()",
+          "total_dosen": "LongType()",
+          "output_rekognisi_internasional": "LongType()",
+          "output_diterapkan_masyarakat": "LongType()",
+          "total_output_eligible": "LongType()",
+          "rasio_per_dosen": "DoubleType()",
+          "target_iku": "DoubleType()",
+          "capaian_iku": "DoubleType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/gold/fact_iku5_penelitian_pkm",
+        "row_count": 18,
+        "column_count": 10,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "IKU-5: Rasio output penelitian rekognisi intl per dosen — Formula: total_output_eligible / total_dosen",
+        "owner": "Biro Akademik & Perencanaan",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [
+          "IKU-5"
+        ],
+        "update_frequency": "harian (OLAP refresh)",
+        "kpi": {
+          "iku_code": "IKU-5",
+          "iku_nama": "Rasio output penelitian rekognisi intl per dosen",
+          "formula": "total_output_eligible / total_dosen",
+          "satuan": "Rasio",
+          "sumber_renstra": "Renstra ITERA 2020-2024, Sasaran 3",
+          "nilai_capaian": 0.17,
+          "nilai_target": 0.2,
+          "status_capaian": "On Track",
+          "persen_capaian_terhadap_target": 350.78
+        },
+        "consumption": {
+          "consumers": [
+            "Rektor",
+            "Kepala Biro Akademik Perencanaan dan Umum",
+            "Dekan Fakultas Sains"
+          ],
+          "dashboard_panel": "Executive Dashboard — Capaian IKU-5"
+        },
+        "ai_metadata": {
+          "ml_ready": true,
+          "feature_store_candidate": true,
+          "suggested_models": [
+            "trend_analysis",
+            "anomaly_detection"
+          ]
+        }
+      },
+      "operational_json": {
+        "classifications": [
+          "Star_Schema_Fact",
+          "Executive_Dashboard",
+          "KPI_Metric",
+          "Gold_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": {
+          "table_type": "fact",
+          "olap_role": "Fact — IKU-5 metrics"
+        },
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:51:09.826633Z"
+    },
+    {
+      "asset_qualified_name": "gold.fact_iku6_kerjasama_prodi@lakehouse",
+      "guid": "3074ee0a-2efa-4b03-953b-087e38d99bd1",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {
+          "fact_id": "LongType()",
+          "waktu_id": "LongType()",
+          "total_prodi_s1": "LongType()",
+          "prodi_berkerjasama": "LongType()",
+          "persen_iku6": "DoubleType()",
+          "target_iku": "LongType()",
+          "capaian_iku": "DoubleType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/gold/fact_iku6_kerjasama_prodi",
+        "row_count": 5,
+        "column_count": 7,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "IKU-6: Prodi bekerjasama dengan mitra — Formula: prodi_berkerjasama / total_prodi_s1 * 100",
+        "owner": "Biro Akademik & Perencanaan",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [
+          "IKU-6"
+        ],
+        "update_frequency": "harian (OLAP refresh)",
+        "kpi": {
+          "iku_code": "IKU-6",
+          "iku_nama": "Prodi bekerjasama dengan mitra",
+          "formula": "prodi_berkerjasama / total_prodi_s1 * 100",
+          "satuan": "%",
+          "sumber_renstra": "Renstra ITERA 2020-2024, Sasaran 3",
+          "nilai_capaian": 95.12,
+          "nilai_target": 50.0,
+          "status_capaian": "Tercapai",
+          "persen_capaian_terhadap_target": 200.94
+        },
+        "consumption": {
+          "consumers": [
+            "Rektor",
+            "Wakil Rektor Bidang Keuangan & Umum",
+            "Dekan Fakultas Sains",
+            "Dekan Fakultas Teknologi Infrastruktur dan Kewilayahan",
+            "Dekan Fakultas Teknologi Industri"
+          ],
+          "dashboard_panel": "Executive Dashboard — Capaian IKU-6"
+        },
+        "ai_metadata": {
+          "ml_ready": true,
+          "feature_store_candidate": true,
+          "suggested_models": [
+            "trend_analysis",
+            "anomaly_detection"
+          ]
+        }
+      },
+      "operational_json": {
+        "classifications": [
+          "KPI_Metric",
+          "Gold_Layer",
+          "Star_Schema_Fact",
+          "Executive_Dashboard"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": {
+          "table_type": "fact",
+          "olap_role": "Fact — IKU-6 metrics"
+        },
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:51:10.735676Z"
+    },
+    {
+      "asset_qualified_name": "gold.fact_iku7_metode_pembelajaran@lakehouse",
+      "guid": "792cb0be-096f-4170-9beb-3814c9e4215a",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {
+          "fact_id": "LongType()",
+          "waktu_id": "LongType()",
+          "prodi_id": "StringType()",
+          "total_mk": "LongType()",
+          "mk_case_method": "LongType()",
+          "mk_team_based": "LongType()",
+          "mk_memenuhi": "LongType()",
+          "persen_iku7": "DoubleType()",
+          "target_iku": "LongType()",
+          "capaian_iku": "DoubleType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/gold/fact_iku7_metode_pembelajaran",
+        "row_count": 205,
+        "column_count": 10,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "IKU-7: MK case method / team-based project — Formula: mk_memenuhi / total_mk * 100",
+        "owner": "Biro Akademik & Perencanaan",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [
+          "IKU-7"
+        ],
+        "update_frequency": "harian (OLAP refresh)",
+        "kpi": {
+          "iku_code": "IKU-7",
+          "iku_nama": "MK case method / team-based project",
+          "formula": "mk_memenuhi / total_mk * 100",
+          "satuan": "%",
+          "sumber_renstra": "Renstra ITERA 2020-2024, Sasaran 1",
+          "nilai_capaian": 52.43,
+          "nilai_target": 35.0,
+          "status_capaian": "Tercapai",
+          "persen_capaian_terhadap_target": 156.25
+        },
+        "consumption": {
+          "consumers": [
+            "Rektor",
+            "Wakil Rektor Bidang Akademik & Kemahasiswaan",
+            "Kepala Bagian Umum dan Akademik",
+            "Dekan Fakultas Sains",
+            "Dekan Fakultas Teknologi Infrastruktur dan Kewilayahan",
+            "Dekan Fakultas Teknologi Industri"
+          ],
+          "dashboard_panel": "Executive Dashboard — Capaian IKU-7"
+        },
+        "ai_metadata": {
+          "ml_ready": true,
+          "feature_store_candidate": true,
+          "suggested_models": [
+            "trend_analysis",
+            "anomaly_detection"
+          ]
+        }
+      },
+      "operational_json": {
+        "classifications": [
+          "Star_Schema_Fact",
+          "KPI_Metric",
+          "Executive_Dashboard",
+          "Gold_Layer"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": {
+          "table_type": "fact",
+          "olap_role": "Fact — IKU-7 metrics"
+        },
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:51:11.224041Z"
+    },
+    {
+      "asset_qualified_name": "gold.fact_iku8_akreditasi_internasional@lakehouse",
+      "guid": "a7bdf06c-12bf-44bc-84d6-19bb91b0a49c",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {
+          "fact_id": "LongType()",
+          "waktu_id": "LongType()",
+          "total_prodi_s1": "LongType()",
+          "prodi_akreditasi_internasional": "LongType()",
+          "persen_iku8": "DoubleType()",
+          "target_iku": "DoubleType()",
+          "capaian_iku": "DoubleType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/gold/fact_iku8_akreditasi_internasional",
+        "row_count": 5,
+        "column_count": 7,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "IKU-8: Prodi akreditasi/sertifikat internasional — Formula: prodi_akreditasi_internasional / total_prodi_s1 * 100",
+        "owner": "Biro Akademik & Perencanaan",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [
+          "IKU-8"
+        ],
+        "update_frequency": "harian (OLAP refresh)",
+        "kpi": {
+          "iku_code": "IKU-8",
+          "iku_nama": "Prodi akreditasi/sertifikat internasional",
+          "formula": "prodi_akreditasi_internasional / total_prodi_s1 * 100",
+          "satuan": "%",
+          "sumber_renstra": "Renstra ITERA 2020-2024, Sasaran 3",
+          "nilai_capaian": 4.88,
+          "nilai_target": 3.1,
+          "status_capaian": "Tercapai",
+          "persen_capaian_terhadap_target": 169.17
+        },
+        "consumption": {
+          "consumers": [
+            "Rektor",
+            "Kepala Biro Akademik Perencanaan dan Umum",
+            "Dekan Fakultas Sains",
+            "Dekan Fakultas Teknologi Infrastruktur dan Kewilayahan",
+            "Dekan Fakultas Teknologi Industri"
+          ],
+          "dashboard_panel": "Executive Dashboard — Capaian IKU-8"
+        },
+        "ai_metadata": {
+          "ml_ready": true,
+          "feature_store_candidate": true,
+          "suggested_models": [
+            "trend_analysis",
+            "anomaly_detection"
+          ]
+        }
+      },
+      "operational_json": {
+        "classifications": [
+          "Gold_Layer",
+          "Star_Schema_Fact",
+          "KPI_Metric",
+          "Executive_Dashboard"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": {
+          "table_type": "fact",
+          "olap_role": "Fact — IKU-8 metrics"
+        },
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:51:11.635666Z"
+    },
+    {
+      "asset_qualified_name": "gold.fact_rekap_iku_institusi@lakehouse",
+      "guid": "28f1a50a-d205-4703-ac71-3151cf8d7e80",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {
+          "fact_id": "LongType()",
+          "waktu_id": "LongType()",
+          "iku_kode": "StringType()",
+          "iku_nama": "StringType()",
+          "nilai_capaian": "DoubleType()",
+          "nilai_target": "DoubleType()",
+          "satuan": "StringType()",
+          "status_capaian": "StringType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/gold/fact_rekap_iku_institusi",
+        "row_count": 40,
+        "column_count": 8,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Gold fact: fact_rekap_iku_institusi",
+        "owner": "Biro Akademik & Perencanaan",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "harian (OLAP refresh)",
+        "kpi": {},
+        "consumption": {
+          "consumers": [
+            "Rektor",
+            "Wakil Rektor Bidang Akademik & Kemahasiswaan",
+            "Wakil Rektor Bidang Keuangan & Umum",
+            "Kepala Biro Akademik Perencanaan dan Umum",
+            "Kepala Bagian Umum dan Akademik",
+            "Dekan Fakultas Sains",
+            "Dekan Fakultas Teknologi Infrastruktur dan Kewilayahan",
+            "Dekan Fakultas Teknologi Industri"
+          ],
+          "dashboard_panel": ""
+        },
+        "ai_metadata": {
+          "ml_ready": true,
+          "feature_store_candidate": false,
+          "suggested_models": []
+        }
+      },
+      "operational_json": {
+        "classifications": [
+          "Star_Schema_Fact",
+          "Gold_Layer",
+          "KPI_Metric",
+          "Executive_Dashboard"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": {
+          "table_type": "fact",
+          "olap_role": "Fact — executive summary"
+        },
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:51:12.592067Z"
+    },
+    {
+      "asset_qualified_name": "gold.fact_tata_kelola@lakehouse",
+      "guid": "0de28f6e-b0e7-4ab6-a6c7-3d2a1bd72033",
+      "layer": "gold",
+      "technical_json": {
+        "schema": {
+          "fact_id": "LongType()",
+          "waktu_id": "DoubleType()",
+          "predikat_sakip": "StringType()",
+          "nilai_sakip": "DoubleType()",
+          "nilai_kinerja_anggaran": "DoubleType()",
+          "pagu_total": "DoubleType()",
+          "realisasi_total": "DoubleType()",
+          "persen_realisasi": "DoubleType()",
+          "target_sakip": "StringType()",
+          "target_kinerja_anggaran": "DoubleType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/gold/fact_tata_kelola",
+        "row_count": 8,
+        "column_count": 10,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Gold fact: fact_tata_kelola",
+        "owner": "Biro Akademik & Perencanaan",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [],
+        "iku_relevance": [],
+        "update_frequency": "harian (OLAP refresh)",
+        "kpi": {},
+        "consumption": {
+          "consumers": [
+            "Rektor",
+            "Wakil Rektor Bidang Keuangan & Umum",
+            "Kepala Biro Akademik Perencanaan dan Umum"
+          ],
+          "dashboard_panel": ""
+        },
+        "ai_metadata": {
+          "ml_ready": true,
+          "feature_store_candidate": false,
+          "suggested_models": []
+        }
+      },
+      "operational_json": {
+        "classifications": [
+          "Gold_Layer",
+          "Executive_Dashboard",
+          "Star_Schema_Fact",
+          "KPI_Metric"
+        ],
+        "quality": null,
+        "compliance": null,
+        "star_schema": {
+          "table_type": "fact",
+          "olap_role": "Fact — SAKIP & anggaran"
+        },
+        "transformations": null
+      },
+      "last_enriched_at": "2026-05-19T09:51:12.067830Z"
+    }
+  ]
+}

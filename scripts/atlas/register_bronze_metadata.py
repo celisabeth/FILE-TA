@@ -170,6 +170,8 @@ def _entity_guid_for_qualified_name(qualified_name: str) -> str | None:
     return None
 
 
+#ini untuk pastiin register nya gada yang duplikat, kalo udah ada qualifiedName nya, 
+# dia bakal update kalo belum ada akan insert
 def _upsert_lakehouse_dataset(entity: dict) -> dict | None:
     """POST baru atau PUT jika entitas sudah ada (hindari 409 yang mengabaikan atribut)."""
     qn = entity["entity"]["attributes"]["qualifiedName"]

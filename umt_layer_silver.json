@@ -1,0 +1,499 @@
+{
+  "generated_at": "2026-05-19T09:51:16.670190Z",
+  "approximate_count": 6,
+  "rows": [
+    {
+      "asset_qualified_name": "silver.silver_akreditasi_aktif@lakehouse",
+      "guid": "1257a95a-b290-4027-8a34-e1ccdcc2106c",
+      "layer": "silver",
+      "technical_json": {
+        "schema": {
+          "akreditasi_id": "StringType()",
+          "prodi_id": "StringType()",
+          "lembaga": "StringType()",
+          "nama_lembaga_detail": "StringType()",
+          "predikat": "StringType()",
+          "tanggal_sk": "StringType()",
+          "tanggal_berakhir": "StringType()",
+          "tahun": "StringType()",
+          "ingested_at": "StringType()",
+          "is_internasional": "BooleanType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/silver/silver_akreditasi_aktif",
+        "row_count": 21,
+        "column_count": 10,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Akreditasi terakhir per prodi yang masih berlaku, termasuk flag akreditasi internasional. Sumber IKU-8 (prodi akreditasi/sertifikat internasional).",
+        "owner": "LP3M (Lembaga Penjaminan Mutu)",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [
+          "BAN-PT",
+          "LAM",
+          "Akreditasi Internasional",
+          "Unggul"
+        ],
+        "iku_relevance": [
+          "IKU-8"
+        ],
+        "update_frequency": "Setiap siklus akreditasi (5 tahun)",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Bronze_Layer",
+          "Staging_Layer",
+          "Silver_Layer",
+          "Quality_Pass"
+        ],
+        "quality": {
+          "source_score": 100.0,
+          "overall_score": 100.0,
+          "source_status": "PASS",
+          "silver_completeness": 100.0
+        },
+        "compliance": {
+          "contains_pii": false,
+          "pii_columns": [],
+          "data_classification": "Public",
+          "retention_policy": "Permanen",
+          "access_restriction": "Role: semua"
+        },
+        "star_schema": null,
+        "transformations": [
+          "FILTER tanggal_berakhir >= today (masih berlaku)",
+          "WINDOW ROW_NUMBER per prodi ORDER BY tanggal_sk DESC",
+          "KEEP latest akreditasi per prodi",
+          "FLAG is_internasional = lembaga == 'Internasional'"
+        ]
+      },
+      "last_enriched_at": "2026-05-19T09:48:03.016903Z"
+    },
+    {
+      "asset_qualified_name": "silver.silver_dosen@lakehouse",
+      "guid": "3eb6607d-5b01-4b10-89d3-def6482a8e38",
+      "layer": "silver",
+      "technical_json": {
+        "schema": {
+          "dosen_id": "StringType()",
+          "nama": "StringType()",
+          "prodi_id": "StringType()",
+          "fakultas_id": "StringType()",
+          "jurusan_id": "StringType()",
+          "unit_organisasi_id": "StringType()",
+          "jenis_kelamin": "StringType()",
+          "status_asn": "StringType()",
+          "pendidikan_terakhir": "StringType()",
+          "jabatan_fungsional": "StringType()",
+          "sedang_tugas_belajar": "StringType()",
+          "sertifikat_dosen": "StringType()",
+          "berasal_praktisi": "StringType()",
+          "tahun_bergabung": "StringType()",
+          "ingested_at": "StringType()",
+          "is_s3": "BooleanType()",
+          "is_praktisi": "BooleanType()",
+          "is_serdos": "BooleanType()",
+          "is_aktif_tridarma": "BooleanType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/silver/silver_dosen",
+        "row_count": 705,
+        "column_count": 19,
+        "pii_columns": [
+          "nama",
+          "dosen_id"
+        ]
+      },
+      "business_json": {
+        "description": "Data dosen ITERA dengan flag kualifikasi (S3, sertifikasi, praktisi) dan aktivitas tridarma. Sumber IKU-3 (dosen tridarma luar) dan IKU-4 (kualifikasi dosen).",
+        "owner": "Biro Sumber Daya Manusia",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [
+          "Dosen Tetap",
+          "Tridarma",
+          "Serdos",
+          "Jabatan Fungsional"
+        ],
+        "iku_relevance": [
+          "IKU-3",
+          "IKU-4"
+        ],
+        "update_frequency": "Semesteran",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer",
+          "Bronze_Layer",
+          "Staging_Layer",
+          "PII",
+          "PII",
+          "Bronze_Layer",
+          "Silver_Layer",
+          "Quality_Pass",
+          "PII"
+        ],
+        "quality": {
+          "source_score": 100.0,
+          "overall_score": 100.0,
+          "source_status": "PASS",
+          "silver_completeness": 100.0
+        },
+        "compliance": {
+          "contains_pii": true,
+          "pii_columns": [
+            "nama",
+            "dosen_id"
+          ],
+          "data_classification": "Internal",
+          "retention_policy": "Selama aktif + 5 tahun",
+          "access_restriction": "Role: admin, sdm"
+        },
+        "star_schema": null,
+        "transformations": [
+          "FLAG is_s3 = pendidikan_terakhir == 'S3'",
+          "FLAG is_praktisi = berasal_praktisi",
+          "FLAG is_serdos = sertifikat_dosen",
+          "JOIN kegiatan \u2192 is_aktif_tridarma (\u22651 jenis kegiatan)",
+          "DEDUP on dosen_id"
+        ]
+      },
+      "last_enriched_at": "2026-05-19T09:48:01.510013Z"
+    },
+    {
+      "asset_qualified_name": "silver.silver_kerjasama_aktif@lakehouse",
+      "guid": "93c9c63d-cc66-4c0e-94eb-ec2dc51f21e2",
+      "layer": "silver",
+      "technical_json": {
+        "schema": {
+          "kerjasama_id": "StringType()",
+          "jenis": "StringType()",
+          "mitra": "StringType()",
+          "kategori_mitra": "StringType()",
+          "lingkup": "StringType()",
+          "prodi_id": "StringType()",
+          "tanggal_mulai": "StringType()",
+          "tanggal_berakhir": "StringType()",
+          "status": "StringType()",
+          "tahun": "StringType()",
+          "ingested_at": "StringType()",
+          "is_mbkm": "BooleanType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/silver/silver_kerjasama_aktif",
+        "row_count": 114,
+        "column_count": 12,
+        "pii_columns": []
+      },
+      "business_json": {
+        "description": "Kerjasama (MoU/PKS) ITERA yang masih aktif, dengan flag program MBKM. Sumber IKU-6 (persentase prodi bekerjasama dengan mitra).",
+        "owner": "Biro Kerjasama & Hubungan Internasional",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [
+          "MoU",
+          "PKS",
+          "Mitra Kerjasama",
+          "MBKM"
+        ],
+        "iku_relevance": [
+          "IKU-6"
+        ],
+        "update_frequency": "Setiap ada MoU/PKS baru",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Quality_Pass",
+          "Bronze_Layer",
+          "Staging_Layer",
+          "Silver_Layer"
+        ],
+        "quality": {
+          "source_score": 99.86,
+          "overall_score": 99.86,
+          "source_status": "PASS",
+          "silver_completeness": 99.78
+        },
+        "compliance": {
+          "contains_pii": false,
+          "pii_columns": [],
+          "data_classification": "Public",
+          "retention_policy": "Permanen",
+          "access_restriction": "Role: semua"
+        },
+        "star_schema": null,
+        "transformations": [
+          "FILTER status == 'Aktif'",
+          "FLAG is_mbkm = lingkup IN ('MBKM', 'Semua')",
+          "DEDUP on kerjasama_id"
+        ]
+      },
+      "last_enriched_at": "2026-05-19T09:48:02.619215Z"
+    },
+    {
+      "asset_qualified_name": "silver.silver_lulusan@lakehouse",
+      "guid": "9850bbd9-c839-4d94-8365-af1f3917fb3d",
+      "layer": "silver",
+      "technical_json": {
+        "schema": {
+          "lulusan_id": "StringType()",
+          "mahasiswa_id": "StringType()",
+          "prodi_id": "StringType()",
+          "tanggal_lulus": "StringType()",
+          "ipk": "StringType()",
+          "lama_studi_bulan": "StringType()",
+          "status_pasca_lulus": "StringType()",
+          "nama_perusahaan": "StringType()",
+          "bidang_kerja": "StringType()",
+          "masa_tunggu_bulan": "StringType()",
+          "sumber_data": "StringType()",
+          "ingested_at": "StringType()",
+          "is_employed": "BooleanType()",
+          "is_lanjut_studi": "BooleanType()",
+          "is_wirausaha": "BooleanType()",
+          "is_terserap": "BooleanType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/silver/silver_lulusan",
+        "row_count": 4198,
+        "column_count": 16,
+        "pii_columns": [
+          "mahasiswa_id",
+          "nama_perusahaan"
+        ]
+      },
+      "business_json": {
+        "description": "Data lulusan ITERA dengan flag status pasca-lulus (bekerja, studi lanjut, wirausaha). Merupakan sumber utama IKU-1 (persentase lulusan terserap).",
+        "owner": "Pusat Karir & Alumni",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [
+          "Lulusan Terserap",
+          "Tracer Study",
+          "Masa Tunggu"
+        ],
+        "iku_relevance": [
+          "IKU-1"
+        ],
+        "update_frequency": "Tahunan (pasca wisuda)",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "PII",
+          "Staging_Layer",
+          "Bronze_Layer",
+          "Quality_Pass",
+          "Silver_Layer",
+          "PII"
+        ],
+        "quality": {
+          "source_score": 97.52,
+          "overall_score": 97.52,
+          "source_status": "PASS",
+          "silver_completeness": 98.14
+        },
+        "compliance": {
+          "contains_pii": true,
+          "pii_columns": [
+            "mahasiswa_id",
+            "nama_perusahaan"
+          ],
+          "data_classification": "Internal",
+          "retention_policy": "10 tahun",
+          "access_restriction": "Role: admin, karir"
+        },
+        "star_schema": null,
+        "transformations": [
+          "FLAG is_employed = status_pasca_lulus == 'Bekerja'",
+          "FLAG is_lanjut_studi = status_pasca_lulus == 'Studi Lanjut'",
+          "FLAG is_wirausaha = status_pasca_lulus == 'Wirausaha'",
+          "FLAG is_terserap = employed | studi | wirausaha",
+          "DEDUP on lulusan_id"
+        ]
+      },
+      "last_enriched_at": "2026-05-19T09:48:00.933219Z"
+    },
+    {
+      "asset_qualified_name": "silver.silver_mahasiswa@lakehouse",
+      "guid": "71084f0f-1279-4eb3-b0a2-7ab4707db5db",
+      "layer": "silver",
+      "technical_json": {
+        "schema": {
+          "prodi_id": "StringType()",
+          "mahasiswa_id": "StringType()",
+          "nama": "StringType()",
+          "jurusan_id": "StringType()",
+          "angkatan": "StringType()",
+          "jalur_masuk": "StringType()",
+          "jenis_kelamin": "StringType()",
+          "asal_provinsi": "StringType()",
+          "status_aktif": "StringType()",
+          "ipk_terakhir": "StringType()",
+          "total_sks": "StringType()",
+          "sks_luar_kampus": "StringType()",
+          "tanggal_masuk": "StringType()",
+          "ingested_at": "StringType()",
+          "nama_prodi": "StringType()",
+          "jenjang": "StringType()",
+          "nama_fakultas": "StringType()",
+          "fakultas_id": "StringType()",
+          "nama_jurusan": "StringType()",
+          "is_mbkm": "BooleanType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/silver/silver_mahasiswa",
+        "row_count": 22621,
+        "column_count": 20,
+        "pii_columns": [
+          "nama",
+          "mahasiswa_id",
+          "asal_provinsi"
+        ]
+      },
+      "business_json": {
+        "description": "Data mahasiswa aktif ITERA yang telah di-enriched dengan nama prodi, jurusan, dan flag MBKM (\u226520 SKS luar kampus). Sumber utama untuk IKU-2 (mahasiswa MBKM/prestasi) dan basis dimensi mahasiswa di Gold layer.",
+        "owner": "Biro Akademik & Kemahasiswaan",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [
+          "Mahasiswa Aktif",
+          "MBKM",
+          "SKS Luar Kampus"
+        ],
+        "iku_relevance": [
+          "IKU-2"
+        ],
+        "update_frequency": "Semesteran",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer",
+          "Silver_Layer",
+          "PII",
+          "Bronze_Layer",
+          "Staging_Layer",
+          "Bronze_Layer",
+          "PII",
+          "Quality_Pass"
+        ],
+        "quality": {
+          "source_score": 100.0,
+          "overall_score": 100.0,
+          "source_status": "PASS",
+          "silver_completeness": 100.0
+        },
+        "compliance": {
+          "contains_pii": true,
+          "pii_columns": [
+            "nama",
+            "mahasiswa_id",
+            "asal_provinsi"
+          ],
+          "data_classification": "Internal",
+          "retention_policy": "7 tahun setelah lulus",
+          "access_restriction": "Role: admin, akademik"
+        },
+        "star_schema": null,
+        "transformations": [
+          "JOIN raw_prodi \u2192 nama_prodi, jenjang",
+          "MAP jurusan_id \u2192 nama_jurusan",
+          "FLAG is_mbkm = sks_luar_kampus >= 20",
+          "DEDUP on mahasiswa_id"
+        ]
+      },
+      "last_enriched_at": "2026-05-19T09:48:00.049879Z"
+    },
+    {
+      "asset_qualified_name": "silver.silver_penelitian_pkm@lakehouse",
+      "guid": "415dbf37-abc1-417a-a4e1-433ebe653a17",
+      "layer": "silver",
+      "technical_json": {
+        "schema": {
+          "id": "StringType()",
+          "judul": "StringType()",
+          "dosen_id": "StringType()",
+          "jurusan_id": "StringType()",
+          "tahun": "StringType()",
+          "dana": "StringType()",
+          "jenis": "StringType()",
+          "is_rekognisi": "BooleanType()",
+          "is_diterapkan": "BooleanType()",
+          "ingested_at": "StringType()"
+        },
+        "format": "iceberg",
+        "location": "s3a://warehouse/silver/silver_penelitian_pkm",
+        "row_count": 1858,
+        "column_count": 10,
+        "pii_columns": [
+          "dosen_id"
+        ]
+      },
+      "business_json": {
+        "description": "Gabungan data penelitian dan pengabdian masyarakat (PkM) dosen ITERA dengan flag rekognisi internasional dan penerapan masyarakat. Sumber IKU-5 (rasio output penelitian per dosen).",
+        "owner": "LPPM (Lembaga Penelitian & Pengabdian Masyarakat)",
+        "domain": "ITERA Data Lakehouse",
+        "glossary_terms": [
+          "Rekognisi Internasional",
+          "Pengabdian Masyarakat",
+          "Hibah Penelitian"
+        ],
+        "iku_relevance": [
+          "IKU-5"
+        ],
+        "update_frequency": "Tahunan",
+        "kpi": null,
+        "consumption": null,
+        "ai_metadata": null
+      },
+      "operational_json": {
+        "classifications": [
+          "Staging_Layer",
+          "Bronze_Layer",
+          "PII",
+          "PII",
+          "Staging_Layer",
+          "Bronze_Layer",
+          "Quality_Pass",
+          "Silver_Layer"
+        ],
+        "quality": {
+          "source_score": 100.0,
+          "overall_score": 100.0,
+          "source_status": "PASS",
+          "silver_completeness": 100.0
+        },
+        "compliance": {
+          "contains_pii": false,
+          "pii_columns": [
+            "dosen_id"
+          ],
+          "data_classification": "Public",
+          "retention_policy": "Permanen",
+          "access_restriction": "Role: semua"
+        },
+        "star_schema": null,
+        "transformations": [
+          "UNION raw_penelitian + raw_pengabdian",
+          "NORMALIZE columns (id, judul, dosen_id, \u2026)",
+          "FLAG is_rekognisi = rekognisi_internasional",
+          "FLAG is_diterapkan = diterapkan_masyarakat",
+          "ADD jenis = 'Penelitian' | 'Pengabdian'",
+          "DEDUP on id"
+        ]
+      },
+      "last_enriched_at": "2026-05-19T09:48:02.154791Z"
+    }
+  ]
+}
